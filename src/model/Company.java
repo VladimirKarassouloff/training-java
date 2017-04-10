@@ -18,6 +18,24 @@ public class Company {
 	
 	
 	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Company) {
+			Company c = (Company) obj;
+			return c.getId() == this.getId();
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "{ Company : { name:"+this.getName()+", id:"+this.getId()+" } }";
+	}
+	
+	
+	
+
 	public int getId() {
 		return id;
 	}

@@ -7,7 +7,6 @@ public class Computer {
 	
 	private int id;
 	private Company company;
-	
 	private String name;
 	private Date introduced;
 	private Date discontinued;
@@ -15,11 +14,22 @@ public class Computer {
 	
 	
 	public Computer() {
+
+	}
+	
+	
+
+	public Computer(Company company, String name, Date introduced, Date discontinued) {
 		super();
+		this.company = company;
+		this.name = name;
+		this.introduced = introduced;
+		this.discontinued = discontinued;
 	}
 
+
+
 	public Computer(int id, Company company, String name, Date introduced, Date discontinued) {
-		super();
 		this.id = id;
 		this.company = company;
 		this.name = name;
@@ -28,6 +38,24 @@ public class Computer {
 	}
 	
 	
+	
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Computer) {
+			Computer c = (Computer) obj;
+			return c.getId() == this.getId();
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "{ Computer : { id : "+id+", company : "+company+","
+				+ " name : "+name+", introduced : "+introduced+", discontinued : "+discontinued+" } }";
+	}
+
 	public int getId() {
 		return id;
 	}

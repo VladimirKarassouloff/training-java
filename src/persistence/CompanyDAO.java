@@ -11,9 +11,9 @@ import model.Company;
 
 public class CompanyDAO {
 
-	public static String TABLE_NAME = "company";
-	public static String COL_COMPANY_ID = "id";
-	public static String COL_COMPANY_NAME = "name";
+	private static String TABLE_NAME = "company";
+	private static String COL_COMPANY_ID = "id";
+	private static String COL_COMPANY_NAME = "name";
 	
 	public static List<Company> getAll() {
 		List<Company> list = new ArrayList<Company>();
@@ -37,6 +37,32 @@ public class CompanyDAO {
 		}
 		return list;
 		
+	}
+	
+	public static Company getById(int id) {
+		Company obj = null;
+		try {
+			String selectSQL = "SELECT * FROM "+CompanyDAO.TABLE_NAME+" WHERE "+CompanyDAO.TABLE_NAME+"."+CompanyDAO.COL_COMPANY_ID+"="+id;
+			Connector c = Connector.getInstance();
+			Connection connec = c.getDBConnection();
+			PreparedStatement preparedStatement = connec.prepareStatement(selectSQL);
+			//preparedStatement.setInt(1, id);
+			//preparedStatement.setInt(1, 1);
+//			preparedStatement.setString(1, "1");
+			ResultSet rs = preparedStatement.executeQuery(selectSQL);
+			if (rs.next()) {
+				obj = mapResultSetToObject(rs);
+			}
+			rs.close();
+			connec.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return obj;
 	}
 	
 	
