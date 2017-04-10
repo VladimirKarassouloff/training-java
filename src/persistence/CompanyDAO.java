@@ -23,7 +23,6 @@ public class CompanyDAO {
 			Connector c = Connector.getInstance();
 			Connection connec = c.getDBConnection();
 			PreparedStatement preparedStatement = connec.prepareStatement(selectSQL);
-			// preparedStatement.setInt(1, 1001);
 			ResultSet rs = preparedStatement.executeQuery(selectSQL);
 			while (rs.next()) {
 				list.add(mapResultSetToObject(rs));
@@ -46,9 +45,6 @@ public class CompanyDAO {
 			Connector c = Connector.getInstance();
 			Connection connec = c.getDBConnection();
 			PreparedStatement preparedStatement = connec.prepareStatement(selectSQL);
-			//preparedStatement.setInt(1, id);
-			//preparedStatement.setInt(1, 1);
-//			preparedStatement.setString(1, "1");
 			ResultSet rs = preparedStatement.executeQuery(selectSQL);
 			if (rs.next()) {
 				obj = mapResultSetToObject(rs);
@@ -71,6 +67,11 @@ public class CompanyDAO {
 		int companyId = rs.getInt(CompanyDAO.COL_COMPANY_ID);
 		String companyName = rs.getString(CompanyDAO.COL_COMPANY_NAME);
 		return new Company(companyId, companyName);
+	}
+
+	public static void update(Company company) {
+		
+		
 	}
 	
 	
