@@ -1,7 +1,7 @@
 package applicationcli;
 
-import persistence.CompanyDAO;
 import persistence.ComputerDAO;
+import services.CommonServices;
 
 public class MainPage extends Page {
 
@@ -28,7 +28,7 @@ public class MainPage extends Page {
 	public void computeCommand(String command) {
 		
 		if(command.equals("1")) {
-			app.pushPage(new ListCompaniesPage(app, CompanyDAO.getAll()));
+			app.pushPage(new ListCompaniesPage(app, CommonServices.getCompanies()));
 		} else if (command.equals("2")) {
 			app.pushPage(new ListComputerPage(app, ComputerDAO.getAll()));
 		} else if(command.equals("exit")) {

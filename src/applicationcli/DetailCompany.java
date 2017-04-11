@@ -1,7 +1,7 @@
 package applicationcli;
 
 import model.Company;
-import persistence.CompanyDAO;
+import services.CommonServices;
 
 public class DetailCompany extends Page {
 
@@ -25,7 +25,7 @@ public class DetailCompany extends Page {
 		if(command.equals("1")) {
 			System.out.println("Entrez le nouveau nom");
 			company.setName(input.nextLine());
-			CompanyDAO.update(company);
+			CommonServices.updateCompany(company);
 		} else if(command.equals("exit")) {
 			app.popPage();
 		} else {

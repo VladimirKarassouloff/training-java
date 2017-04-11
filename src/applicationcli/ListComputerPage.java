@@ -2,8 +2,8 @@ package applicationcli;
 
 import java.util.List;
 
-import model.Company;
 import model.Computer;
+import services.CommonServices;
 
 public class ListComputerPage extends Page {
 
@@ -31,7 +31,7 @@ public class ListComputerPage extends Page {
 			int id = Integer.parseInt(command);
 			// Dans le choix on commence l'index a 1 et non a 0
 			id--; 
-			this.app.pushPage(new DetailComputer(app, list.get(id)));
+			this.app.pushPage(new DetailComputer(app, list.get(id), CommonServices.getCompanies()));
 		} catch(Exception e) {
 			System.out.println("Erreur parsing du int");
 		}
