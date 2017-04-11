@@ -6,52 +6,35 @@ import java.util.List;
 import model.Company;
 import model.Computer;
 import services.CommonServices;
-import utils.Format;
 
-public class ListComputerPage extends Page {
+public class ListComputerPage extends Pageable {
 
 	protected List<Computer> list;
 
 	public ListComputerPage(Application app, List<Computer> list) {
-		super(app);
+		super(app,8);
 		this.list = list;
 	}
 
+	
+
 	@Override
-	public void printPageInfos() {
+	public void printHeader() {
 		System.out.println("---- Liste des ordinateurs ----");
 		System.out.println("{numero_de_ligne} : voir le détail par numero de ligne");
 		System.out.println("c : creer un ordinateur");
 		System.out.println("d : supprimer un ordinateur");
 		System.out.println("exit : revenir");
-		for (int i = 0; i < list.size(); i++) {
-			System.out.println((i + 1) + "\t" + list.get(i).getName());
-		}
+		
 	}
 
 	@Override
-	public void computeCommand(String command) {
-
-		try {
-			// Dans le choix on commence l'index a 1 et non a 0
-			int id = Integer.parseInt(command) - 1;
-			this.app.pushPage(new DetailComputer(app, list.get(id), CommonServices.getCompanies()));
-			return;
-		} catch (Exception e) {
-			// System.out.println("Erreur parsing du int");
-		}
-
-		if (command.equals("c")) {
-			handleCreation();
-		} else if (command.equals("d")) {
-			handleDeletion();
-		} else if (command.equals("exit")) {
-			app.popPage();
-		} else {
-			System.out.println("Non reconnu");
-		}
-
+	public void printLine(int i) {
+		System.out.println((i + 1) + "\t" + list.get(i).getName());
 	}
+	
+	
+	
 
 	public void handleDeletion() {
 		System.out.println("Entrez le numero de ligne de l'ordinateur a supprimer");
@@ -115,5 +98,35 @@ public class ListComputerPage extends Page {
 			System.out.println("Erreur lors de la creation d'un nouvel ordinateur");
 		}
 	}
+
+	@Override
+	protected int delegateDataSourceSizePageable() {
+		return this.list.size();
+	}
+
+	@Override
+	public void otherCommands(String command) {
+		try {
+			// Dans le choix on commence l'index a 1 et non a 0
+			int id = Integer.parseInt(command) - 1;
+			this.app.pushPage(new DetailComputer(app, list.get(id), CommonServices.getCompanies()));
+			return;
+		} catch (Exception e) {
+			// System.out.println("Erreur parsing du int");
+		}
+
+		if (command.equals("c")) {
+			handleCreation();
+		} else if (command.equals("d")) {
+			handleDeletion();
+		} else if (command.equals("exit")) {
+			app.popPage();
+		} else {
+			System.out.println("Non reconnu");
+		}
+		
+	}
+
+	
 
 }

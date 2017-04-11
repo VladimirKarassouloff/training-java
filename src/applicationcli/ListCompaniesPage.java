@@ -1,34 +1,43 @@
 package applicationcli;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import model.Company;
-import persistence.CompanyDAO;
 
-public class ListCompaniesPage extends Page {
+public class ListCompaniesPage extends Pageable {
 
 
 	protected List<Company> list;
 	
 	public ListCompaniesPage(Application app, List<Company> list) {
-		super(app);
+		super(app,8);
 		this.list = list;
 	}
 
+	
+	
 	@Override
-	public void printPageInfos() {
+	public void printHeader() {
 		System.out.println("---- Liste des entreprises ----");
 		System.out.println("{id} : voir le détail par id");
 		System.out.println("exit : revenir");
-		for(int i = 0 ; i < list.size() ; i++) {
-			System.out.println((i+1)+"\t"+list.get(i).getName());
-		}
+		System.out.println();
 	}
 
 	@Override
-	public void computeCommand(String command) {
+	public void printLine(int i) {
+		System.out.println((i+1)+"\t"+list.get(i).getName());
 		
+	}
+	
+
+	@Override
+	protected int delegateDataSourceSizePageable() {
+		return this.list.size();
+	}
+
+	@Override
+	public void otherCommands(String command) {
 		try{
 			int id = Integer.parseInt(command);
 			// Dans le choix on commence l'index a 1 et non a 0
@@ -44,7 +53,8 @@ public class ListCompaniesPage extends Page {
 		} else {
 			System.out.println("Non reconnu");
 		}
-		
 	}
+
+	
 
 }
