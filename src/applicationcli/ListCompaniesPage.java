@@ -11,9 +11,9 @@ public class ListCompaniesPage extends Page {
 
 	protected List<Company> list;
 	
-	public ListCompaniesPage(Application app) {
+	public ListCompaniesPage(Application app, List<Company> list) {
 		super(app);
-		list = CompanyDAO.getAll();
+		this.list = list;
 	}
 
 	@Override
@@ -21,8 +21,8 @@ public class ListCompaniesPage extends Page {
 		System.out.println("---- Liste des entreprises ----");
 		System.out.println("{id} : voir le détail par id");
 		System.out.println("exit : revenir");
-		for(Company comp : list) {
-			System.out.println(comp.getId()+"\t"+comp.getName());
+		for(int i = 0 ; i < list.size() ; i++) {
+			System.out.println((i+1)+"\t"+list.get(i).getName());
 		}
 	}
 
@@ -31,8 +31,9 @@ public class ListCompaniesPage extends Page {
 		
 		try{
 			int id = Integer.parseInt(command);
-			System.out.println("TODO LA PAGE DETAIL");
-
+			// Dans le choix on commence l'index a 1 et non a 0
+			id--; 
+			this.app.pushPage(new DetailCompany(app, list.get(id)));
 		} catch(Exception e) {
 			System.out.println("Erreur parsing du int");
 		}

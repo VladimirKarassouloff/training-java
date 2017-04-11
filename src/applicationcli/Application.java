@@ -31,7 +31,7 @@ public class Application {
 		 {
 			//System.out.println("Printed : "+ command);
 			if(command != null) pages.peek().computeCommand(command);
-			pages.peek().printPageInfos();
+			if(pages.peek() != null) pages.peek().printPageInfos();
 			//if(pages.peek() == null) break;
 		} while(this.pages.size() > 0 && (command = input.next()) != null);
 		

@@ -14,7 +14,7 @@ public class DetailCompany extends Page {
 
 	@Override
 	public void printPageInfos() {
-		System.out.println("---- Detail Entreprise ----");
+		System.out.println("---- Detail Entreprise '"+company.getName()+"' ----");
 		System.out.println("1 : Modifier le nom de l'entreprise");
 		System.out.println("exit : revenir");
 	}
@@ -24,7 +24,7 @@ public class DetailCompany extends Page {
 		
 		if(command.equals("1")) {
 			System.out.println("Entrez le nouveau nom");
-			company.setName(input.next());
+			company.setName(input.nextLine());
 			CompanyDAO.update(company);
 		} else if(command.equals("exit")) {
 			app.popPage();

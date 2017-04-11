@@ -74,8 +74,8 @@ public class ComputerDAO {
 		try {
 			String insertSQL = "INSERT INTO " + ComputerDAO.TABLE_NAME + "(" + COL_COMPUTER_NAME + ","
 					+ COL_COMPUTER_INTRODUCED + "," + COL_COMPUTERDISCONTINUED + "," + COL_COMPUTER_COMPANY_ID + ") "
-					+ "VALUES ('" + computer.getName() + "','" + Format.formatDateForSql(computer.getIntroduced()) + "','"
-					+ Format.formatDateForSql(computer.getDiscontinued()) + "','" + (computer.getCompany() != null ? computer.getCompany().getId() : "NULL")
+					+ "VALUES ('" + computer.getName() + "','" + Format.formatDate(computer.getIntroduced()) + "','"
+					+ Format.formatDate(computer.getDiscontinued()) + "','" + (computer.getCompany() != null ? computer.getCompany().getId() : "NULL")
 					+ "')";
 			System.out.println("Insert query : " + insertSQL);
 			Connector c = Connector.getInstance();
@@ -129,6 +129,24 @@ public class ComputerDAO {
 		Date introduced = rs.getDate(ComputerDAO.COL_COMPUTER_INTRODUCED);
 		Date discontinued = rs.getDate(ComputerDAO.COL_COMPUTERDISCONTINUED);
 		return new Computer(computerId, CompanyDAO.getById(companyId), companyName, introduced, discontinued);
+	}
+
+	public static boolean update(Computer computer) {
+		try {
+			
+			String sqlUpdate = "UPDATE "+TABLE_NAME+" SET "+ComputerDAO.COL_COMPUTER_NAME+"='"+computer.getName()+"',"
+					+ComputerDAO.COL_COMPUTER_INTRODUCED +" = '" + Format.formatDate(computer.getIntroduced())+"', "
+					+ComputerDAO.COL_COMPUTERDISCONTINUED+" = '" + Format.formatDate(computer.getDiscontinued())+ "' " 
+					+ "WHERE "+ComputerDAO.COL_COMPUTER_ID+"="+computer.getId();
+			Connector c = Connector.getInstance();
+			Connection connec = c.getDBConnection();
+			PreparedStatement statement = connec.prepareStatement(sqlUpdate);
+			
+			return statement.executeUpdate() != 0;
+		} catch(Exception e) {
+			System.out.println("Exce : "+ e.getMessage());
+		}
+		return false;
 	}
 
 

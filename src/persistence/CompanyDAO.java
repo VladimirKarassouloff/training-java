@@ -69,9 +69,20 @@ public class CompanyDAO {
 		return new Company(companyId, companyName);
 	}
 
-	public static void update(Company company) {
-		
-		
+	public static boolean update(Company company) {
+		try {
+				
+			String sqlUpdate = "UPDATE "+TABLE_NAME+" SET "+CompanyDAO.COL_COMPANY_NAME+"='"+company.getName()+"' "
+					+ "WHERE "+CompanyDAO.COL_COMPANY_ID+"="+company.getId();
+			Connector c = Connector.getInstance();
+			Connection connec = c.getDBConnection();
+			PreparedStatement statement = connec.prepareStatement(sqlUpdate);
+			
+			return statement.executeUpdate() != 0;
+		} catch(Exception e) {
+			System.out.println("Exce : "+ e.getMessage());
+		}
+		return false;
 	}
 	
 	
