@@ -42,7 +42,8 @@ public class ComputerDAO {
 			while (rs.next()) {
 				list.add(mapResultSetToObject(rs));
 			}
-			
+			rs.close();
+			connec.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,9 +87,9 @@ public class ComputerDAO {
 		try {
 			String insertSQL = "INSERT INTO " + ComputerDAO.TABLE_NAME + "(" + COL_COMPUTER_NAME + ","
 					+ COL_COMPUTER_INTRODUCED + "," + COL_COMPUTERDISCONTINUED + "," + COL_COMPUTER_COMPANY_ID + ") "
-					+ "VALUES ('" + computer.getName() + "','" + Format.formatDate(computer.getIntroduced()) + "','"
-					+ Format.formatDate(computer.getDiscontinued()) + "','" + (computer.getCompany() != null ? computer.getCompany().getId() : "NULL")
-					+ "')";
+					+ "VALUES ('" + computer.getName() + "',"+Format.quotedOrNull(computer.getIntroduced())+","
+					+ Format.quotedOrNull(computer.getDiscontinued())+ "," + (computer.getCompany() != null ? Format.quotedOrNull(computer.getCompany().getId()) : "NULL")
+					+ ")";
 			System.out.println("Insert query : " + insertSQL);
 			Connector c = Connector.getInstance();
 			Connection connec = c.getDBConnection();
@@ -99,15 +100,21 @@ public class ComputerDAO {
 				if(generatedKeys.next()) {
 					int newIdGenerated = (int)generatedKeys.getLong(1) ;
 					computer.setId(newIdGenerated);
+					statement.close();
+					connec.close();
 					return newIdGenerated;
 	            }
 	            else {
 	            	// ??
+	            	statement.close();
+					connec.close();
 	                return -1;
 	            }
 				
 			} else {
 				// Aucune ligne affectée
+				statement.close();
+				connec.close();
 				return -1;
 			}
 			
@@ -125,7 +132,10 @@ public class ComputerDAO {
 		try {
 			connec = c.getDBConnection();
 			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(deleteSQL);
-			return statement.executeUpdate() != 0;
+			int resultExec = statement.executeUpdate();
+			statement.close();
+			connec.close();
+			return resultExec != 0;
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -160,15 +170,18 @@ public class ComputerDAO {
 		try {
 			
 			String sqlUpdate = "UPDATE "+TABLE_NAME+" SET "+ComputerDAO.COL_COMPUTER_NAME+"='"+computer.getName()+"',"
-					+ComputerDAO.COL_COMPUTER_INTRODUCED +" = '" + Format.formatDate(computer.getIntroduced())+"', "
-					+ComputerDAO.COL_COMPUTERDISCONTINUED+" = '" + Format.formatDate(computer.getDiscontinued())+ "', "
-					+ComputerDAO.COL_COMPUTER_COMPANY_ID+ " = "+(computer.getCompany() == null ? "NULL" : "'"+computer.getCompany().getId()+"'") 
+					+ComputerDAO.COL_COMPUTER_INTRODUCED +" = "+Format.quotedOrNull(computer.getIntroduced())+", "
+					+ComputerDAO.COL_COMPUTERDISCONTINUED+" = "+Format.quotedOrNull(computer.getDiscontinued())+", "
+					+ComputerDAO.COL_COMPUTER_COMPANY_ID+ " = "+(computer.getCompany() == null ? "NULL" : "'"+computer.getCompany().getId()+"'") +" "
 					+ "WHERE "+ComputerDAO.COL_COMPUTER_ID+"="+computer.getId();
 			Connector c = Connector.getInstance();
 			Connection connec = c.getDBConnection();
 			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(sqlUpdate);
 			
-			return statement.executeUpdate() != 0;
+			int resultExec = statement.executeUpdate();
+			statement.close();
+			connec.close();
+			return resultExec != 0;
 		} catch(Exception e) {
 			System.out.println("Exce : "+ e.getMessage());
 		}

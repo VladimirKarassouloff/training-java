@@ -29,6 +29,8 @@ public class CompanyDAO {
 			while (rs.next()) {
 				list.add(mapResultSetToObject(rs));
 			}
+			rs.close();
+			connec.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -83,7 +85,10 @@ public class CompanyDAO {
 			Connection connec = (Connection) c.getDBConnection();
 			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(sqlUpdate);
 			
-			return statement.executeUpdate() != 0;
+			int resExec = statement.executeUpdate();
+			statement.close();
+			connec.close();
+			return resExec != 0;
 		} catch(Exception e) {
 			System.out.println("Exce : "+ e.getMessage());
 		}

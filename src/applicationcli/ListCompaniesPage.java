@@ -34,8 +34,9 @@ public class ListCompaniesPage extends Page {
 			// Dans le choix on commence l'index a 1 et non a 0
 			id--; 
 			this.app.pushPage(new DetailCompany(app, list.get(id)));
+			return;
 		} catch(Exception e) {
-			System.out.println("Erreur parsing du int");
+			//System.out.println("Erreur parsing du int");
 		}
 		
 		if(command.equals("exit")) {

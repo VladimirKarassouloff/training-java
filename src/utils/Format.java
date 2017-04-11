@@ -23,4 +23,21 @@ public class Format {
 		return null;
 	}
 	
+	
+	public static String quotedOrNull(Date value) {
+		if(value == null) {
+			return "NULL";
+		} else {
+			return "'"+formatDate(value)+"'";
+		}
+	}
+	
+	public static String quotedOrNull(Integer value) {
+		if(value == null) {
+			return "NULL";
+		} else {
+			return "'"+value+"'";
+		}
+	}
+	
 }

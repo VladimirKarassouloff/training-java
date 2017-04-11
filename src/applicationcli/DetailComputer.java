@@ -49,7 +49,7 @@ public class DetailComputer extends Page {
 		else if(command.equals("2")) {
 			
 			System.out.println("Entrez la nouvelle date");
-			Date newDate = Format.dateFromString(input.nextLine());
+			Date newDate = reclaimDateOrNullInput();
 			computer.setIntroduced(newDate);
 			CommonServices.updateComputer(computer);
 			
@@ -57,7 +57,7 @@ public class DetailComputer extends Page {
 		// Changement de la date d'arret de commercialisation
 		else if(command.equals("3")) {
 			
-			Date newDate = Format.dateFromString(input.nextLine());
+			Date newDate = reclaimDateOrNullInput();
 			computer.setDiscontinued(newDate);
 			CommonServices.updateComputer(computer);
 			
@@ -80,8 +80,12 @@ public class DetailComputer extends Page {
 			}
 			System.out.println(sb.toString());
 			try {
-				int newComp = Integer.parseInt(input.nextLine()) - 1;
-				computer.setCompany(this.listCompanies.get(newComp));
+				Integer newComp = reclaimIntOrNullInputBetweenRange(1, listCompanies.size());
+				if(newComp == null) {
+					computer.setCompany(null);
+				} else {
+					computer.setCompany(this.listCompanies.get(newComp - 1));
+				}				
 				CommonServices.updateComputer(computer);
 			} catch (Exception e) {
 				System.out.println("Erreur lors de l'assignation de l'entreprise");
