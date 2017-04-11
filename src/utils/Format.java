@@ -15,6 +15,7 @@ public class Format {
 	
 	public static Date dateFromString(String s) {
 		try {
+			
 			return dateFormatter.parse(s);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block

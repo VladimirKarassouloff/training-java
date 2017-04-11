@@ -34,7 +34,8 @@ public abstract class Page {
 			} else {
 				try {
 					Date d = Format.dateFromString(inputUser);
-					if(d != null) return d;
+					if(d.getYear() < 71 || d.getYear() > 100) throw new Exception("Annee invalide");
+					else if(d != null) return d;
 				} catch(Exception e){
 					
 				}
