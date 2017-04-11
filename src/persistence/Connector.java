@@ -1,12 +1,11 @@
 package persistence;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Connector {
+import com.mysql.jdbc.Connection;
+
+public final class Connector {
 
 	public static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	public static final String DB_URL = "jdbc:mysql://localhost/computer-database-db?useSSL=false";
@@ -30,7 +29,7 @@ public class Connector {
 
 	public Connection getDBConnection() throws ClassNotFoundException, SQLException {
 		Class.forName(Connector.JDBC_DRIVER);
-		return DriverManager.getConnection(Connector.DB_URL, Connector.USER, Connector.PASS);
+		return (Connection) DriverManager.getConnection(Connector.DB_URL, Connector.USER, Connector.PASS);
 	}
 
 	/*public void execute(PreparedStatement query) throws SQLException {

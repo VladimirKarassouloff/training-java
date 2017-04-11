@@ -1,14 +1,16 @@
 package persistence;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.PreparedStatement;
+import com.mysql.jdbc.Statement;
 
 import model.Company;
 import model.Computer;
@@ -35,7 +37,7 @@ public class ComputerDAO {
 			String selectSQL = "SELECT * FROM " + ComputerDAO.TABLE_NAME;
 			Connector c = Connector.getInstance();
 			Connection connec = c.getDBConnection();
-			PreparedStatement preparedStatement = connec.prepareStatement(selectSQL);
+			PreparedStatement preparedStatement = (PreparedStatement) connec.prepareStatement(selectSQL);
 			ResultSet rs = preparedStatement.executeQuery(selectSQL);
 			while (rs.next()) {
 				list.add(mapResultSetToObject(rs));
@@ -61,7 +63,7 @@ public class ComputerDAO {
 					+ ComputerDAO.COL_COMPUTER_ID + "=" + id;
 			Connector c = Connector.getInstance();
 			Connection connec = c.getDBConnection();
-			PreparedStatement preparedStatement = connec.prepareStatement(selectSQL);
+			PreparedStatement preparedStatement = (PreparedStatement) connec.prepareStatement(selectSQL);
 			ResultSet rs = preparedStatement.executeQuery(selectSQL);
 			if (rs.next()) {
 				obj = mapResultSetToObject(rs);
@@ -90,7 +92,7 @@ public class ComputerDAO {
 			System.out.println("Insert query : " + insertSQL);
 			Connector c = Connector.getInstance();
 			Connection connec = c.getDBConnection();
-			PreparedStatement statement = connec.prepareStatement(insertSQL,Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(insertSQL,Statement.RETURN_GENERATED_KEYS);
 			
 			if(statement.executeUpdate() != 0) {
 				ResultSet generatedKeys = statement.getGeneratedKeys();
@@ -122,7 +124,7 @@ public class ComputerDAO {
 		Connection connec;
 		try {
 			connec = c.getDBConnection();
-			PreparedStatement statement = connec.prepareStatement(deleteSQL);
+			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(deleteSQL);
 			return statement.executeUpdate() != 0;
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
@@ -164,7 +166,7 @@ public class ComputerDAO {
 					+ "WHERE "+ComputerDAO.COL_COMPUTER_ID+"="+computer.getId();
 			Connector c = Connector.getInstance();
 			Connection connec = c.getDBConnection();
-			PreparedStatement statement = connec.prepareStatement(sqlUpdate);
+			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(sqlUpdate);
 			
 			return statement.executeUpdate() != 0;
 		} catch(Exception e) {

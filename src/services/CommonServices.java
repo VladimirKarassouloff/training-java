@@ -40,6 +40,10 @@ public class CommonServices {
 	public static boolean updateComputer(Computer computer) {
 		return ComputerDAO.update(computer);
 	}
+
+	public static boolean deleteComputer(Computer comp) {
+		return ComputerDAO.deleteById(comp.getId());
+	}
 	
 	
 	

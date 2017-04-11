@@ -1,11 +1,13 @@
 package persistence;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.PreparedStatement;
 
 import model.Company;
 
@@ -21,8 +23,8 @@ public class CompanyDAO {
 		try {
 			String selectSQL = "SELECT * FROM "+CompanyDAO.TABLE_NAME;
 			Connector c = Connector.getInstance();
-			Connection connec = c.getDBConnection();
-			PreparedStatement preparedStatement = connec.prepareStatement(selectSQL);
+			Connection connec = (Connection) c.getDBConnection();
+			PreparedStatement preparedStatement = (PreparedStatement) connec.prepareStatement(selectSQL);
 			ResultSet rs = preparedStatement.executeQuery(selectSQL);
 			while (rs.next()) {
 				list.add(mapResultSetToObject(rs));
@@ -41,11 +43,14 @@ public class CompanyDAO {
 	public static Company getById(int id) {
 		Company obj = null;
 		try {
-			String selectSQL = "SELECT * FROM "+CompanyDAO.TABLE_NAME+" WHERE "+CompanyDAO.TABLE_NAME+"."+CompanyDAO.COL_COMPANY_ID+"="+id;
+			String selectSQL = "SELECT * FROM "+CompanyDAO.TABLE_NAME+" WHERE "
+					+CompanyDAO.COL_COMPANY_ID+"=?";
+			// System.out.println(selectSQL);
 			Connector c = Connector.getInstance();
-			Connection connec = c.getDBConnection();
-			PreparedStatement preparedStatement = connec.prepareStatement(selectSQL);
-			ResultSet rs = preparedStatement.executeQuery(selectSQL);
+			Connection connec = (Connection) c.getDBConnection();
+			PreparedStatement preparedStatement = (PreparedStatement) connec.prepareStatement(selectSQL);
+			preparedStatement.setInt(1, id);
+			ResultSet rs = preparedStatement.executeQuery();
 			if (rs.next()) {
 				obj = mapResultSetToObject(rs);
 			}
@@ -75,8 +80,8 @@ public class CompanyDAO {
 			String sqlUpdate = "UPDATE "+TABLE_NAME+" SET "+CompanyDAO.COL_COMPANY_NAME+"='"+company.getName()+"' "
 					+ "WHERE "+CompanyDAO.COL_COMPANY_ID+"="+company.getId();
 			Connector c = Connector.getInstance();
-			Connection connec = c.getDBConnection();
-			PreparedStatement statement = connec.prepareStatement(sqlUpdate);
+			Connection connec = (Connection) c.getDBConnection();
+			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(sqlUpdate);
 			
 			return statement.executeUpdate() != 0;
 		} catch(Exception e) {

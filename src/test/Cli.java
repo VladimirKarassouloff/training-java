@@ -30,8 +30,8 @@ public class Cli {
 			System.out.println();
 			
 			System.out.println("Get company by id = 1");
-			System.out.println(CompanyDAO.getById(1));
-
+			System.out.println(CompanyDAO.getById(1));*/
+/*
 			System.out.println();
 			System.out.println();
 			
@@ -63,7 +63,9 @@ public class Cli {
 
 			System.out.println("Get computer by id = "+comp.getId());
 			System.out.println(ComputerDAO.getById(comp.getId()));
+			
 			*/
+			
 			
 			Application app = new Application();
 			app.run();
