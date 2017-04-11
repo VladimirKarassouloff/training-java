@@ -7,8 +7,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
+import model.Company;
 import model.Computer;
 import utils.Format;
 
@@ -21,9 +23,13 @@ public class ComputerDAO {
 	public static String COL_COMPUTERDISCONTINUED = "discontinued";
 	public static String COL_COMPUTER_COMPANY_ID = "company_id";
 
+	// Comme on construit l'object company pour chaque computer, on évite d'aller en base récuperer 
+	// une Company pour chaque Computer
+	public static HashMap<Integer, Company> cacheCompany = new HashMap<>();
+	
 	public static List<Computer> getAll() {
 		List<Computer> list = new ArrayList<Computer>();
-
+		cacheCompany.clear();
 		try {
 
 			String selectSQL = "SELECT * FROM " + ComputerDAO.TABLE_NAME;
@@ -34,6 +40,7 @@ public class ComputerDAO {
 			while (rs.next()) {
 				list.add(mapResultSetToObject(rs));
 			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -41,11 +48,13 @@ public class ComputerDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		cacheCompany.clear();
 		return list;
 
 	}
 
 	public static Computer getById(int id) {
+		cacheCompany.clear();
 		Computer obj = null;
 		try {
 			String selectSQL = "SELECT * FROM " + ComputerDAO.TABLE_NAME + " WHERE " + ComputerDAO.TABLE_NAME + "."
@@ -66,6 +75,7 @@ public class ComputerDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		cacheCompany.clear();
 		return obj;
 	}
 
@@ -125,10 +135,23 @@ public class ComputerDAO {
 	public static Computer mapResultSetToObject(ResultSet rs) throws SQLException {
 		int computerId = rs.getInt(ComputerDAO.COL_COMPUTER_ID);
 		int companyId = rs.getInt(ComputerDAO.COL_COMPUTER_COMPANY_ID);
-		String companyName = rs.getString(ComputerDAO.COL_COMPUTER_NAME);
+		String computerName = rs.getString(ComputerDAO.COL_COMPUTER_NAME);
 		Date introduced = rs.getDate(ComputerDAO.COL_COMPUTER_INTRODUCED);
 		Date discontinued = rs.getDate(ComputerDAO.COL_COMPUTERDISCONTINUED);
-		return new Computer(computerId, CompanyDAO.getById(companyId), companyName, introduced, discontinued);
+		
+		Company company;
+		if(companyId == 0) {
+			company = null;
+		}
+		else if(ComputerDAO.cacheCompany.get(companyId) != null) {
+			company = ComputerDAO.cacheCompany.get(companyId);
+			// System.out.println("Recuperation d'une Company depuis le cache");
+		} else {
+			company = CompanyDAO.getById(companyId);
+			cacheCompany.put(companyId, company);
+		}
+		
+		return new Computer(computerId, company, computerName, introduced, discontinued);
 	}
 
 	public static boolean update(Computer computer) {
@@ -136,7 +159,8 @@ public class ComputerDAO {
 			
 			String sqlUpdate = "UPDATE "+TABLE_NAME+" SET "+ComputerDAO.COL_COMPUTER_NAME+"='"+computer.getName()+"',"
 					+ComputerDAO.COL_COMPUTER_INTRODUCED +" = '" + Format.formatDate(computer.getIntroduced())+"', "
-					+ComputerDAO.COL_COMPUTERDISCONTINUED+" = '" + Format.formatDate(computer.getDiscontinued())+ "' " 
+					+ComputerDAO.COL_COMPUTERDISCONTINUED+" = '" + Format.formatDate(computer.getDiscontinued())+ "', "
+					+ComputerDAO.COL_COMPUTER_COMPANY_ID+ " = "+(computer.getCompany() == null ? "NULL" : "'"+computer.getCompany().getId()+"'") 
 					+ "WHERE "+ComputerDAO.COL_COMPUTER_ID+"="+computer.getId();
 			Connector c = Connector.getInstance();
 			Connection connec = c.getDBConnection();

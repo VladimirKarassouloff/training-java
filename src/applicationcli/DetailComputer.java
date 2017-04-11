@@ -29,7 +29,7 @@ public class DetailComputer extends Page {
 		System.out.println("3 : changer la date d'arret (yyyy-MM-dd)");
 		System.out.println("4 : changer la marque");
 		System.out.println("exit : quitter la page");
-		System.out.println("Marque : "+(this.computer.getCompany() != null ? this.computer.getName() : "Inconnue"));
+		System.out.println("Marque : "+(this.computer.getCompany() != null ? this.computer.getCompany().getName() : "Inconnue"));
 		System.out.println("Date d'introduction dans le marché : "+Format.formatDate(computer.getIntroduced()));
 		System.out.println("Date d'arret de commercialisation : "+Format.formatDate(computer.getDiscontinued()));
 	}
