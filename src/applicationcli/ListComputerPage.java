@@ -57,45 +57,9 @@ public class ListComputerPage extends Pageable {
 	public void handleCreation() {
 		
 		try {
-			// Vars
-			String nameInput;
-			Integer lineChoosen;
-			Date start, end;
-			
-			// Form
-			// Nom
-			System.out.println("Entrez le nom");
-			nameInput = input.nextLine();
-			// Date commercial
-			System.out.println("Entrez la date de commercialisation");
-			start = reclaimDateOrNullInput();
-			// Date fin commercial
-			System.out.println("Entrez la date de fin de commercialisation");
-			end = reclaimDateOrNullInput();
-			// Entreprise 
-			System.out.println("Choississez l'entreprise créatrice de l'ordinateur");
-			List<Company> companies = CommonServices.getCompanies();
-			Company company = null;
-			for (int i = 0; i < companies.size(); i++) {
-				System.out.println((i + 1) + "\t" + companies.get(i).getName());
-			}
-			
-			try {
-				lineChoosen = reclaimIntOrNullInputBetweenRange(1, companies.size());
-				if (lineChoosen != null) {
-					company = companies.get(lineChoosen - 1);
-				}
-			} catch (Exception e) {
-
-			}
-			
-			// Insert DB
-			Computer newComputer = new Computer(company, nameInput, start, end);
-			CommonServices.addComputer(newComputer);
-			list.add(newComputer);
-			
+			CommonServices.createComputer();
 		} catch (Exception e) {
-			System.out.println("Erreur lors de la creation d'un nouvel ordinateur");
+			//System.out.println("Erreur lors de la creation d'un nouvel ordinateur");
 		}
 	}
 
@@ -109,7 +73,7 @@ public class ListComputerPage extends Pageable {
 		try {
 			// Dans le choix on commence l'index a 1 et non a 0
 			int id = Integer.parseInt(command) - 1;
-			this.app.pushPage(new DetailComputer(app, list.get(id), CommonServices.getCompanies()));
+			this.app.pushPage(new DetailComputer(app, list.get(id)));
 			return;
 		} catch (Exception e) {
 			// System.out.println("Erreur parsing du int");

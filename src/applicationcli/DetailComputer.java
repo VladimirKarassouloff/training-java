@@ -12,13 +12,11 @@ public class DetailComputer extends Page {
 
 	
 	private Computer computer;
-	private List<Company> listCompanies;
 	
 	
-	public DetailComputer(Application app, Computer computer, List<Company> listCompanies) {
+	public DetailComputer(Application app, Computer computer) {
 		super(app);
 		this.computer = computer;
-		this.listCompanies = listCompanies;
 	}
 
 	@Override
@@ -65,9 +63,6 @@ public class DetailComputer extends Page {
 	}
 	
 	
-	
-	
-	
 	private void handleNewName() {
 		System.out.println("Entrez le nouveau nom");
 		computer.setName(input.nextLine());
@@ -75,40 +70,15 @@ public class DetailComputer extends Page {
 	}
 
 	private void handleDateSwitchIntroduced() {
-		System.out.println("Entrez la nouvelle date");
-		Date newDate = reclaimDateOrNullInput();
-		computer.setIntroduced(newDate);
-		CommonServices.updateComputer(computer);
+		CommonServices.updateComputerIntroduced(computer);
 	}
 
 	private void handleDateSwitchDiscontinuedDate() {
-
-		Date newDate = reclaimDateOrNullInput();
-		computer.setDiscontinued(newDate);
-		CommonServices.updateComputer(computer);
-		
+		CommonServices.updateComputerDiscontinuedDate(computer);		
 	}
 
 	private void handleEnterpriseSwitchId() {
-		System.out.println("Choisissez une marque parmis les suivantes");
-		int i = 0;
-		StringBuilder sb = new StringBuilder();
-		while(i < listCompanies.size()) {
-			sb.append((i+1)+"\t"+listCompanies.get(i).getName()+"\n");
-			i++;
-		}
-		System.out.println(sb.toString());
-		try {
-			Integer newComp = reclaimIntOrNullInputBetweenRange(1, listCompanies.size());
-			if(newComp == null) {
-				computer.setCompany(null);
-			} else {
-				computer.setCompany(this.listCompanies.get(newComp - 1));
-			}				
-			CommonServices.updateComputer(computer);
-		} catch (Exception e) {
-			System.out.println("Erreur lors de l'assignation de l'entreprise");
-		}
+		CommonServices.updateComputerEnterpriseId(computer);
 	}
 	
 
