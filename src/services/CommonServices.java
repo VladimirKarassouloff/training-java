@@ -69,7 +69,7 @@ public class CommonServices {
 		return ComputerDAO.insert(computer);
 	}
 
-	public static Computer createComputer() {
+	public static Computer precreateComputer() {
 		// Vars
 		String nameInput;
 		Integer lineChoosen;
@@ -85,28 +85,9 @@ public class CommonServices {
 		// Date fin commercial
 		System.out.println("Entrez la date de fin de commercialisation");
 		end = Formulaire.reclaimDateOrNullInput();
-		// Entreprise
-		System.out.println("Choississez l'entreprise créatrice de l'ordinateur");
-		List<Company> companies = CommonServices.getCompanies();
-		Company company = null;
-		for (int i = 0; i < companies.size(); i++) {
-			System.out.println((i + 1) + "\t" + companies.get(i).getName());
-		}
 
-		try {
-			lineChoosen = Formulaire.reclaimIntOrNullInputBetweenRange(1, companies.size());
-			if (lineChoosen != null) {
-				company = companies.get(lineChoosen - 1);
-			}
-		} catch (Exception e) {
-
-		}
-
-		// Insert DB
-		Computer newComputer = new Computer(company, nameInput, start, end);
-		int newIdCreated = CommonServices.addComputer(newComputer);
 		
-		return ComputerDAO.getById(newIdCreated);
+		return new Computer(null, nameInput, start, end);
 	}
 
 	

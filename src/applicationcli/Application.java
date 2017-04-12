@@ -17,6 +17,9 @@ public class Application {
 	
 	public void popPage() {
 		this.pages.pop();
+		if(this.pages.size() > 0) {
+			this.pages.peek().onFirstGroundEvent();
+		}
 	}
 	
 	public void pushPage(Page p) {

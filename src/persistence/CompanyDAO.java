@@ -91,11 +91,12 @@ public class CompanyDAO {
 	public static boolean update(Company company) {
 		try {
 
-			String sqlUpdate = "UPDATE " + TABLE_NAME + " SET " + CompanyDAO.COL_COMPANY_NAME + "='" + company.getName()
-					+ "' " + "WHERE " + CompanyDAO.COL_COMPANY_ID + "=" + company.getId();
+			String sqlUpdate = "UPDATE " + TABLE_NAME + " SET " + CompanyDAO.COL_COMPANY_NAME + "= ?  WHERE " + CompanyDAO.COL_COMPANY_ID + "= ? ";
 			Connector c = Connector.getInstance();
 			Connection connec = c.getDBConnection();
 			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(sqlUpdate);
+			statement.setString(1, company.getName());
+			statement.setInt(2, company.getId());
 
 			int resExec = statement.executeUpdate();
 			statement.close();

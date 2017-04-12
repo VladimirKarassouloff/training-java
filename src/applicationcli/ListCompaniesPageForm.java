@@ -30,24 +30,30 @@ public class ListCompaniesPageForm extends ListCompaniesPage {
 		List<Company> filterId = list.stream().filter(e -> e.getId() == id).collect(Collectors.toList());
 		if (filterId.size() > 0) {
 			form.setCompany(filterId.get(0));
+			this.app.popPage();
+
+			/*
 			if(CommonServices.updateComputer(form)) {
 				System.out.println("Modifié");
 				this.app.popPage();
 			} else {
 				System.out.println("Impossible de faire la modification");
-			}
+			}*/
+
 			
 		} else {
 			Company tmp = CommonServices.getCompany(id);
 			if(tmp != null) {
+				this.app.popPage();
+
 				//this.app.pushPage(new DetailCompany(app, tmp));
 				form.setCompany(tmp);
-				if(CommonServices.updateComputer(form)) {
+				/*if(CommonServices.updateComputer(form)) {
 					System.out.println("Modifié");
 					this.app.popPage();
 				} else {
 					System.out.println("Impossible de faire la modification");
-				}
+				}*/
 				
 			} else {
 				System.out.println("Entreprise introuvable");

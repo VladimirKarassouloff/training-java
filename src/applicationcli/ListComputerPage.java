@@ -10,6 +10,9 @@ public class ListComputerPage extends Pageable<Computer> {
 
 	//protected List<Computer> list;
 
+	private boolean isCreatingComputer = false;
+	private Computer computerCreation = null;
+	
 	public ListComputerPage(Application app) {
 		super(app, 8);
 	}
@@ -54,10 +57,13 @@ public class ListComputerPage extends Pageable<Computer> {
 	public void handleCreation() {
 
 		try {
-			if (CommonServices.createComputer() != null) {
+			/*if (CommonServices.createComputer() != null) {
 				this.countItemTotal++;
 				this.orderFetchNewDataForPage();
-			}
+			}*/
+			isCreatingComputer = true;
+			this.computerCreation = CommonServices.precreateComputer();
+			this.app.pushPage(new ListCompaniesPageForm(app, computerCreation));
 		} catch (Exception e) {
 			// System.out.println("Erreur lors de la creation d'un nouvel
 			// ordinateur");
@@ -102,4 +108,18 @@ public class ListComputerPage extends Pageable<Computer> {
 		
 	}
 
+	@Override
+	public void onFirstGroundEvent() {
+		if(isCreatingComputer) {
+			CommonServices.addComputer(this.computerCreation);
+			isCreatingComputer = false;
+			this.countItemTotal++;
+			this.orderFetchNewDataForPage();
+			computerCreation = null;
+		}
+	}
+
+	
+	
+	
 }

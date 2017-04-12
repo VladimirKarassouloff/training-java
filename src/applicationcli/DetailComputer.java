@@ -8,11 +8,12 @@ public class DetailComputer extends Page {
 
 	
 	private Computer computer;
-	
+	private boolean isEditingCompanyId;
 	
 	public DetailComputer(Application app, Computer computer) {
 		super(app);
 		this.computer = computer;
+		this.isEditingCompanyId = false;
 	}
 
 	@Override
@@ -72,9 +73,23 @@ public class DetailComputer extends Page {
 	}
 
 	private void handleEnterpriseSwitchId() {
+		isEditingCompanyId = true;
 		this.app.pushPage(new ListCompaniesPageForm(app, computer));
 		//CommonServices.updateComputerEnterpriseId(computer);
 	}
+
+	@Override
+	public void onFirstGroundEvent() {
+		if(isEditingCompanyId) {
+			isEditingCompanyId = false;
+			if(CommonServices.updateComputer(computer)) {
+				System.out.println("Succes de la modification");
+			} else {
+				System.out.println("Erreur durant la modification");
+			}
+		}
+	}
+	
 	
 
 }

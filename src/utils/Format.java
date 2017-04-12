@@ -41,4 +41,7 @@ public class Format {
 		}
 	}
 	
+	public static java.sql.Date convertJavaDateToSqlDate(java.util.Date date) {
+		return date == null ? null : new java.sql.Date(date.getTime());
+	}
 }

@@ -20,7 +20,11 @@ public abstract class Page {
 
 	public abstract void printPageInfos();
 	public abstract void computeCommand(String command);
-
+	
+	
+	public void onFirstGroundEvent() {
+		
+	}
 	
 	
 	
