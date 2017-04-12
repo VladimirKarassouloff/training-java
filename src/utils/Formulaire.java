@@ -18,8 +18,11 @@ public class Formulaire {
 					Date d = Format.dateFromString(inputUser);
 					//if(d.getYear() < 1971 || d.getYear() > 2030) throw new Exception("Annee invalide");
 					/*else*/ if(d != null) return d;
+					else {
+						System.out.println("Date invalide");
+					}
 				} catch(Exception e){
-					
+					System.out.println("Date invalide");
 				}
 			}
 			

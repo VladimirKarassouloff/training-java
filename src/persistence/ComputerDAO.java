@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
@@ -18,6 +21,9 @@ import utils.Format;
 
 public class ComputerDAO {
 
+	 private static final Logger logger = LoggerFactory.getLogger(ComputerDAO.class);
+
+	
 	private static String TABLE_NAME = "computer";
 	public static String COL_COMPUTER_ID = "id";
 	public static String COL_COMPUTER_NAME = "name";
@@ -42,13 +48,16 @@ public class ComputerDAO {
 			while (rs.next()) {
 				list.add(mapResultSetToObject(rs));
 			}
+			logger.info("Succes getAll computerdao");
 			rs.close();
 			connec.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
+			logger.info("Erreur getAll computerdao : "+ e.getMessage());
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
+			logger.info("Erreur getAll computerdao : "+ e.getMessage());
 			e.printStackTrace();
 		}
 		cacheCompany.clear();
@@ -69,13 +78,16 @@ public class ComputerDAO {
 			if (rs.next()) {
 				obj = mapResultSetToObject(rs);
 			}
+			logger.info("Succes getbyid computerdao");
 			rs.close();
 			connec.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
+        	logger.info("Erreur sql get by id : "+ e.getMessage());
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
+        	logger.info("Erreur get by id computerdao : "+ e.getMessage());
 			e.printStackTrace();
 		}
 		cacheCompany.clear();
@@ -102,10 +114,12 @@ public class ComputerDAO {
 					computer.setId(newIdGenerated);
 					statement.close();
 					connec.close();
+	            	logger.info("Success insert computerdao : "+ computer);
 					return newIdGenerated;
 	            }
 	            else {
 	            	// ??
+	            	logger.info("Erreur insert computerdao : "+ computer);
 	            	statement.close();
 					connec.close();
 	                return -1;
@@ -113,6 +127,7 @@ public class ComputerDAO {
 				
 			} else {
 				// Aucune ligne affectée
+            	logger.info("Erreur 2 insert computerdao : "+ computer);
 				statement.close();
 				connec.close();
 				return -1;
@@ -121,7 +136,10 @@ public class ComputerDAO {
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.info("Erreur 3 insert computerdao : "+ computer+" => "+e.getMessage());
 		}
+    	
+
 		return -1;
 	}
 
@@ -135,9 +153,11 @@ public class ComputerDAO {
 			int resultExec = statement.executeUpdate();
 			statement.close();
 			connec.close();
+			logger.info("Succes delete "+id+" computerdao");
 			return resultExec != 0;
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
+			logger.info("Error delete Computerdao "+id+" : "+e.getMessage());
 			e.printStackTrace();
 		}
 		return false;
@@ -181,9 +201,11 @@ public class ComputerDAO {
 			int resultExec = statement.executeUpdate();
 			statement.close();
 			connec.close();
+			logger.info("Succes Update Computerdao : "+ computer);
 			return resultExec != 0;
 		} catch(Exception e) {
 			System.out.println("Exce : "+ e.getMessage());
+			logger.info("Error Update Computerdao : "+ computer+" => "+e.getMessage());
 		}
 		return false;
 	}
@@ -202,14 +224,18 @@ public class ComputerDAO {
 			while (rs.next()) {
 				list.add(mapResultSetToObject(rs));
 			}
+			logger.info("Succes pagination Computerdao");
 			rs.close();
 			connec.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.info("Error Pagination Computerdao : "+e.getMessage());
+
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.info("Error 2 Pagination Computerdao : "+e.getMessage());
 		}
 		return list;
 	}
@@ -228,9 +254,11 @@ public class ComputerDAO {
 			}
 			rs.close();
 			connec.close();
+			logger.info("Success Count Computerdao ");
+
 			return count;
 		} catch (Exception e) {
-			// System.out.println("Lo l"+e.getMessage());
+			logger.info("Error Count Computerdao : "+e.getMessage());
 		}
 		return null;
 	}

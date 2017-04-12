@@ -22,7 +22,7 @@ public class ListCompaniesPage extends Pageable<Company> {
 
 	@Override
 	public void printLine(int trueLine, int i) {
-		System.out.println((trueLine) + "\t" + list.get(i).getName());
+		System.out.println((trueLine) + "\t" + list.get(i).getName()+" / Id : "+list.get(i).getId());
 
 	}
 
@@ -42,13 +42,14 @@ public class ListCompaniesPage extends Pageable<Company> {
 	}
 
 	@Override
-	public void showDetailFor(int id) {
+	public void selected(int id) {
 		// On regarde si on a deja le computer dans la liste, et si non, on va le chercher en base des companies
 		List<Company> filterId = list.stream().filter(e -> e.getId() == id).collect(Collectors.toList());
 		if (filterId.size() > 0) {
 			this.app.pushPage(new DetailCompany(app, filterId.get(0)));
 		} else {
-			this.app.pushPage(new DetailCompany(app, CommonServices.getCompany(id)));
+			Company tmp = CommonServices.getCompany(id);
+			if(tmp != null) this.app.pushPage(new DetailCompany(app, tmp));
 		}
 	}
 

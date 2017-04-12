@@ -90,7 +90,7 @@ public class ListComputerPage extends Pageable<Computer> {
 	}
 
 	@Override
-	public void showDetailFor(int id) {
+	public void selected(int id) {
 		
 		// On regarde si on a deja le computer dans la liste, et si non, on va le chercher en base des computer
 		List<Computer> filterId = list.stream().filter(e -> e.getId() == id).collect(Collectors.toList());

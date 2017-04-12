@@ -72,7 +72,8 @@ public class DetailComputer extends Page {
 	}
 
 	private void handleEnterpriseSwitchId() {
-		CommonServices.updateComputerEnterpriseId(computer);
+		this.app.pushPage(new ListCompaniesPageForm(app, computer));
+		//CommonServices.updateComputerEnterpriseId(computer);
 	}
 	
 

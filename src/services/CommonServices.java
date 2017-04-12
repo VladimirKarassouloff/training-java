@@ -135,8 +135,10 @@ public class CommonServices {
 		CommonServices.updateComputer(computer);
 	}
 
+	
+	
 	public static void updateComputerEnterpriseId(Computer computer) {
-
+/*
 		System.out.println("Choisissez une marque parmis les suivantes");
 		List<Company> listCompanies = CompanyDAO.getAll();
 		int i = 0;
@@ -157,7 +159,7 @@ public class CommonServices {
 		} catch (Exception e) {
 			System.out.println("Erreur lors de l'assignation de l'entreprise");
 		}
-		
+		*/
 	}
 	
 

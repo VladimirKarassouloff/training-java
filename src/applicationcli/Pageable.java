@@ -88,7 +88,7 @@ public abstract class Pageable<T> extends Page {
 		} else {
 			// On test si l'utilisateur essaye d'acceder au detail de la liste
 			try {
-				showDetailFor(Integer.parseInt(command));
+				selected(Integer.parseInt(command));
 			} catch (Exception e) {
 				otherCommands(command);
 			}
@@ -96,7 +96,7 @@ public abstract class Pageable<T> extends Page {
 
 	}
 	
-	public abstract void showDetailFor(int id);
+	public abstract void selected(int id);
 
 	public abstract void otherCommands(String command);
 

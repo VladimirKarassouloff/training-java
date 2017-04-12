@@ -5,6 +5,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 
@@ -12,6 +15,10 @@ import model.Company;
 
 public class CompanyDAO {
 
+	 private static final Logger logger = LoggerFactory.getLogger(CompanyDAO.class);
+
+	
+	
 	private static String TABLE_NAME = "company";
 	private static String COL_COMPANY_ID = "id";
 	private static String COL_COMPANY_NAME = "name";
@@ -28,14 +35,19 @@ public class CompanyDAO {
 			while (rs.next()) {
 				list.add(mapResultSetToObject(rs));
 			}
+			logger.info("Succes getAll CompanyDAO");
 			rs.close();
 			connec.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.info("Error getAll CompanyDAO : "+e.getMessage());
+
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.info("Error getAll CompanyDAO : "+e.getMessage());
+
 		}
 		return list;
 
@@ -56,12 +68,16 @@ public class CompanyDAO {
 			}
 			rs.close();
 			connec.close();
+			if(obj != null) logger.info("Succes getById CompanyDAO => id = "+id);
+			else logger.info("Succes getById CompanyDAO => null value => id = "+id);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.info("Error getById CompanyDAO : "+e.getMessage()+" => id = "+id);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.info("Error getbyId 2 CompanyDAO : "+e.getMessage()+" => id = "+id);
 		}
 		return obj;
 	}
@@ -84,9 +100,10 @@ public class CompanyDAO {
 			int resExec = statement.executeUpdate();
 			statement.close();
 			connec.close();
+			logger.info("Succes Update CompanyDAO "+ company);
 			return resExec != 0;
 		} catch (Exception e) {
-			System.out.println("Exce : " + e.getMessage());
+			logger.info("Error Update CompanyDAO : "+e.getMessage()+" "+company);
 		}
 		return false;
 	}
@@ -105,9 +122,11 @@ public class CompanyDAO {
 			}
 			rs.close();
 			connec.close();
+			logger.info("Succes getCOunt CompanyDAO ");
 			return count;
 		} catch (Exception e) {
 			// System.out.println("Lo l"+e.getMessage());
+			logger.info("Error getCount CompanyDAO : "+e.getMessage());
 		}
 		return null;
 	}
@@ -125,14 +144,19 @@ public class CompanyDAO {
 			while (rs.next()) {
 				list.add(mapResultSetToObject(rs));
 			}
+			logger.info("Succes getPagination CompanyDAO ");
+
 			rs.close();
 			connec.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.info("Error getPagination CompanyDAO : "+e.getMessage());
+
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.info("Error 2 getPagination CompanyDAO : "+e.getMessage());
 		}
 		return list;
 	}
