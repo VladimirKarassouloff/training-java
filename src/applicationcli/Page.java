@@ -1,9 +1,6 @@
 package applicationcli;
 
-import java.util.Date;
 import java.util.Scanner;
-
-import utils.Format;
 
 public abstract class Page {
 

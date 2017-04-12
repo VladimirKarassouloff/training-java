@@ -2,12 +2,14 @@ package applicationcli;
 
 import java.util.List;
 
-public abstract class Pageable extends Page {
+public abstract class Pageable<T> extends Page {
 
 	protected int currentPage;
 	protected int numberItemPage;
 	protected int countItemTotal;
 
+	protected List<T> list;
+	
 	public Pageable(Application app, int numberItemPage) {
 		super(app);
 		this.currentPage = 0;

@@ -4,12 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import model.Company;
-import model.Computer;
 import services.CommonServices;
 
-public class ListCompaniesPage extends Pageable {
-
-	protected List<Company> list;
+public class ListCompaniesPage extends Pageable<Company> {
 
 	public ListCompaniesPage(Application app) {
 		super(app, 8);

@@ -1,9 +1,5 @@
 package applicationcli;
 
-import java.util.Date;
-import java.util.List;
-
-import model.Company;
 import model.Computer;
 import services.CommonServices;
 import utils.Format;

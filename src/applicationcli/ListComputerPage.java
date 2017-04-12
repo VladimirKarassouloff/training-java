@@ -1,17 +1,14 @@
 package applicationcli;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import model.Company;
 import model.Computer;
-import persistence.CompanyDAO;
 import services.CommonServices;
 
-public class ListComputerPage extends Pageable {
+public class ListComputerPage extends Pageable<Computer> {
 
-	protected List<Computer> list;
+	//protected List<Computer> list;
 
 	public ListComputerPage(Application app) {
 		super(app, 8);
