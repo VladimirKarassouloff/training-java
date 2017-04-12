@@ -130,5 +130,17 @@ public class CommonServices {
 		}
 		
 	}
+	
+	public static void updateCompanyName(Company company) {
+		System.out.println("Entrez le nouveau nom");
+		company.setName(input.nextLine());
+		CommonServices.updateCompany(company);
+	}
+
+	public static void updateComputerName(Computer computer) {
+		System.out.println("Entrez le nouveau nom");
+		computer.setName(input.nextLine());
+		CommonServices.updateComputer(computer);
+	}
 
 }

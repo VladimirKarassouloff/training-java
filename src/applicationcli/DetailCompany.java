@@ -23,9 +23,7 @@ public class DetailCompany extends Page {
 	public void computeCommand(String command) {
 		
 		if(command.equals("1")) {
-			System.out.println("Entrez le nouveau nom");
-			company.setName(input.nextLine());
-			CommonServices.updateCompany(company);
+			CommonServices.updateCompanyName(company);
 		} else if(command.equals("exit")) {
 			app.popPage();
 		} else {

@@ -64,9 +64,7 @@ public class DetailComputer extends Page {
 	
 	
 	private void handleNewName() {
-		System.out.println("Entrez le nouveau nom");
-		computer.setName(input.nextLine());
-		CommonServices.updateComputer(computer);
+		CommonServices.updateComputerName(computer);
 	}
 
 	private void handleDateSwitchIntroduced() {
