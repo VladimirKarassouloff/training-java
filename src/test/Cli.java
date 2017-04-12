@@ -16,6 +16,14 @@ public class Cli {
 		
 		try {
 			Class.forName(Connector.JDBC_DRIVER);
+			
+			
+			System.out.println("Insert Computer");
+			Computer comp = new Computer(CompanyDAO.getById(2), "mdr 2.0", new Date(), new Date());
+			System.out.println(ComputerDAO.insert(comp));
+
+			 
+			
 			Application app = new Application();
 			app.run();
 			

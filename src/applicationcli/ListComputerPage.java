@@ -2,49 +2,49 @@ package applicationcli;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import model.Company;
 import model.Computer;
+import persistence.CompanyDAO;
 import services.CommonServices;
 
 public class ListComputerPage extends Pageable {
 
 	protected List<Computer> list;
 
-	public ListComputerPage(Application app, List<Computer> list) {
-		super(app,8);
-		this.list = list;
+	public ListComputerPage(Application app) {
+		super(app, 8);
 	}
-
-	
 
 	@Override
 	public void printHeader() {
 		System.out.println("---- Liste des ordinateurs ----");
-		System.out.println("{numero_de_ligne} : voir le détail par numero de ligne");
+		System.out.println("{id} : voir le détail par id");
 		System.out.println("c : creer un ordinateur");
 		System.out.println("d : supprimer un ordinateur");
 		System.out.println("exit : revenir");
-		
+
 	}
 
 	@Override
-	public void printLine(int i) {
-		System.out.println((i + 1) + "\t" + list.get(i).getName());
+	public void printLine(int trueLine, int i) {
+		System.out.println(trueLine + "\tName : " + list.get(i).getName() + " // Id : " + list.get(i).getId());
 	}
-	
-	
-	
 
 	public void handleDeletion() {
-		System.out.println("Entrez le numero de ligne de l'ordinateur a supprimer");
+		System.out.println("Entrez le numero l'id de l'ordinateur a supprimer");
 		try {
-			int lineDelete = Integer.parseInt(input.nextLine()) - 1;
-			Computer comp = list.get(lineDelete);
+			int idDelete = Integer.parseInt(input.nextLine());
+			Computer comp = CommonServices.getComputer(idDelete);
 			if (comp == null)
-				throw new Exception("Ligne invalide");
+				throw new Exception("Id invalide");
 			else if (CommonServices.deleteComputer(comp)) {
-				System.out.println("Suppression de la liste : " + this.list.remove(comp));
+				countItemTotal--;
+				if (!checkPageIsCorrect())
+					orderFetchNewDataForPage();
+				// System.out.println("Suppression de la liste : " +
+				// this.list.remove(comp));
 				System.out.println("Suppression reussie");
 			} else {
 				throw new Exception("impossible de supprimer cet element");
@@ -55,29 +55,20 @@ public class ListComputerPage extends Pageable {
 	}
 
 	public void handleCreation() {
-		
-		try {
-			CommonServices.createComputer();
-		} catch (Exception e) {
-			//System.out.println("Erreur lors de la creation d'un nouvel ordinateur");
-		}
-	}
 
-	@Override
-	protected int delegateDataSourceSizePageable() {
-		return this.list.size();
+		try {
+			if (CommonServices.createComputer() != null) {
+				this.countItemTotal++;
+				this.orderFetchNewDataForPage();
+			}
+		} catch (Exception e) {
+			// System.out.println("Erreur lors de la creation d'un nouvel
+			// ordinateur");
+		}
 	}
 
 	@Override
 	public void otherCommands(String command) {
-		try {
-			// Dans le choix on commence l'index a 1 et non a 0
-			int id = Integer.parseInt(command) - 1;
-			this.app.pushPage(new DetailComputer(app, list.get(id)));
-			return;
-		} catch (Exception e) {
-			// System.out.println("Erreur parsing du int");
-		}
 
 		if (command.equals("c")) {
 			handleCreation();
@@ -88,9 +79,30 @@ public class ListComputerPage extends Pageable {
 		} else {
 			System.out.println("Non reconnu");
 		}
-		
+
 	}
 
-	
+	@Override
+	protected void orderFetchNewDataForPage() {
+		this.list = CommonServices.getPagedComputer(currentPage, numberItemPage);
+	}
+
+	@Override
+	protected int orderFetchDataCountPageable() {
+		return CommonServices.getCountComputer();
+	}
+
+	@Override
+	public void showDetailFor(int id) {
+		
+		// On regarde si on a deja le computer dans la liste, et si non, on va le chercher en base des computer
+		List<Computer> filterId = list.stream().filter(e -> e.getId() == id).collect(Collectors.toList());
+		if (filterId.size() > 0) {
+			this.app.pushPage(new DetailComputer(app, filterId.get(0)));
+		} else {
+			this.app.pushPage(new DetailComputer(app, CommonServices.getComputer(id)));
+		}
+		
+	}
 
 }

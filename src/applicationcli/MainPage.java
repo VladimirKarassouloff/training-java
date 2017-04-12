@@ -28,9 +28,9 @@ public class MainPage extends Page {
 	public void computeCommand(String command) {
 		
 		if(command.equals("1")) {
-			app.pushPage(new ListCompaniesPage(app, CommonServices.getCompanies()));
+			app.pushPage(new ListCompaniesPage(app));
 		} else if (command.equals("2")) {
-			app.pushPage(new ListComputerPage(app, ComputerDAO.getAll()));
+			app.pushPage(new ListComputerPage(app));
 		} else if(command.equals("exit")) {
 			app.popPage();
 		} else {

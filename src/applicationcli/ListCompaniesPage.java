@@ -1,21 +1,20 @@
 package applicationcli;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import model.Company;
+import model.Computer;
+import services.CommonServices;
 
 public class ListCompaniesPage extends Pageable {
 
-
 	protected List<Company> list;
-	
-	public ListCompaniesPage(Application app, List<Company> list) {
-		super(app,8);
-		this.list = list;
+
+	public ListCompaniesPage(Application app) {
+		super(app, 8);
 	}
 
-	
-	
 	@Override
 	public void printHeader() {
 		System.out.println("---- Liste des entreprises ----");
@@ -25,36 +24,35 @@ public class ListCompaniesPage extends Pageable {
 	}
 
 	@Override
-	public void printLine(int i) {
-		System.out.println((i+1)+"\t"+list.get(i).getName());
-		
+	public void printLine(int trueLine, int i) {
+		System.out.println((trueLine) + "\t" + list.get(i).getName());
+
 	}
-	
 
 	@Override
-	protected int delegateDataSourceSizePageable() {
-		return this.list.size();
+	protected int orderFetchDataCountPageable() {
+		return CommonServices.getCountCompany();
 	}
 
 	@Override
 	public void otherCommands(String command) {
-		try{
-			int id = Integer.parseInt(command);
-			// Dans le choix on commence l'index a 1 et non a 0
-			id--; 
-			this.app.pushPage(new DetailCompany(app, list.get(id)));
-			return;
-		} catch(Exception e) {
-			//System.out.println("Erreur parsing du int");
-		}
 		
-		if(command.equals("exit")) {
-			app.popPage();
-		} else {
-			System.out.println("Non reconnu");
-		}
 	}
 
-	
+	@Override
+	protected void orderFetchNewDataForPage() {
+		this.list = CommonServices.getPagedCompany(currentPage, numberItemPage);
+	}
+
+	@Override
+	public void showDetailFor(int id) {
+		// On regarde si on a deja le computer dans la liste, et si non, on va le chercher en base des companies
+		List<Company> filterId = list.stream().filter(e -> e.getId() == id).collect(Collectors.toList());
+		if (filterId.size() > 0) {
+			this.app.pushPage(new DetailCompany(app, filterId.get(0)));
+		} else {
+			this.app.pushPage(new DetailCompany(app, CommonServices.getCompany(id)));
+		}
+	}
 
 }

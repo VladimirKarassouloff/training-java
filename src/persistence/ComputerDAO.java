@@ -187,6 +187,53 @@ public class ComputerDAO {
 		}
 		return false;
 	}
+	
+	
+	public static List<Computer> getPagination(int page, int numberOfResults) {
+		List<Computer> list = new ArrayList<Computer>();
+
+		try {
+			String selectSQL = "SELECT * FROM " + ComputerDAO.TABLE_NAME + " LIMIT " + numberOfResults + " OFFSET "
+					+ (page * numberOfResults);
+			Connector c = Connector.getInstance();
+			Connection connec = (Connection) c.getDBConnection();
+			PreparedStatement preparedStatement = (PreparedStatement) connec.prepareStatement(selectSQL);
+			ResultSet rs = preparedStatement.executeQuery(selectSQL);
+			while (rs.next()) {
+				list.add(mapResultSetToObject(rs));
+			}
+			rs.close();
+			connec.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	public static Integer getCount() {
+		try {
+			String sqlCount = "SELECT Count(*) FROM " + ComputerDAO.TABLE_NAME;
+			Connector c = Connector.getInstance();
+			Connection connec = c.getDBConnection();
+			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(sqlCount);
+			ResultSet rs = statement.executeQuery();
+			Integer count = null;
+			if (rs.next()) {
+				count = rs.getInt(1);
+				System.out.println();
+			}
+			rs.close();
+			connec.close();
+			return count;
+		} catch (Exception e) {
+			// System.out.println("Lo l"+e.getMessage());
+		}
+		return null;
+	}
 
 
 }

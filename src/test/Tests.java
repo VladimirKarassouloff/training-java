@@ -67,6 +67,12 @@ public class Tests {
 
 			System.out.println("Get des 10-20 premieres company Company");
 			System.out.println(CompanyDAO.getPagination(1, 10));
+			
+			System.out.println("Get des 0-10 premieres computer Computer");
+			System.out.println(ComputerDAO.getPagination(0, 10));
+			
+			System.out.println("Get des 0-20 premieres computer Computer");
+			System.out.println(ComputerDAO.getPagination(0, 20));
 
 			
 		} catch (ClassNotFoundException e) {

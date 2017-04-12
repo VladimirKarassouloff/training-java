@@ -14,10 +14,18 @@ public class CommonServices {
 
 	public static Scanner input = new Scanner(System.in);
 
-	
+	///// COMPANY
 	
 	public static List<Company> getCompanies() {
 		return CompanyDAO.getAll();
+	}
+	
+	public static List<Company> getPagedCompany(int page, int numberItem){
+		return CompanyDAO.getPagination(page, numberItem);
+	}
+	
+	public static int getCountCompany() {
+		return CompanyDAO.getCount();
 	}
 
 	public static Company getCompany(int id) {
@@ -27,9 +35,30 @@ public class CommonServices {
 	public static boolean updateCompany(Company company) {
 		return CompanyDAO.update(company);
 	}
+	
+
+	public static void updateCompanyName(Company company) {
+		System.out.println("Entrez le nouveau nom");
+		company.setName(input.nextLine());
+		CommonServices.updateCompany(company);
+	}
+	
+	
+	
+	
+	////COMPUTER
+	
 
 	public static List<Computer> getComputers() {
 		return ComputerDAO.getAll();
+	}
+	
+	public static List<Computer> getPagedComputer(int page, int numberItem){
+		return ComputerDAO.getPagination(page, numberItem);
+	}
+
+	public static int getCountComputer() {
+		return ComputerDAO.getCount();
 	}
 
 	public static Computer getComputer(int id) {
@@ -131,11 +160,6 @@ public class CommonServices {
 		
 	}
 	
-	public static void updateCompanyName(Company company) {
-		System.out.println("Entrez le nouveau nom");
-		company.setName(input.nextLine());
-		CommonServices.updateCompany(company);
-	}
 
 	public static void updateComputerName(Computer computer) {
 		System.out.println("Entrez le nouveau nom");
