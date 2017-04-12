@@ -31,8 +31,7 @@ public class ComputerDAO {
 	public static String COL_COMPUTERDISCONTINUED = "discontinued";
 	public static String COL_COMPUTER_COMPANY_ID = "company_id";
 
-	// Comme on construit l'object company pour chaque computer, on évite d'aller en base récuperer 
-	// une Company pour chaque Computer
+	// Comme on construit l'object company pour chaque computer, on évite d'aller en base récuperer une Company pour chaque Computer
 	public static HashMap<Integer, Company> cacheCompany = new HashMap<>();
 	
 	public static List<Computer> getAll() {
@@ -45,20 +44,25 @@ public class ComputerDAO {
 			Connection connec = c.getDBConnection();
 			PreparedStatement preparedStatement = (PreparedStatement) connec.prepareStatement(selectSQL);
 			ResultSet rs = preparedStatement.executeQuery(selectSQL);
+			
 			while (rs.next()) {
 				list.add(mapResultSetToObject(rs));
 			}
+			
 			logger.info("Succes getAll computerdao");
 			rs.close();
 			connec.close();
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+
 			logger.info("Erreur getAll computerdao : "+ e.getMessage());
 			e.printStackTrace();
+			
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+
 			logger.info("Erreur getAll computerdao : "+ e.getMessage());
 			e.printStackTrace();
+			
 		}
 		cacheCompany.clear();
 		return list;
@@ -69,26 +73,33 @@ public class ComputerDAO {
 		cacheCompany.clear();
 		Computer obj = null;
 		try {
+			
 			String selectSQL = "SELECT * FROM " + ComputerDAO.TABLE_NAME + " WHERE " + ComputerDAO.TABLE_NAME + "."
 					+ ComputerDAO.COL_COMPUTER_ID + "=" + id;
+			
 			Connector c = Connector.getInstance();
 			Connection connec = c.getDBConnection();
 			PreparedStatement preparedStatement = (PreparedStatement) connec.prepareStatement(selectSQL);
 			ResultSet rs = preparedStatement.executeQuery(selectSQL);
+			
 			if (rs.next()) {
 				obj = mapResultSetToObject(rs);
 			}
+			
 			logger.info("Succes getbyid computerdao");
 			rs.close();
 			connec.close();
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			
         	logger.info("Erreur sql get by id : "+ e.getMessage());
 			e.printStackTrace();
+			
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+			
         	logger.info("Erreur get by id computerdao : "+ e.getMessage());
 			e.printStackTrace();
+			
 		}
 		cacheCompany.clear();
 		return obj;
@@ -156,7 +167,6 @@ public class ComputerDAO {
 			logger.info("Succes delete "+id+" computerdao");
 			return resultExec != 0;
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
 			logger.info("Error delete Computerdao "+id+" : "+e.getMessage());
 			e.printStackTrace();
 		}
@@ -177,7 +187,6 @@ public class ComputerDAO {
 		}
 		else if(ComputerDAO.cacheCompany.get(companyId) != null) {
 			company = ComputerDAO.cacheCompany.get(companyId);
-			// System.out.println("Recuperation d'une Company depuis le cache");
 		} else {
 			company = CompanyDAO.getById(companyId);
 			cacheCompany.put(companyId, company);
@@ -194,6 +203,7 @@ public class ComputerDAO {
 					+ComputerDAO.COL_COMPUTERDISCONTINUED+" = "+Format.quotedOrNull(computer.getDiscontinued())+", "
 					+ComputerDAO.COL_COMPUTER_COMPANY_ID+ " = "+(computer.getCompany() == null ? "NULL" : "'"+computer.getCompany().getId()+"'") +" "
 					+ "WHERE "+ComputerDAO.COL_COMPUTER_ID+"="+computer.getId();
+			
 			Connector c = Connector.getInstance();
 			Connection connec = c.getDBConnection();
 			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(sqlUpdate);
@@ -203,9 +213,12 @@ public class ComputerDAO {
 			connec.close();
 			logger.info("Succes Update Computerdao : "+ computer);
 			return resultExec != 0;
+			
 		} catch(Exception e) {
+			
 			System.out.println("Exce : "+ e.getMessage());
 			logger.info("Error Update Computerdao : "+ computer+" => "+e.getMessage());
+			
 		}
 		return false;
 	}
@@ -213,50 +226,59 @@ public class ComputerDAO {
 	
 	public static List<Computer> getPagination(int page, int numberOfResults) {
 		List<Computer> list = new ArrayList<Computer>();
+		cacheCompany.clear();
 
 		try {
 			String selectSQL = "SELECT * FROM " + ComputerDAO.TABLE_NAME + " LIMIT " + numberOfResults + " OFFSET "
 					+ (page * numberOfResults);
+			
 			Connector c = Connector.getInstance();
 			Connection connec = (Connection) c.getDBConnection();
 			PreparedStatement preparedStatement = (PreparedStatement) connec.prepareStatement(selectSQL);
 			ResultSet rs = preparedStatement.executeQuery(selectSQL);
+			
 			while (rs.next()) {
 				list.add(mapResultSetToObject(rs));
 			}
+			
 			logger.info("Succes pagination Computerdao");
 			rs.close();
 			connec.close();
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			logger.info("Error Pagination Computerdao : "+e.getMessage());
 
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			logger.info("Error 2 Pagination Computerdao : "+e.getMessage());
 		}
+		
+		cacheCompany.clear();
 		return list;
 	}
 	
 	public static Integer getCount() {
 		try {
+			
 			String sqlCount = "SELECT Count(*) FROM " + ComputerDAO.TABLE_NAME;
+			
 			Connector c = Connector.getInstance();
 			Connection connec = c.getDBConnection();
 			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(sqlCount);
 			ResultSet rs = statement.executeQuery();
 			Integer count = null;
+			
 			if (rs.next()) {
 				count = rs.getInt(1);
 				System.out.println();
 			}
+			
 			rs.close();
 			connec.close();
 			logger.info("Success Count Computerdao ");
-
 			return count;
+			
 		} catch (Exception e) {
 			logger.info("Error Count Computerdao : "+e.getMessage());
 		}

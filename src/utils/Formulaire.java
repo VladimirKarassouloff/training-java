@@ -9,21 +9,22 @@ public class Formulaire {
 	public static Scanner input = new Scanner(System.in);
 	
 	public static Date reclaimDateOrNullInput() {
+		
 		while(true) {
+			
 			String inputUser = input.nextLine();
-			if(inputUser.toLowerCase().equals("null")) {
-				return null;
-			} else {
+			
+			if(inputUser.toLowerCase().equals("null")) return null;
+			else {
+				
 				try {
 					Date d = Format.dateFromString(inputUser);
-					//if(d.getYear() < 1971 || d.getYear() > 2030) throw new Exception("Annee invalide");
-					/*else*/ if(d != null) return d;
-					else {
-						System.out.println("Date invalide");
-					}
+					if(d != null) return d;
+					else System.out.println("Date invalide");
 				} catch(Exception e){
 					System.out.println("Date invalide");
 				}
+				
 			}
 			
 		}
@@ -31,7 +32,9 @@ public class Formulaire {
 	
 	
 	public static Integer reclaimIntInputBetweenRange(int startRange, int endRange) {
+		
 		while(true) {
+			
 			try{
 				int inputInt = input.nextInt();
 				if(inputInt >= startRange && inputInt <= endRange) {
@@ -43,11 +46,15 @@ public class Formulaire {
 			} catch(Exception e) {
 				System.out.println();
 			}
+			
 		}
+		
 	}
 	
 	public static Integer reclaimIntOrNullInputBetweenRange(int startRange, int endRange) {
+		
 		while(true) {
+			
 			Integer i = reclaimIntOrNullInput();
 			if(i == null) {
 				return null;
@@ -57,11 +64,14 @@ public class Formulaire {
 			} else {
 				System.out.println("La valeur devrait etre entre "+startRange+" et "+endRange);
 			}
+			
 		}
 	}
 	
 	public static Integer reclaimIntOrNullInput() {
+		
 		while(true) {
+			
 			String inputUser = input.nextLine();
 			if(inputUser.toLowerCase().equals("null")) {
 				return null;

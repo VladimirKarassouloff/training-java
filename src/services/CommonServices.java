@@ -117,32 +117,7 @@ public class CommonServices {
 	}
 
 	
-	
-	public static void updateComputerEnterpriseId(Computer computer) {
-/*
-		System.out.println("Choisissez une marque parmis les suivantes");
-		List<Company> listCompanies = CompanyDAO.getAll();
-		int i = 0;
-		StringBuilder sb = new StringBuilder();
-		while(i < listCompanies.size()) {
-			sb.append((i+1)+"\t"+listCompanies.get(i).getName()+"\n");
-			i++;
-		}
-		System.out.println(sb.toString());
-		try {
-			Integer newComp = Formulaire.reclaimIntOrNullInputBetweenRange(1, listCompanies.size());
-			if(newComp == null) {
-				computer.setCompany(null);
-			} else {
-				computer.setCompany(listCompanies.get(newComp - 1));
-			}				
-			CommonServices.updateComputer(computer);
-		} catch (Exception e) {
-			System.out.println("Erreur lors de l'assignation de l'entreprise");
-		}
-		*/
-	}
-	
+
 
 	public static void updateComputerName(Computer computer) {
 		System.out.println("Entrez le nouveau nom");

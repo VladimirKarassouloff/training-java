@@ -30,12 +30,12 @@ public class Application {
 		
         Scanner input = new Scanner(System.in);
         String command = null;
+        
         do
 		 {
-			//System.out.println("Printed : "+ command);
 			if(command != null) pages.peek().computeCommand(command);
 			if(pages.size() > 0) pages.peek().printPageInfos();
-			//if(pages.peek() == null) break;
+			
 		} while(this.pages.size() > 0 && (command = input.next()) != null);
 		
 	}

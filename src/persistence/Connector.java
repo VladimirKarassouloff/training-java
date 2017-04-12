@@ -15,14 +15,10 @@ public final class Connector {
 
 	private static Connector connector = null;
 
-	private Connector() {
-
-	}
+	private Connector() {}
 
 	public static Connector getInstance() {
-		if (connector == null) {
-			connector = new Connector();
-		}
+		if (connector == null) connector = new Connector();
 		return connector;
 	}
 	
@@ -32,10 +28,6 @@ public final class Connector {
 		return (Connection) DriverManager.getConnection(Connector.DB_URL, Connector.USER, Connector.PASS);
 	}
 
-	/*public void execute(PreparedStatement query) throws SQLException {
-		Connection c = this.getDBConnection();
-		ResultSet rs = query.executeQuery();
-		
-	}*/
+
 
 }

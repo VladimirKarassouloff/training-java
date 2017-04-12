@@ -43,8 +43,7 @@ public class ListComputerPage extends Pageable<Computer> {
 				countItemTotal--;
 				if (!checkPageIsCorrect())
 					orderFetchNewDataForPage();
-				// System.out.println("Suppression de la liste : " +
-				// this.list.remove(comp));
+
 				System.out.println("Suppression reussie");
 			} else {
 				throw new Exception("impossible de supprimer cet element");
@@ -57,13 +56,11 @@ public class ListComputerPage extends Pageable<Computer> {
 	public void handleCreation() {
 
 		try {
-			/*if (CommonServices.createComputer() != null) {
-				this.countItemTotal++;
-				this.orderFetchNewDataForPage();
-			}*/
+
 			isCreatingComputer = true;
 			this.computerCreation = CommonServices.precreateComputer();
 			this.app.pushPage(new ListCompaniesPageForm(app, computerCreation));
+			
 		} catch (Exception e) {
 			// System.out.println("Erreur lors de la creation d'un nouvel
 			// ordinateur");

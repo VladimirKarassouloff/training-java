@@ -18,6 +18,13 @@ public abstract class Pageable<T> extends Page {
 		orderFetchNewDataForPage();
 	}
 
+	
+	/**
+	 * afafafaef
+	 * @return azeazea
+	 * @param test
+	 * @param ldkflmslm 
+	 */
 	protected boolean checkPageIsCorrect() {
 		// Verification que l'on se trouve a une page correcte
 		if (currentPage > getLastPage()) {
@@ -42,11 +49,8 @@ public abstract class Pageable<T> extends Page {
 
 	protected int getLastPage() {
 		double d = ((double)countItemTotal / (double)numberItemPage);
-		/*System.out.println(d);
-		System.out.println("Et on retourne "+ ((int)d));*/
 		if( d%1 != 0) return (int)d;
 		else return (int)d-1;
-		//return (int)d;
 	}
 	
 	protected abstract int orderFetchDataCountPageable();
