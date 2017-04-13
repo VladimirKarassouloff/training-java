@@ -2,6 +2,7 @@ package applicationcli;
 
 import model.Company;
 import services.CommonServices;
+import utils.Formulaire;
 
 public class DetailCompany extends Page {
 
@@ -23,7 +24,7 @@ public class DetailCompany extends Page {
 	public void computeCommand(String command) {
 		
 		if(command.equals("1")) {
-			CommonServices.updateCompanyName(company);
+			Formulaire.updateCompanyName(company);
 		} else if(command.equals("exit")) {
 			app.popPage();
 		} else {

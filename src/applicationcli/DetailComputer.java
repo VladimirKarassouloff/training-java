@@ -3,6 +3,7 @@ package applicationcli;
 import model.Computer;
 import services.CommonServices;
 import utils.Format;
+import utils.Formulaire;
 
 public class DetailComputer extends Page {
 
@@ -61,15 +62,15 @@ public class DetailComputer extends Page {
 	
 	
 	private void handleNewName() {
-		CommonServices.updateComputerName(computer);
+		Formulaire.updateComputerName(computer);
 	}
 
 	private void handleDateSwitchIntroduced() {
-		CommonServices.updateComputerIntroduced(computer);
+		Formulaire.updateComputerIntroduced(computer);
 	}
 
 	private void handleDateSwitchDiscontinuedDate() {
-		CommonServices.updateComputerDiscontinuedDate(computer);		
+		Formulaire.updateComputerDiscontinuedDate(computer);		
 	}
 
 	private void handleEnterpriseSwitchId() {

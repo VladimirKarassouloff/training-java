@@ -37,11 +37,6 @@ public class CommonServices {
 	}
 	
 
-	public static void updateCompanyName(Company company) {
-		System.out.println("Entrez le nouveau nom");
-		company.setName(Formulaire.input.nextLine());
-		CommonServices.updateCompany(company);
-	}
 	
 	
 	
@@ -69,26 +64,7 @@ public class CommonServices {
 		return ComputerDAO.insert(computer);
 	}
 
-	public static Computer precreateComputer() {
-		// Vars
-		String nameInput;
-		Integer lineChoosen;
-		Date start, end;
-
-		// Form
-		// Nom
-		System.out.println("Entrez le nom");
-		nameInput = Formulaire.input.nextLine();
-		// Date commercial
-		System.out.println("Entrez la date de commercialisation");
-		start = Formulaire.reclaimDateOrNullInput();
-		// Date fin commercial
-		System.out.println("Entrez la date de fin de commercialisation");
-		end = Formulaire.reclaimDateOrNullInput();
-
-		
-		return new Computer(null, nameInput, start, end);
-	}
+	
 
 	
 	
@@ -102,27 +78,5 @@ public class CommonServices {
 		return ComputerDAO.deleteById(comp.getId());
 	}
 
-	public static void updateComputerIntroduced(Computer computer) {
-		System.out.println("Entrez la nouvelle date");
-		Date newDate = Formulaire.reclaimDateOrNullInput();
-		computer.setIntroduced(newDate);
-		CommonServices.updateComputer(computer);
-	}
-
-	public static void updateComputerDiscontinuedDate(Computer computer) {
-		System.out.println("Entrez la nouvelle date");
-		Date newDate = Formulaire.reclaimDateOrNullInput();
-		computer.setDiscontinued(newDate);
-		CommonServices.updateComputer(computer);
-	}
-
 	
-
-
-	public static void updateComputerName(Computer computer) {
-		System.out.println("Entrez le nouveau nom");
-		computer.setName(Formulaire.input.nextLine());
-		CommonServices.updateComputer(computer);
-	}
-
 }

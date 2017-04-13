@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import model.Computer;
 import services.CommonServices;
+import utils.Formulaire;
 
 public class ListComputerPage extends Pageable<Computer> {
 
@@ -58,7 +59,7 @@ public class ListComputerPage extends Pageable<Computer> {
 		try {
 
 			isCreatingComputer = true;
-			this.computerCreation = CommonServices.precreateComputer();
+			this.computerCreation = Formulaire.precreateComputer();
 			this.app.pushPage(new ListCompaniesPageForm(app, computerCreation));
 			
 		} catch (Exception e) {
