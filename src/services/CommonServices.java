@@ -12,9 +12,9 @@ import utils.Formulaire;
 
 public class CommonServices {
 
-	public static Scanner input = new Scanner(System.in);
 
 	///// COMPANY
+	
 	
 	public static List<Company> getCompanies() {
 		return CompanyDAO.getAll();
@@ -39,7 +39,7 @@ public class CommonServices {
 
 	public static void updateCompanyName(Company company) {
 		System.out.println("Entrez le nouveau nom");
-		company.setName(input.nextLine());
+		company.setName(Formulaire.input.nextLine());
 		CommonServices.updateCompany(company);
 	}
 	
@@ -78,7 +78,7 @@ public class CommonServices {
 		// Form
 		// Nom
 		System.out.println("Entrez le nom");
-		nameInput = input.nextLine();
+		nameInput = Formulaire.input.nextLine();
 		// Date commercial
 		System.out.println("Entrez la date de commercialisation");
 		start = Formulaire.reclaimDateOrNullInput();
@@ -121,7 +121,7 @@ public class CommonServices {
 
 	public static void updateComputerName(Computer computer) {
 		System.out.println("Entrez le nouveau nom");
-		computer.setName(input.nextLine());
+		computer.setName(Formulaire.input.nextLine());
 		CommonServices.updateComputer(computer);
 	}
 

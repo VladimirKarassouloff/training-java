@@ -20,10 +20,8 @@ public abstract class Pageable<T> extends Page {
 
 	
 	/**
-	 * afafafaef
-	 * @return azeazea
-	 * @param test
-	 * @param ldkflmslm 
+	 * Assert that current page is above 0 and not superior to getLastPage()
+	 * @return vrai si la page est correct
 	 */
 	protected boolean checkPageIsCorrect() {
 		// Verification que l'on se trouve a une page correcte
@@ -37,6 +35,7 @@ public abstract class Pageable<T> extends Page {
 		return true;
 	}
 
+	
 	@Override
 	public final void printPageInfos() {
 		this.checkPageIsCorrect();
@@ -47,18 +46,39 @@ public abstract class Pageable<T> extends Page {
 		}
 	}
 
+	/** Return the max page depending of the number of item displayed per page and total count of database count
+	 * @return page max
+	 */
 	protected int getLastPage() {
 		double d = ((double)countItemTotal / (double)numberItemPage);
 		if( d%1 != 0) return (int)d;
 		else return (int)d-1;
 	}
 	
+	
+	/**
+	 * Should get the row count from the database 
+	 * @return nombre de lignes
+	 */
 	protected abstract int orderFetchDataCountPageable();
 
+	
+	/**
+	 * Should get new data from database depending of the currentpage
+	 */
 	protected abstract void orderFetchNewDataForPage();
 
+	
+	/**
+	 * 
+	 */
 	public abstract void printHeader();
 
+	/**
+	 * Display an element in the CLI
+	 * @param trueLine refer to the position of the element in the database
+	 * @param i refer to the position of element to display in the list
+	 */
 	public abstract void printLine(int trueLine, int i);
 
 	@Override
@@ -81,6 +101,7 @@ public abstract class Pageable<T> extends Page {
 			} else {
 				System.out.println("Pas de page précédente");
 			}
+			
 		} else if (command.equals("last")) {
 			this.currentPage = getLastPage();
 			orderFetchNewDataForPage();
@@ -100,8 +121,19 @@ public abstract class Pageable<T> extends Page {
 
 	}
 	
+	
+	/**
+	 * Event triggered when user send a number in input
+	 * @param id 
+	 */
 	public abstract void selected(int id);
-
+	
+	
+	/**
+	 * Implementation of command for children of Pageable class
+	 * @param command input from user
+	 */
 	public abstract void otherCommands(String command);
+
 
 }
