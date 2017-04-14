@@ -74,9 +74,31 @@
 				<configuration>
 					<configLocation>${basedir}/src/test/resources/checkstyle/checkstyle.xml</configLocation>
 					<suppressionsLocation>${basedir}/src/test/resources/checkstyle/suppressions.xml</suppressionsLocation>
+					<consoleOutput>true</consoleOutput>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<url>http://localhost:8080/manager/text</url>
+					<server>TomcatServer</server>
+					<path>test</path>
+					<username>root</username>
+					<password>root</password>
 				</configuration>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 

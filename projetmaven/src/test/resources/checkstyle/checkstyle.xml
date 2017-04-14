@@ -196,8 +196,9 @@
     <property name="checkFormat" value="JavadocMethod"/>
   </module>
   <module name="SuppressionFilter">
-    <property name="file" value="suppressions.xml"/>
+    <property name="file" value="src/test/resources/checkstyle/suppressions.xml"/>
   </module>
+
 
 
 </module>
