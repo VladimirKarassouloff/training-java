@@ -1,14 +1,17 @@
 package services;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+import applicationcli.FormulaireCli;
+import mapper.MapperCompany;
+import mapper.MapperComputer;
 import model.Company;
 import model.Computer;
 import persistence.CompanyDAO;
 import persistence.ComputerDAO;
-import utils.Formulaire;
 
 public class CommonServices {
 
@@ -17,11 +20,11 @@ public class CommonServices {
 	
 	
 	public static List<Company> getCompanies() {
-		return CompanyDAO.getAll();
+		return MapperCompany.mapResultSetToObjects(CompanyDAO.getAll());
 	}
 	
 	public static List<Company> getPagedCompany(int page, int numberItem){
-		return CompanyDAO.getPagination(page, numberItem);
+		return MapperCompany.mapResultSetToObjects(CompanyDAO.getPagination(page, numberItem));
 	}
 	
 	public static int getCountCompany() {
@@ -29,7 +32,7 @@ public class CommonServices {
 	}
 
 	public static Company getCompany(int id) {
-		return CompanyDAO.getById(id);
+		return MapperCompany.mapResultSetToObject(CompanyDAO.getById(id));
 	}
 
 	public static boolean updateCompany(Company company) {
@@ -45,11 +48,11 @@ public class CommonServices {
 	
 
 	public static List<Computer> getComputers() {
-		return ComputerDAO.getAll();
+		return MapperComputer.mapResultSetToObjects(ComputerDAO.getAll());
 	}
 	
 	public static List<Computer> getPagedComputer(int page, int numberItem){
-		return ComputerDAO.getPagination(page, numberItem);
+		return MapperComputer.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem));
 	}
 
 	public static int getCountComputer() {
@@ -57,18 +60,13 @@ public class CommonServices {
 	}
 
 	public static Computer getComputer(int id) {
-		return ComputerDAO.getById(id);
+		return MapperComputer.mapResultSetToObject(ComputerDAO.getById(id));
 	}
 
 	public static int addComputer(Computer computer) {
 		return ComputerDAO.insert(computer);
 	}
 
-	
-
-	
-	
-	
 	
 	public static boolean updateComputer(Computer computer) {
 		return ComputerDAO.update(computer);

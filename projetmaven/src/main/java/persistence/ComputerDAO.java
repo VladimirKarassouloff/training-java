@@ -15,6 +15,7 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 
+import mapper.MapperComputer;
 import model.Company;
 import model.Computer;
 import utils.Format;
@@ -34,8 +35,7 @@ public class ComputerDAO {
 	// Comme on construit l'object company pour chaque computer, on évite d'aller en base récuperer une Company pour chaque Computer
 	public static HashMap<Integer, Company> cacheCompany = new HashMap<>();
 	
-	public static List<Computer> getAll() {
-		List<Computer> list = new ArrayList<Computer>();
+	public static ResultSet getAll() {
 		cacheCompany.clear();
 		try {
 
@@ -45,14 +45,9 @@ public class ComputerDAO {
 			PreparedStatement preparedStatement = (PreparedStatement) connec.prepareStatement(selectSQL);
 			ResultSet rs = preparedStatement.executeQuery(selectSQL);
 			
-			while (rs.next()) {
-				list.add(mapResultSetToObject(rs));
-			}
 			
 			logger.info("Succes getAll computerdao");
-			rs.close();
-			connec.close();
-			
+			return rs;
 		} catch (SQLException e) {
 
 			logger.info("Erreur getAll computerdao : "+ e.getMessage());
@@ -65,13 +60,15 @@ public class ComputerDAO {
 			
 		}
 		cacheCompany.clear();
-		return list;
+		return null;
 
 	}
 
-	public static Computer getById(int id) {
+	public static ResultSet getById(int id) {
+		
 		cacheCompany.clear();
-		Computer obj = null;
+		ResultSet obj = null;
+		
 		try {
 			
 			String selectSQL = "SELECT * FROM " + ComputerDAO.TABLE_NAME + " WHERE " + ComputerDAO.TABLE_NAME + "."
@@ -83,13 +80,10 @@ public class ComputerDAO {
 			ResultSet rs = preparedStatement.executeQuery(selectSQL);
 			
 			if (rs.next()) {
-				obj = mapResultSetToObject(rs);
+				obj = rs;
 			}
 			
-			logger.info("Succes getbyid computerdao");
-			rs.close();
-			connec.close();
-			
+			logger.info("Succes getbyid computerdao");			
 		} catch (SQLException e) {
 			
         	logger.info("Erreur sql get by id : "+ e.getMessage());
@@ -108,12 +102,13 @@ public class ComputerDAO {
 
 	public static int insert(Computer computer) {
 		try {
+			cacheCompany.clear();
 			String insertSQL = "INSERT INTO " + ComputerDAO.TABLE_NAME + "(" + COL_COMPUTER_NAME + ","
 					+ COL_COMPUTER_INTRODUCED + "," + COL_COMPUTERDISCONTINUED + "," + COL_COMPUTER_COMPANY_ID + ") "
 					+ "VALUES ('" + computer.getName() + "',"+Format.quotedOrNull(computer.getIntroduced())+","
 					+ Format.quotedOrNull(computer.getDiscontinued())+ "," + (computer.getCompany() != null ? Format.quotedOrNull(computer.getCompany().getId()) : "NULL")
 					+ ")";
-			System.out.println("Insert query : " + insertSQL);
+
 			Connector c = Connector.getInstance();
 			Connection connec = c.getDBConnection();
 			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(insertSQL,Statement.RETURN_GENERATED_KEYS);
@@ -124,15 +119,15 @@ public class ComputerDAO {
 					int newIdGenerated = (int)generatedKeys.getLong(1) ;
 					computer.setId(newIdGenerated);
 					statement.close();
-					connec.close();
 	            	logger.info("Success insert computerdao : "+ computer);
+	            	cacheCompany.clear();
 					return newIdGenerated;
 	            }
 	            else {
 	            	// ??
 	            	logger.info("Erreur insert computerdao : "+ computer);
 	            	statement.close();
-					connec.close();
+					cacheCompany.clear();
 	                return -1;
 	            }
 				
@@ -140,7 +135,7 @@ public class ComputerDAO {
 				// Aucune ligne affectée
             	logger.info("Erreur 2 insert computerdao : "+ computer);
 				statement.close();
-				connec.close();
+				cacheCompany.clear();
 				return -1;
 			}
 			
@@ -150,51 +145,33 @@ public class ComputerDAO {
 			logger.info("Erreur 3 insert computerdao : "+ computer+" => "+e.getMessage());
 		}
     	
-
+		cacheCompany.clear();
 		return -1;
 	}
 
 	public static boolean deleteById(int id) {
+		
 		String deleteSQL = "DELETE FROM "+ComputerDAO.TABLE_NAME+" WHERE "+ComputerDAO.TABLE_NAME+"."+ComputerDAO.COL_COMPUTER_ID+"="+id;
 		Connector c = Connector.getInstance();
 		Connection connec;
+		
 		try {
 			connec = c.getDBConnection();
 			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(deleteSQL);
 			int resultExec = statement.executeUpdate();
 			statement.close();
-			connec.close();
 			logger.info("Succes delete "+id+" computerdao");
 			return resultExec != 0;
 		} catch (ClassNotFoundException | SQLException e) {
 			logger.info("Error delete Computerdao "+id+" : "+e.getMessage());
 			e.printStackTrace();
 		}
+		
 		return false;
 	}
 	
 	
-	public static Computer mapResultSetToObject(ResultSet rs) throws SQLException {
-		int computerId = rs.getInt(ComputerDAO.COL_COMPUTER_ID);
-		int companyId = rs.getInt(ComputerDAO.COL_COMPUTER_COMPANY_ID);
-		String computerName = rs.getString(ComputerDAO.COL_COMPUTER_NAME);
-		Date introduced = rs.getDate(ComputerDAO.COL_COMPUTER_INTRODUCED);
-		Date discontinued = rs.getDate(ComputerDAO.COL_COMPUTERDISCONTINUED);
-		
-		Company company;
-		if(companyId == 0) {
-			company = null;
-		}
-		else if(ComputerDAO.cacheCompany.get(companyId) != null) {
-			company = ComputerDAO.cacheCompany.get(companyId);
-		} else {
-			company = CompanyDAO.getById(companyId);
-			cacheCompany.put(companyId, company);
-		}
-		
-		return new Computer(computerId, company, computerName, introduced, discontinued);
-	}
-
+	
 	public static boolean update(Computer computer) {
 		try {
 			
@@ -210,7 +187,6 @@ public class ComputerDAO {
 			
 			int resultExec = statement.executeUpdate();
 			statement.close();
-			connec.close();
 			logger.info("Succes Update Computerdao : "+ computer);
 			return resultExec != 0;
 			
@@ -224,8 +200,7 @@ public class ComputerDAO {
 	}
 	
 	
-	public static List<Computer> getPagination(int page, int numberOfResults) {
-		List<Computer> list = new ArrayList<Computer>();
+	public static ResultSet getPagination(int page, int numberOfResults) {
 		cacheCompany.clear();
 
 		try {
@@ -237,13 +212,9 @@ public class ComputerDAO {
 			PreparedStatement preparedStatement = (PreparedStatement) connec.prepareStatement(selectSQL);
 			ResultSet rs = preparedStatement.executeQuery(selectSQL);
 			
-			while (rs.next()) {
-				list.add(mapResultSetToObject(rs));
-			}
 			
 			logger.info("Succes pagination Computerdao");
-			rs.close();
-			connec.close();
+			return rs;
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -255,7 +226,7 @@ public class ComputerDAO {
 		}
 		
 		cacheCompany.clear();
-		return list;
+		return null;
 	}
 	
 	public static Integer getCount() {
@@ -271,11 +242,9 @@ public class ComputerDAO {
 			
 			if (rs.next()) {
 				count = rs.getInt(1);
-				System.out.println();
 			}
 			
 			rs.close();
-			connec.close();
 			logger.info("Success Count Computerdao ");
 			return count;
 			

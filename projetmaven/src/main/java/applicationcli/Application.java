@@ -3,6 +3,9 @@ package applicationcli;
 import java.util.Scanner;
 import java.util.Stack;
 
+import applicationcli.pages.MainPage;
+import applicationcli.pages.Page;
+
 public class Application {
 
 	

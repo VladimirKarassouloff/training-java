@@ -14,8 +14,16 @@ public final class Connector {
 	private static final String PASS = "qwerty1234";
 
 	private static Connector connector = null;
-
-	private Connector() {}
+	private Connection connection = null;
+	private Connector() {
+		try {
+			Class.forName(Connector.JDBC_DRIVER);
+			connection = (Connection) DriverManager.getConnection(Connector.DB_URL, Connector.USER, Connector.PASS);
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	public static Connector getInstance() {
 		if (connector == null) connector = new Connector();
@@ -24,8 +32,7 @@ public final class Connector {
 	
 
 	public Connection getDBConnection() throws ClassNotFoundException, SQLException {
-		Class.forName(Connector.JDBC_DRIVER);
-		return (Connection) DriverManager.getConnection(Connector.DB_URL, Connector.USER, Connector.PASS);
+		return connection;
 	}
 
 

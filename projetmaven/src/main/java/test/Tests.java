@@ -1,7 +1,9 @@
 package test;
 
+import java.sql.SQLException;
 import java.util.Date;
 
+import mapper.MapperCompany;
 import model.Computer;
 import persistence.CompanyDAO;
 import persistence.ComputerDAO;
@@ -41,7 +43,7 @@ public class Tests {
 			System.out.println(ComputerDAO.getById(20));
 
 			System.out.println("Insert Computer");
-			Computer comp = new Computer(CompanyDAO.getById(2), "mdr 2.0", new Date(), new Date());
+			Computer comp = new Computer(MapperCompany.mapResultSetToObject(CompanyDAO.getById(2)), "mdr 2.0", new Date(), new Date());
 			System.out.println(ComputerDAO.insert(comp));
 
 			System.out.println();
@@ -76,7 +78,6 @@ public class Tests {
 
 			
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
