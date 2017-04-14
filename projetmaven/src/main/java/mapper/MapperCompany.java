@@ -17,7 +17,6 @@ public class MapperCompany {
 			rs.close();
 			return com;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -31,7 +30,6 @@ public class MapperCompany {
 			}
 			rs.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return list;
@@ -44,7 +42,6 @@ public class MapperCompany {
 			String companyName = rs.getString(CompanyDAO.COL_COMPANY_NAME);
 			return new Company(companyId, companyName);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

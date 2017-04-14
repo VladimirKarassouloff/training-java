@@ -102,7 +102,9 @@ public class ListComputerPage extends Pageable<Computer> {
 		if (filterId.size() > 0) {
 			this.app.pushPage(new DetailComputer(app, filterId.get(0)));
 		} else {
-			this.app.pushPage(new DetailComputer(app, CommonServices.getComputer(id)));
+			Computer idComputer = CommonServices.getComputer(id);
+			if(idComputer != null) this.app.pushPage(new DetailComputer(app, CommonServices.getComputer(id)));
+			else System.out.println("Cet ordinateur n'existe pas");
 		}
 		
 	}

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import applicationcli.FormulaireCli;
+import dto.ComputerDTO;
 import mapper.MapperCompany;
 import mapper.MapperComputer;
 import model.Company;
@@ -50,13 +51,22 @@ public class CommonServices {
 	public static List<Computer> getComputers() {
 		return MapperComputer.mapResultSetToObjects(ComputerDAO.getAll());
 	}
-	
+
 	public static List<Computer> getPagedComputer(int page, int numberItem){
 		return MapperComputer.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem));
 	}
 
+	public static List<ComputerDTO> getPagedComputerDTO(int page, int numberItem){
+		//return MapperComputer.mapResultSetToObjectsDTO(ComputerDAO.getPagination(page, numberItem));
+		return null;
+	}
+
+	public static int getCountComputer(String searchByName) {
+		return ComputerDAO.getCount(searchByName);
+	}
+
 	public static int getCountComputer() {
-		return ComputerDAO.getCount();
+		return ComputerDAO.getCount(null);
 	}
 
 	public static Computer getComputer(int id) {

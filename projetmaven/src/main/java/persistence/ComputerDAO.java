@@ -23,7 +23,6 @@ import utils.Format;
 public class ComputerDAO {
 
 	 private static final Logger logger = LoggerFactory.getLogger(ComputerDAO.class);
-
 	
 	private static String TABLE_NAME = "computer";
 	public static String COL_COMPUTER_ID = "id";
@@ -31,37 +30,45 @@ public class ComputerDAO {
 	public static String COL_COMPUTER_INTRODUCED = "introduced";
 	public static String COL_COMPUTERDISCONTINUED = "discontinued";
 	public static String COL_COMPUTER_COMPANY_ID = "company_id";
+	public static String COL_JOINED_COMPANY_NAME = "company_name";
 
-	// Comme on construit l'object company pour chaque computer, on évite d'aller en base récuperer une Company pour chaque Computer
+
+	////////////////
+	/////Query parts
+	public static String SELECT = "SELECT "+TABLE_NAME+"."+COL_COMPUTER_ID+", "+TABLE_NAME+"."+COL_COMPUTER_NAME+", "+COL_COMPUTER_INTRODUCED+", "+COL_COMPUTERDISCONTINUED+
+			", "+COL_COMPUTER_COMPANY_ID+", "+CompanyDAO.TABLE_NAME+"."+CompanyDAO.COL_COMPANY_NAME+" as "+COL_JOINED_COMPANY_NAME+" FROM "+ ComputerDAO.TABLE_NAME +
+			" LEFT JOIN "+CompanyDAO.TABLE_NAME+" ON "+CompanyDAO.TABLE_NAME+"."+CompanyDAO.COL_COMPANY_ID+
+			"="+ComputerDAO.TABLE_NAME+"."+ComputerDAO.COL_COMPUTER_COMPANY_ID;
+
+	public static String COUNT = "SELECT Count(*) FROM "+ ComputerDAO.TABLE_NAME;
+
+	public static String WHERE_FILTER_ID = " WHERE " + ComputerDAO.TABLE_NAME + "."+ComputerDAO.COL_COMPUTER_ID+"=?";
+
+	public static String DELETE = "DELETE FROM "+ComputerDAO.TABLE_NAME+" WHERE "+ComputerDAO.TABLE_NAME+"."+ComputerDAO.COL_COMPUTER_ID+"=?";
+
+	///////////////////
+	///////////////////
+
+
+
+	// Comme on construit l'object company pour chaque computer, on évite d'aller en base récuperer une Company pour chaque Computer et on fait
+	// pointer les objets computer sur les meme objets company
 	public static HashMap<Integer, Company> cacheCompany = new HashMap<>();
 	
 	public static ResultSet getAll() {
 		cacheCompany.clear();
 		try {
-
-			String selectSQL = "SELECT * FROM " + ComputerDAO.TABLE_NAME;
-			Connector c = Connector.getInstance();
-			Connection connec = c.getDBConnection();
-			PreparedStatement preparedStatement = (PreparedStatement) connec.prepareStatement(selectSQL);
-			ResultSet rs = preparedStatement.executeQuery(selectSQL);
-			
-			
+			PreparedStatement preparedStatement = Connector.getInstance().preparedStatement(SELECT);
+			ResultSet rs = preparedStatement.executeQuery();
 			logger.info("Succes getAll computerdao");
+			cacheCompany.clear();
 			return rs;
 		} catch (SQLException e) {
-
 			logger.info("Erreur getAll computerdao : "+ e.getMessage());
 			e.printStackTrace();
-			
-		} catch (ClassNotFoundException e) {
-
-			logger.info("Erreur getAll computerdao : "+ e.getMessage());
-			e.printStackTrace();
-			
 		}
 		cacheCompany.clear();
 		return null;
-
 	}
 
 	public static ResultSet getById(int id) {
@@ -70,30 +77,14 @@ public class ComputerDAO {
 		ResultSet obj = null;
 		
 		try {
-			
-			String selectSQL = "SELECT * FROM " + ComputerDAO.TABLE_NAME + " WHERE " + ComputerDAO.TABLE_NAME + "."
-					+ ComputerDAO.COL_COMPUTER_ID + "=" + id;
-			
-			Connector c = Connector.getInstance();
-			Connection connec = c.getDBConnection();
-			PreparedStatement preparedStatement = (PreparedStatement) connec.prepareStatement(selectSQL);
-			ResultSet rs = preparedStatement.executeQuery(selectSQL);
-			
-			if (rs.next()) {
-				obj = rs;
-			}
-			
-			logger.info("Succes getbyid computerdao");			
+			PreparedStatement preparedStatement = Connector.getInstance().preparedStatement(SELECT + WHERE_FILTER_ID);
+			System.out.println(SELECT + WHERE_FILTER_ID);
+			preparedStatement.setInt(1,id);
+			obj = preparedStatement.executeQuery();
+			logger.info("Succes getbyid computerdao");
 		} catch (SQLException e) {
-			
         	logger.info("Erreur sql get by id : "+ e.getMessage());
 			e.printStackTrace();
-			
-		} catch (ClassNotFoundException e) {
-			
-        	logger.info("Erreur get by id computerdao : "+ e.getMessage());
-			e.printStackTrace();
-			
 		}
 		cacheCompany.clear();
 		return obj;
@@ -109,9 +100,7 @@ public class ComputerDAO {
 					+ Format.quotedOrNull(computer.getDiscontinued())+ "," + (computer.getCompany() != null ? Format.quotedOrNull(computer.getCompany().getId()) : "NULL")
 					+ ")";
 
-			Connector c = Connector.getInstance();
-			Connection connec = c.getDBConnection();
-			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(insertSQL,Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement statement = Connector.getInstance().preparedStatement(insertSQL,Statement.RETURN_GENERATED_KEYS);
 			
 			if(statement.executeUpdate() != 0) {
 				ResultSet generatedKeys = statement.getGeneratedKeys();
@@ -139,8 +128,7 @@ public class ComputerDAO {
 				return -1;
 			}
 			
-		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
+		} catch (SQLException e) {
 			e.printStackTrace();
 			logger.info("Erreur 3 insert computerdao : "+ computer+" => "+e.getMessage());
 		}
@@ -150,19 +138,15 @@ public class ComputerDAO {
 	}
 
 	public static boolean deleteById(int id) {
-		
-		String deleteSQL = "DELETE FROM "+ComputerDAO.TABLE_NAME+" WHERE "+ComputerDAO.TABLE_NAME+"."+ComputerDAO.COL_COMPUTER_ID+"="+id;
-		Connector c = Connector.getInstance();
-		Connection connec;
-		
+
 		try {
-			connec = c.getDBConnection();
-			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(deleteSQL);
+			PreparedStatement statement = Connector.getInstance().preparedStatement(DELETE);
+			statement.setInt(1, id);
 			int resultExec = statement.executeUpdate();
 			statement.close();
 			logger.info("Succes delete "+id+" computerdao");
 			return resultExec != 0;
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (SQLException e) {
 			logger.info("Error delete Computerdao "+id+" : "+e.getMessage());
 			e.printStackTrace();
 		}
@@ -202,42 +186,31 @@ public class ComputerDAO {
 	
 	public static ResultSet getPagination(int page, int numberOfResults) {
 		cacheCompany.clear();
-
 		try {
-			String selectSQL = "SELECT * FROM " + ComputerDAO.TABLE_NAME + " LIMIT " + numberOfResults + " OFFSET "
-					+ (page * numberOfResults);
-			
-			Connector c = Connector.getInstance();
-			Connection connec = (Connection) c.getDBConnection();
-			PreparedStatement preparedStatement = (PreparedStatement) connec.prepareStatement(selectSQL);
-			ResultSet rs = preparedStatement.executeQuery(selectSQL);
-			
-			
+			System.out.println(SELECT+" LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults));
+			PreparedStatement preparedStatement = Connector.getInstance().preparedStatement(SELECT+" LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults));
+			ResultSet rs = preparedStatement.executeQuery();
 			logger.info("Succes pagination Computerdao");
+			cacheCompany.clear();
 			return rs;
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			logger.info("Error Pagination Computerdao : "+e.getMessage());
-
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			logger.info("Error 2 Pagination Computerdao : "+e.getMessage());
 		}
-		
+
 		cacheCompany.clear();
 		return null;
 	}
-	
-	public static Integer getCount() {
+
+	/***
+	 *
+	 * @param searchByName nullable parameter to research computer by name
+	 * @return count of computer considering filters
+	 */
+	public static Integer getCount(String searchByName) {
 		try {
-			
-			String sqlCount = "SELECT Count(*) FROM " + ComputerDAO.TABLE_NAME;
-			
-			Connector c = Connector.getInstance();
-			Connection connec = c.getDBConnection();
-			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(sqlCount);
-			ResultSet rs = statement.executeQuery();
+			ResultSet rs = Connector.getInstance().preparedStatement(COUNT).executeQuery();
 			Integer count = null;
 			
 			if (rs.next()) {

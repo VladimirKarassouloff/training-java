@@ -14,12 +14,13 @@ import persistence.ComputerDAO;
 public class MapperComputer {
 
 	public static Computer mapResultSetToObject(ResultSet rs) {
-		Computer c = mapResultSetToObjectAux(rs);
+
 		try {
+			rs.next();
+			Computer c = mapResultSetToObjectAux(rs);
 			rs.close();
 			return c;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -29,23 +30,23 @@ public class MapperComputer {
 		List<Computer> list = new ArrayList<Computer>();
 		try {
 			while (rs.next()) {
-				list.add(mapResultSetToObjectAux(rs));
+				list.add(MapperComputer.mapResultSetToObjectAux(rs));
 			}
 			rs.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return list;
 	}
 
-	private static Computer mapResultSetToObjectAux(ResultSet rs) {
+	public static Computer mapResultSetToObjectAux(ResultSet rs) {
 		try {
 			int computerId = rs.getInt(ComputerDAO.COL_COMPUTER_ID);
 			int companyId = rs.getInt(ComputerDAO.COL_COMPUTER_COMPANY_ID);
 			String computerName = rs.getString(ComputerDAO.COL_COMPUTER_NAME);
 			Date introduced = rs.getDate(ComputerDAO.COL_COMPUTER_INTRODUCED);
 			Date discontinued = rs.getDate(ComputerDAO.COL_COMPUTERDISCONTINUED);
+			String companyName = rs.getString(ComputerDAO.COL_JOINED_COMPANY_NAME);
 
 			Company company;
 			if (companyId == 0) {
@@ -53,15 +54,15 @@ public class MapperComputer {
 			} else if (ComputerDAO.cacheCompany.get(companyId) != null) {
 				company = ComputerDAO.cacheCompany.get(companyId);
 			} else {
-				company = MapperCompany.mapResultSetToObject(CompanyDAO.getById(companyId));
+				company = new Company(companyId,companyName);
 				ComputerDAO.cacheCompany.put(companyId, company);
 			}
 			return new Computer(computerId, company, computerName, introduced, discontinued);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
+
 
 }
