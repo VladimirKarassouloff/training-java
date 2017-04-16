@@ -12,11 +12,22 @@ public class ComputerDTO {
     private String companyName;
     private int companyId;
 
-
+    /**
+     * Empty constructor.
+     */
     public ComputerDTO() {
 
     }
 
+    /**
+     * Constructor.
+     * @param name of the computerdto
+     * @param id of the computerdto
+     * @param introduced of the computerdto
+     * @param discontinued of the computerdto
+     * @param companyName of the computerdto
+     * @param companyId of the computerdto
+     */
     public ComputerDTO(String name, int id, String introduced, String discontinued, String companyName, int companyId) {
         this.name = name;
         this.id = id;
