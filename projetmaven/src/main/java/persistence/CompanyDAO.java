@@ -1,168 +1,138 @@
 package persistence;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.mysql.jdbc.PreparedStatement;
+import model.Company;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.PreparedStatement;
-
-import mapper.MapperCompany;
-import model.Company;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class CompanyDAO {
 
-	private static final Logger logger = LoggerFactory.getLogger(CompanyDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDAO.class);
 
-	public static String TABLE_NAME = "company";
-	public static String COL_COMPANY_ID = "id";
-	public static String COL_COMPANY_NAME = "name";
+    public static final String TABLE_NAME = "company";
+    public static final String COL_COMPANY_ID = "id";
+    public static final String COL_COMPANY_NAME = "name";
 
-	public static ResultSet getAll() {
+    ////////////////
+    /////Query parts
 
-		try {
+    public static final String SELECT = "SELECT * FROM " + CompanyDAO.TABLE_NAME;
 
-			String selectSQL = "SELECT * FROM " + CompanyDAO.TABLE_NAME;
-			Connector c = Connector.getInstance();
-			Connection connec = (Connection) c.getDBConnection();
-			PreparedStatement preparedStatement = (PreparedStatement) connec.prepareStatement(selectSQL);		
-			ResultSet rs = preparedStatement.executeQuery(selectSQL);
+    public static final String COUNT = "SELECT Count(*) FROM " + CompanyDAO.TABLE_NAME;
 
+    public static final String WHERE_FILTER_ID = " WHERE " + CompanyDAO.COL_COMPANY_ID + "= ?";
 
-			logger.info("Succes getAll CompanyDAO");
-			return rs;
+    public static final String UPDATE = "UPDATE " + TABLE_NAME + " SET " + CompanyDAO.COL_COMPANY_NAME + "= ?  WHERE "
+            + CompanyDAO.COL_COMPANY_ID + "= ? ";
 
-		} catch (SQLException e) {
+    ///////////////////
+    ///////////////////
 
-			e.printStackTrace();
-			logger.info("Error getAll CompanyDAO : " + e.getMessage());
+    /**
+     * Get all records.
+     * @return resultsetcli
+     */
+    public static ResultSet getAll() {
+        try {
+            ResultSet rs = Connector.getInstance().preparedStatement(SELECT).executeQuery();
+            LOGGER.info("Succes getAll CompanyDAO");
+            return rs;
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.info("Error getAll CompanyDAO : " + e.getMessage());
+        }
+        return null;
+    }
 
-		} catch (ClassNotFoundException e) {
+    /**
+     * Get specific record from DB.
+     * @param id of the record returned
+     * @return resultset
+     */
+    public static ResultSet getById(int id) {
+        ResultSet obj = null;
 
-			e.printStackTrace();
-			logger.info("Error getAll CompanyDAO : " + e.getMessage());
+        try {
+            PreparedStatement preparedStatement = Connector.getInstance().preparedStatement(SELECT + WHERE_FILTER_ID);
+            preparedStatement.setInt(1, id);
+            obj = preparedStatement.executeQuery();
+            if (obj != null) {
+                LOGGER.info("Succes getById CompanyDAO => id = " + id);
+            } else {
+                LOGGER.info("Succes getById CompanyDAO => null value => id = " + id);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            LOGGER.info("Error getById CompanyDAO : " + e.getMessage() + " => id = " + id);
+        }
 
-		}
-		return null;
+        return obj;
+    }
 
-	}
+    /**
+     * Update the company having id = company.id.
+     * @param company attributes used for updating
+     * @return success
+     */
+    public static boolean update(Company company) {
+        try {
+            PreparedStatement preparedStatement = Connector.getInstance().preparedStatement(UPDATE);
+            preparedStatement.setString(1, company.getName());
+            preparedStatement.setInt(2, company.getId());
 
-	public static ResultSet getById(int id) {
-		ResultSet obj = null;
-		try {
-			String selectSQL = "SELECT * FROM " + CompanyDAO.TABLE_NAME + " WHERE " + CompanyDAO.COL_COMPANY_ID + "= ?";
-			
-			Connector c = Connector.getInstance();
-			Connection connec = (Connection) c.getDBConnection();
-			
-			PreparedStatement preparedStatement = (PreparedStatement) connec.prepareStatement(selectSQL);
-			preparedStatement.setInt(1, id);
-			
-			ResultSet rs = preparedStatement.executeQuery();
-			if (rs.next()) {
-				obj = rs;
-			}
+            int resExec = preparedStatement.executeUpdate();
+            preparedStatement.close();
+            LOGGER.info("Succes Update CompanyDAO " + company);
+            return resExec != 0;
+        } catch (Exception e) {
+            LOGGER.info("Error Update CompanyDAO : " + e.getMessage() + " " + company);
+        }
+        return false;
+    }
 
+    /**
+     * Get the number of companies.
+     * @return number
+     */
+    public static Integer getCount() {
+        try {
+            ResultSet rs = Connector.getInstance().preparedStatement(COUNT).executeQuery();
+            Integer count = null;
 
-			if (obj != null)
-				logger.info("Succes getById CompanyDAO => id = " + id);
-			else
-				logger.info("Succes getById CompanyDAO => null value => id = " + id);
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
 
-		} catch (SQLException e) {
+            rs.close();
+            LOGGER.info("Succes getCount CompanyDAO ");
+            return count;
+        } catch (Exception e) {
+            LOGGER.info("Error getCount CompanyDAO : " + e.getMessage());
+        }
 
-			e.printStackTrace();
-			logger.info("Error getById CompanyDAO : " + e.getMessage() + " => id = " + id);
+        return null;
+    }
 
-		} catch (ClassNotFoundException e) {
+    /**
+     * Result set of results.
+     * @param page asked
+     * @param numberOfResults per page
+     * @return resultset
+     */
+    public static ResultSet getPagination(int page, int numberOfResults) {
+        try {
+            ResultSet rs = Connector.getInstance().preparedStatement(SELECT + " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults)).executeQuery();
+            LOGGER.info("Succes getPagination CompanyDAO ");
+            return rs;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            LOGGER.info("Error getPagination CompanyDAO : " + e.getMessage());
+        }
 
-			e.printStackTrace();
-			logger.info("Error getbyId 2 CompanyDAO : " + e.getMessage() + " => id = " + id);
-
-		}
-
-		return obj;
-	}
-
-	public static boolean update(Company company) {
-
-		try {
-			String sqlUpdate = "UPDATE " + TABLE_NAME + " SET " + CompanyDAO.COL_COMPANY_NAME + "= ?  WHERE "
-					+ CompanyDAO.COL_COMPANY_ID + "= ? ";
-			
-			Connector c = Connector.getInstance();
-			Connection connec = c.getDBConnection();
-			
-			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(sqlUpdate);
-			statement.setString(1, company.getName());
-			statement.setInt(2, company.getId());
-
-			int resExec = statement.executeUpdate();
-			statement.close();
-			logger.info("Succes Update CompanyDAO " + company);
-
-			return resExec != 0;
-		} catch (Exception e) {
-			logger.info("Error Update CompanyDAO : " + e.getMessage() + " " + company);
-		}
-		return false;
-	}
-
-	public static Integer getCount() {
-
-		try {
-
-			String sqlCount = "SELECT Count(*) FROM " + CompanyDAO.TABLE_NAME;
-			Connector c = Connector.getInstance();
-			Connection connec = c.getDBConnection();
-			PreparedStatement statement = (PreparedStatement) connec.prepareStatement(sqlCount);
-			
-			ResultSet rs = statement.executeQuery();
-			Integer count = null;
-			if (rs.next()) {
-				count = rs.getInt(1);
-			}
-
-			logger.info("Succes getCount CompanyDAO ");
-			return count;
-
-		} catch (Exception e) {
-			logger.info("Error getCount CompanyDAO : " + e.getMessage());
-		}
-
-		return null;
-	}
-
-	public static ResultSet getPagination(int page, int numberOfResults) {
-		
-		try {
-			String selectSQL = "SELECT * FROM " + CompanyDAO.TABLE_NAME + " LIMIT " + numberOfResults + " OFFSET "
-					+ (page * numberOfResults);
-
-			Connector c = Connector.getInstance();
-			Connection connec = (Connection) c.getDBConnection();
-			PreparedStatement preparedStatement = (PreparedStatement) connec.prepareStatement(selectSQL);
-			ResultSet rs = preparedStatement.executeQuery(selectSQL);
-			
-			logger.info("Succes getPagination CompanyDAO ");
-			return rs;
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-			logger.info("Error getPagination CompanyDAO : " + e.getMessage());
-
-		} catch (ClassNotFoundException e) {
-
-			e.printStackTrace();
-			logger.info("Error 2 getPagination CompanyDAO : " + e.getMessage());
-
-		}
-
-		return null;
-	}
+        return null;
+    }
 
 }
