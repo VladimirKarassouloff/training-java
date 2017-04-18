@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@ taglib uri="/WEB-INF/custom.tld" prefix="mylib" %>
+<%@ taglib prefix="mystuff" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,10 +19,12 @@
             Computer Database </a>
     </div>
 </header>
-
 <section id="main">
+
+
+
     <div class="container">
-        <h1 id="homeTitle">${totalCount} Computers found</h1>
+        <h1 id="homeTitle">${totalCount} Computers found  </h1>
         <div id="actions" class="form-horizontal">
             <div class="pull-left">
                 <form id="searchForm" action="#" method="GET" class="form-inline">
@@ -90,23 +93,18 @@
 <footer class="navbar-fixed-bottom">
     <div class="container text-center">
         <ul class="pagination">
-            <li><a href="#" aria-label="Previous"> <span
-                    aria-hidden="true">&laquo;</span>
-            </a></li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-            </a></li>
+            <mystuff:link totalCount="${totalCount}" itemPerPage="${lengthPage}" currentPage="${currentPage}"
+                          linkGenerated="Index"  paramNameUrlCurrent="currentPage" paramNameUrlItemPerPage="lengthPage"/>
+
+
+            <div class="btn-group btn-group-sm pull-right" role="group">
+                <button type="button" class="btn btn-default">10</button>
+                <button type="button" class="btn btn-default">50</button>
+                <button type="button" class="btn btn-default">100</button>
+            </div>
         </ul>
 
-        <div class="btn-group btn-group-sm pull-right" role="group">
-            <button type="button" class="btn btn-default">10</button>
-            <button type="button" class="btn btn-default">50</button>
-            <button type="button" class="btn btn-default">100</button>
-        </div>
+
     </div>
 </footer>
 <script src="js/jquery.min.js"></script>
