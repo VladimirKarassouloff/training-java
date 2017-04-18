@@ -53,7 +53,7 @@ public class ComputerDAO {
 
     public static final String WHERE_NAME_FILTER = " WHERE " + TABLE_NAME + "." + COL_COMPUTER_NAME + " LIKE ?";
 
-    public static final String SELECT_FILTER_NAME = SELECT+" "+WHERE_NAME_FILTER;
+    public static final String SELECT_FILTER_NAME = SELECT + " " + WHERE_NAME_FILTER;
 
     public static final String COUNT_FILTER_NAME = COUNT + WHERE_NAME_FILTER;
     ///////////////////
@@ -214,7 +214,7 @@ public class ComputerDAO {
      *
      * @param page            requested
      * @param numberOfResults per page
-     * @param filterName filter results by name
+     * @param filterName      filter results by name
      * @return resultset of the page asked
      */
     public static ResultSet getPagination(int page, int numberOfResults, String filterName) {
@@ -222,12 +222,12 @@ public class ComputerDAO {
         try {
 
             ResultSet rs = null;
-            String limitPage =  " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults);
-            if(filterName == null) {
+            String limitPage = " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults);
+            if (filterName == null) {
                 rs = Connector.getInstance().preparedStatement(SELECT + limitPage).executeQuery();
             } else {
                 PreparedStatement ps = Connector.getInstance().preparedStatement(SELECT_FILTER_NAME + limitPage);
-                ps.setString(1,"%"+filterName+"%");
+                ps.setString(1, "%" + filterName + "%");
                 rs = ps.executeQuery();
             }
             LOGGER.info("Succes pagination Computerdao");
@@ -250,7 +250,7 @@ public class ComputerDAO {
     public static Integer getCount(String searchByName) {
         try {
             PreparedStatement pr = Connector.getInstance().preparedStatement(COUNT_FILTER_NAME);
-            pr.setString(1, "%"+(searchByName != null ? searchByName : "")+"%");
+            pr.setString(1, "%" + (searchByName != null ? searchByName : "") + "%");
             ResultSet rs = pr.executeQuery();
 
             Integer count = null;

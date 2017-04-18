@@ -8,6 +8,8 @@ import model.Company;
 import model.Computer;
 import persistence.CompanyDAO;
 import persistence.ComputerDAO;
+import validator.CompanyValidator;
+import validator.ComputerValidator;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ public class CommonServices {
 
     /**
      * Get all companies in DB.
+     *
      * @return companies
      */
     public static List<Company> getCompanies() {
@@ -26,7 +29,8 @@ public class CommonServices {
 
     /**
      * Get Page of campanies.
-     * @param page number of page
+     *
+     * @param page       number of page
      * @param numberItem number of result per page
      * @return companies
      */
@@ -36,6 +40,7 @@ public class CommonServices {
 
     /**
      * Get the total count of companies in DB.
+     *
      * @return number of companoes
      */
     public static int getCountCompany() {
@@ -44,6 +49,7 @@ public class CommonServices {
 
     /**
      * Get a specific company.
+     *
      * @param id of the company returned
      * @return company having the id or null
      */
@@ -53,10 +59,14 @@ public class CommonServices {
 
     /**
      * Update the company in DB with the value of the company parameter.
+     *
      * @param company updated
      * @return boolean for success
      */
     public static boolean updateCompany(Company company) {
+        if (!CompanyValidator.isValid(company)) {
+            return false;
+        }
         return CompanyDAO.update(company);
     }
 
@@ -65,6 +75,7 @@ public class CommonServices {
 
     /**
      * Get all the computer from DB.
+     *
      * @return computers
      */
     public static List<Computer> getComputers() {
@@ -73,7 +84,8 @@ public class CommonServices {
 
     /**
      * Get Page of computers.
-     * @param page returned
+     *
+     * @param page       returned
      * @param numberItem per page
      * @param filterName filter results per computer name
      * @return computers
@@ -84,7 +96,8 @@ public class CommonServices {
 
     /**
      * Get Page of computers.
-     * @param page returned
+     *
+     * @param page       returned
      * @param numberItem per page
      * @param filterName filter results per computer name
      * @return computers
@@ -95,7 +108,8 @@ public class CommonServices {
 
     /**
      * Get Page of computers.
-     * @param page returned
+     *
+     * @param page       returned
      * @param numberItem per page
      * @return computers
      */
@@ -105,7 +119,8 @@ public class CommonServices {
 
     /**
      * Get Page of computersDTO.
-     * @param page returned
+     *
+     * @param page       returned
      * @param numberItem item per pages
      * @return computersdto
      */
@@ -116,6 +131,7 @@ public class CommonServices {
 
     /**
      * Get Total count of the computers in DB having the name like searchByName.
+     *
      * @param searchByName get computers having name like %searchByName%
      * @return number of computers matching
      */
@@ -125,6 +141,7 @@ public class CommonServices {
 
     /**
      * Get Total count of the computers in DB.
+     *
      * @return number of computers
      */
     public static int getCountComputer() {
@@ -133,6 +150,7 @@ public class CommonServices {
 
     /**
      * Get specific Computer having this id.
+     *
      * @param id of the computer returned
      * @return computer or null
      */
@@ -142,24 +160,33 @@ public class CommonServices {
 
     /**
      * Add Computer to the DB.
+     *
      * @param computer added
      * @return int for the id generated of the new computer, or -1 if insert failed
      */
     public static int addComputer(Computer computer) {
+        if (!ComputerValidator.isValid(computer)) {
+            return -1;
+        }
         return ComputerDAO.insert(computer);
     }
 
     /**
      * Update computer from DB.
+     *
      * @param computer updated
      * @return success query
      */
     public static boolean updateComputer(Computer computer) {
+        if (!ComputerValidator.isValid(computer)) {
+            return false;
+        }
         return ComputerDAO.update(computer);
     }
 
     /**
      * Delete computer of the DB having the id equals of the computer id param.
+     *
      * @param comp deleted
      * @return success query
      */

@@ -1,7 +1,6 @@
 package servlet;
 
 import dto.ComputerDTO;
-import model.Computer;
 import services.CommonServices;
 
 import javax.servlet.ServletException;
@@ -35,10 +34,11 @@ public class Index extends HttpServlet {
 
     /**
      * Get request.
-     * @param request ?
+     *
+     * @param request  ?
      * @param response ?
      * @throws ServletException ?
-     * @throws IOException ?
+     * @throws IOException      ?
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get params
@@ -55,7 +55,7 @@ public class Index extends HttpServlet {
         int lengthPageDisplay;
         int pageDisplay;
 
-        try{
+        try {
             pageDisplay = Integer.parseInt(pageStr);
         } catch (Exception e) {
             pageDisplay = 0;
@@ -84,10 +84,11 @@ public class Index extends HttpServlet {
 
     /**
      * Post request.
-     * @param request ?
+     *
+     * @param request  ?
      * @param response ?
      * @throws ServletException ?
-     * @throws IOException ?
+     * @throws IOException      ?
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO Auto-generated method stub

@@ -1,8 +1,6 @@
 package mapper;
 
 import dto.ComputerDTO;
-import model.Company;
-import model.Computer;
 import persistence.ComputerDAO;
 import utils.Format;
 
