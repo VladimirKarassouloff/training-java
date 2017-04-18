@@ -17,6 +17,7 @@ public class MapperCompany {
      */
     public static Company mapResultSetToObject(ResultSet rs) {
         try {
+            rs.next();
             Company com = mapResultSetToObjectAux(rs);
             rs.close();
             return com;
