@@ -3,6 +3,7 @@ package services;
 import dto.ComputerDTO;
 import mapper.MapperCompany;
 import mapper.MapperComputer;
+import mapper.MapperComputerDTO;
 import model.Company;
 import model.Computer;
 import persistence.CompanyDAO;
@@ -74,10 +75,32 @@ public class CommonServices {
      * Get Page of computers.
      * @param page returned
      * @param numberItem per page
+     * @param filterName filter results per computer name
+     * @return computers
+     */
+    public static List<ComputerDTO> getPagedComputerDTO(int page, int numberItem, String filterName) {
+        return MapperComputerDTO.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem, filterName));
+    }
+
+    /**
+     * Get Page of computers.
+     * @param page returned
+     * @param numberItem per page
+     * @param filterName filter results per computer name
+     * @return computers
+     */
+    public static List<Computer> getPagedComputer(int page, int numberItem, String filterName) {
+        return MapperComputer.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem, filterName));
+    }
+
+    /**
+     * Get Page of computers.
+     * @param page returned
+     * @param numberItem per page
      * @return computers
      */
     public static List<Computer> getPagedComputer(int page, int numberItem) {
-        return MapperComputer.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem));
+        return MapperComputer.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem, null));
     }
 
     /**

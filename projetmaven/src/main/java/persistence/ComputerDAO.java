@@ -31,6 +31,7 @@ public class ComputerDAO {
             " LEFT JOIN " + CompanyDAO.TABLE_NAME + " ON " + CompanyDAO.TABLE_NAME + "." + CompanyDAO.COL_COMPANY_ID +
             "=" + ComputerDAO.TABLE_NAME + "." + ComputerDAO.COL_COMPUTER_COMPANY_ID;
 
+
     public static final String COUNT = "SELECT Count(*) FROM " + ComputerDAO.TABLE_NAME;
 
     public static final String WHERE_FILTER_ID = " WHERE " + ComputerDAO.TABLE_NAME + "." + ComputerDAO.COL_COMPUTER_ID + "=?";
@@ -49,6 +50,12 @@ public class ComputerDAO {
             + ComputerDAO.COL_COMPUTER_COMPANY_ID + " = ? "
             + "WHERE " + ComputerDAO.COL_COMPUTER_ID + "= ?";
 
+
+    public static final String WHERE_NAME_FILTER = " WHERE " + TABLE_NAME + "." + COL_COMPUTER_NAME + " LIKE ?";
+
+    public static final String SELECT_FILTER_NAME = SELECT+" "+WHERE_NAME_FILTER;
+
+    public static final String COUNT_FILTER_NAME = COUNT + WHERE_NAME_FILTER;
     ///////////////////
     ///////////////////
 
@@ -59,6 +66,7 @@ public class ComputerDAO {
 
     /**
      * Get all records.
+     *
      * @return resultset for all recors
      */
     public static ResultSet getAll() {
@@ -79,6 +87,7 @@ public class ComputerDAO {
 
     /**
      * Get Computer.
+     *
      * @param id of the computer requested
      * @return resultset
      */
@@ -102,6 +111,7 @@ public class ComputerDAO {
 
     /**
      * Insert new record in DB.
+     *
      * @param computer contains attributes for representation in DB
      * @return id of new row, -1 if failed
      */
@@ -151,6 +161,7 @@ public class ComputerDAO {
 
     /**
      * Delete computer.
+     *
      * @param id of the computer deleted
      * @return success
      */
@@ -173,6 +184,7 @@ public class ComputerDAO {
 
     /**
      * Updated computer.
+     *
      * @param computer values used to update computer in DB
      * @return success
      */
@@ -199,14 +211,25 @@ public class ComputerDAO {
 
     /**
      * Get Paged result.
-     * @param page requested
+     *
+     * @param page            requested
      * @param numberOfResults per page
+     * @param filterName filter results by name
      * @return resultset of the page asked
      */
-    public static ResultSet getPagination(int page, int numberOfResults) {
+    public static ResultSet getPagination(int page, int numberOfResults, String filterName) {
         CACHE_COMPANY.clear();
         try {
-            ResultSet rs = Connector.getInstance().preparedStatement(SELECT + " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults)).executeQuery();
+
+            ResultSet rs = null;
+            String limitPage =  " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults);
+            if(filterName == null) {
+                rs = Connector.getInstance().preparedStatement(SELECT + limitPage).executeQuery();
+            } else {
+                PreparedStatement ps = Connector.getInstance().preparedStatement(SELECT_FILTER_NAME + limitPage);
+                ps.setString(1,"%"+filterName+"%");
+                rs = ps.executeQuery();
+            }
             LOGGER.info("Succes pagination Computerdao");
             CACHE_COMPANY.clear();
             return rs;
@@ -226,9 +249,11 @@ public class ComputerDAO {
      */
     public static Integer getCount(String searchByName) {
         try {
-            ResultSet rs = Connector.getInstance().preparedStatement(COUNT).executeQuery();
-            Integer count = null;
+            PreparedStatement pr = Connector.getInstance().preparedStatement(COUNT_FILTER_NAME);
+            pr.setString(1, "%"+(searchByName != null ? searchByName : "")+"%");
+            ResultSet rs = pr.executeQuery();
 
+            Integer count = null;
             if (rs.next()) {
                 count = rs.getInt(1);
             }

@@ -1,5 +1,6 @@
 package servlet;
 
+import dto.ComputerDTO;
 import model.Computer;
 import services.CommonServices;
 
@@ -40,21 +41,25 @@ public class Index extends HttpServlet {
      * @throws IOException ?
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        // Get params
+        String search = request.getParameter("search");
+        String pageStr = request.getParameter("page");
         // Get the computer displayed
-        List<Computer> computer = null;
+        List<ComputerDTO> computer = null;
         try {
-            int pageDisplay = Integer.parseInt(request.getParameter("page"));
-            computer = CommonServices.getPagedComputer(pageDisplay, NUMBER_RESULT_PER_PAGE);
+            int pageDisplay = Integer.parseInt(pageStr);
+            computer = CommonServices.getPagedComputerDTO(pageDisplay, NUMBER_RESULT_PER_PAGE, search);
         } catch (Exception e) {
-            computer = CommonServices.getPagedComputer(0, NUMBER_RESULT_PER_PAGE);
+            computer = CommonServices.getPagedComputerDTO(0, NUMBER_RESULT_PER_PAGE, search);
         }
 
         // Get the total count filtered by name
         System.out.println("Search by name  : " + request.getParameter("search"));
         int totalCount = CommonServices.getCountComputer(request.getParameter("search"));
 
+        // Set all params
         request.setAttribute("computers", computer);
+        request.setAttribute("totalCount", totalCount);
         getServletContext().getRequestDispatcher(index).forward(request, response);
     }
 
