@@ -20,9 +20,9 @@ import java.util.List;
 public class Index extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    private static final int DEFAULT_LENGTH = 20;
 
     public static String index = "/WEB-INF/views/dashboard.jsp";
-    private static final int NUMBER_RESULT_PER_PAGE = 25;
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -43,23 +43,42 @@ public class Index extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get params
         String search = request.getParameter("search");
-        String pageStr = request.getParameter("page");
+        // Page number being displayed
+        String pageStr = request.getParameter("currentPage");
+        // Length of page of pagination
+        String lengthPageStr = request.getParameter("lengthPage");
+
         // Get the computer displayed
         List<ComputerDTO> computer = null;
-        try {
-            int pageDisplay = Integer.parseInt(pageStr);
-            computer = CommonServices.getPagedComputerDTO(pageDisplay, NUMBER_RESULT_PER_PAGE, search);
+
+        // Params needing parse
+        int lengthPageDisplay;
+        int pageDisplay;
+
+        try{
+            pageDisplay = Integer.parseInt(pageStr);
         } catch (Exception e) {
-            computer = CommonServices.getPagedComputerDTO(0, NUMBER_RESULT_PER_PAGE, search);
+            pageDisplay = 0;
         }
 
+        try {
+            lengthPageDisplay = Integer.parseInt(lengthPageStr);
+        } catch (Exception e) {
+            lengthPageDisplay = DEFAULT_LENGTH;
+        }
+
+        // Get the page asked
+        computer = CommonServices.getPagedComputerDTO(pageDisplay, lengthPageDisplay, search);
+
+
         // Get the total count filtered by name
-        System.out.println("Search by name  : " + request.getParameter("search"));
         int totalCount = CommonServices.getCountComputer(request.getParameter("search"));
 
         // Set all params
         request.setAttribute("computers", computer);
         request.setAttribute("totalCount", totalCount);
+        request.setAttribute("currentPage", pageDisplay);
+        request.setAttribute("lengthPage", lengthPageDisplay);
         getServletContext().getRequestDispatcher(index).forward(request, response);
     }
 
