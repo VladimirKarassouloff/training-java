@@ -55,7 +55,7 @@ public class Index extends HttpServlet {
         int lengthPageDisplay;
         int pageDisplay;
 
-        try {
+        try{
             pageDisplay = Integer.parseInt(pageStr);
         } catch (Exception e) {
             pageDisplay = 0;
