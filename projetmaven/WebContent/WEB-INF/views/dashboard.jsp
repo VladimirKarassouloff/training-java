@@ -1,5 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="/WEB-INF/custom.tld" prefix="mylib" %>
 <%@ taglib prefix="mystuff" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
@@ -91,18 +90,10 @@
 
 <footer class="navbar-fixed-bottom">
     <div class="container text-center">
-        <ul class="pagination">
-            <mystuff:link totalCount="${totalCount}" itemPerPage="${lengthPage}" currentPage="${currentPage}"
-                          linkGenerated="Index"  paramNameUrlCurrent="currentPage" paramNameUrlItemPerPage="lengthPage"/>
+        <mystuff:pagination-link totalCount="${totalCount}" itemPerPage="${lengthPage}" currentPage="${currentPage}"
+                                 linkGenerated="Index" paramNameUrlCurrent="currentPage" paramNameUrlItemPerPage="lengthPage"/>
 
-
-            <div class="btn-group btn-group-sm pull-right" role="group">
-                <button type="button" class="btn btn-default">10</button>
-                <button type="button" class="btn btn-default">50</button>
-                <button type="button" class="btn btn-default">100</button>
-            </div>
-        </ul>
-
+        <mystuff:pagination-length linkGenerated="Index" paramNameLengthList="lengthPage" displayLength="${[20,30,50,100]}"/>
 
     </div>
 </footer>

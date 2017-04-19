@@ -16,8 +16,8 @@
       <file leaf-file-name="BeanParamUtils.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/bean/BeanParamUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="254">
-              <caret line="38" column="13" lean-forward="true" selection-start-line="38" selection-start-column="13" selection-end-line="38" selection-end-column="13" />
+            <state relative-caret-position="234">
+              <caret line="52" column="49" lean-forward="true" selection-start-line="52" selection-start-column="49" selection-end-line="52" selection-end-column="49" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#448#449#0" expanded="true" />
@@ -31,12 +31,44 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="link.tag" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/WebContent/WEB-INF/tags/link.tag">
+      <file leaf-file-name="dashboard.jsp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/WebContent/WEB-INF/views/dashboard.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="95" column="125" lean-forward="true" selection-start-line="95" selection-start-column="125" selection-end-line="95" selection-end-column="125" />
+            <state relative-caret-position="277">
+              <caret line="93" column="48" lean-forward="false" selection-start-line="93" selection-start-column="48" selection-end-line="93" selection-end-column="48" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pagination-link.tag" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/WebContent/WEB-INF/tags/pagination-link.tag">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="380">
+              <caret line="103" column="71" lean-forward="true" selection-start-line="103" selection-start-column="12" selection-end-line="103" selection-end-column="71" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pagination-length.tag" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/WebContent/WEB-INF/tags/pagination-length.tag">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="380">
+              <caret line="19" column="70" lean-forward="false" selection-start-line="19" selection-start-column="70" selection-end-line="19" selection-end-column="70" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Index.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/servlet/Index.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="329">
+              <caret line="48" column="63" lean-forward="false" selection-start-line="48" selection-start-column="53" selection-end-line="48" selection-end-column="63" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -52,7 +84,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>JOIN</find>
       <find>join</find>
       <find>delete</find>
       <find>update</find>
@@ -75,13 +106,14 @@
       <find>currentPage</find>
       <find>math</find>
       <find>lengthPage</find>
-      <find>c:fo</find>
       <find>filterName</find>
       <find>searc</find>
       <find>pageCount</find>
       <find>??</find>
       <find>lastpag</find>
       <find>numberPag</find>
+      <find>c:for</find>
+      <find>c:fo</find>
     </findStrings>
   </component>
   <component name="GradleLocalSettings">
@@ -129,7 +161,6 @@
         <option value="$PROJECT_DIR$/src/main/java/persistence/CompanyDAO.java" />
         <option value="$PROJECT_DIR$/src/main/java/test/CliMain.java" />
         <option value="$PROJECT_DIR$/src/main/java/applicationcli/CliMain.java" />
-        <option value="$PROJECT_DIR$/WebContent/WEB-INF/views/dashboard.jsp" />
         <option value="$PROJECT_DIR$/src/main/java/persistence/ComputerDAO.java" />
         <option value="$PROJECT_DIR$/src/main/java/services/ComputerServices.java" />
         <option value="$PROJECT_DIR$/src/main/java/services/CommonServices.java" />
@@ -140,6 +171,9 @@
         <option value="$PROJECT_DIR$/src/main/java/persistence/Connector.java" />
         <option value="$PROJECT_DIR$/src/main/java/bean/BeanParamUtils.java" />
         <option value="$PROJECT_DIR$/WebContent/WEB-INF/tags/link.tag" />
+        <option value="$PROJECT_DIR$/WebContent/WEB-INF/tags/pagination-link.tag" />
+        <option value="$PROJECT_DIR$/WebContent/WEB-INF/views/dashboard.jsp" />
+        <option value="$PROJECT_DIR$/WebContent/WEB-INF/tags/pagination-length.tag" />
       </list>
     </option>
   </component>
@@ -281,6 +315,10 @@
               <option name="myItemId" value="WEB-INF" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="views" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -300,7 +338,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="views" />
+              <option name="myItemId" value="tags" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -669,7 +707,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="SearchEverywhereHistoryKey" value="link.&#9;FILE&#9;file:///home/vkarassouloff/training-java/projetmaven/WebContent/WEB-INF/tags/link.tag&#10;link&#9;FILE&#9;file:///home/vkarassouloff/training-java/projetmaven/WebContent/WEB-INF/tags/link.tag&#10;dashbo&#9;FILE&#9;file:///home/vkarassouloff/training-java/projetmaven/WebContent/WEB-INF/views/dashboard.jsp&#10;po&#9;FILE&#9;file:///home/vkarassouloff/training-java/projetmaven/pom.xml&#10;pom.&#9;FILE&#9;file:///home/vkarassouloff/training-java/projetmaven/pom.xml&#10;web.xm&#9;FILE&#9;file:///home/vkarassouloff/training-java/projetmaven/src/main/webapp/WEB-INF/web.xml&#10;dash&#9;FILE&#9;file:///home/vkarassouloff/training-java/projetmaven/WebContent/WEB-INF/views/dashboard.jsp&#10;dashboa&#9;FILE&#9;file:///home/vkarassouloff/training-java/projetmaven/WebContent/WEB-INF/views/dashboard.jsp&#10;Form&#9;PSI&#9;JAVA://utils.Format" />
+    <property name="SearchEverywhereHistoryKey" value="dashbo&#9;FILE&#9;file:///home/vkarassouloff/training-java/projetmaven/WebContent/WEB-INF/views/dashboard.jsp&#10;link.&#9;FILE&#9;file:///home/vkarassouloff/training-java/projetmaven/WebContent/WEB-INF/tags/link.tag&#10;link&#9;FILE&#9;file:///home/vkarassouloff/training-java/projetmaven/WebContent/WEB-INF/tags/link.tag&#10;po&#9;FILE&#9;file:///home/vkarassouloff/training-java/projetmaven/pom.xml&#10;pom.&#9;FILE&#9;file:///home/vkarassouloff/training-java/projetmaven/pom.xml&#10;web.xm&#9;FILE&#9;file:///home/vkarassouloff/training-java/projetmaven/src/main/webapp/WEB-INF/web.xml&#10;dash&#9;FILE&#9;file:///home/vkarassouloff/training-java/projetmaven/WebContent/WEB-INF/views/dashboard.jsp&#10;dashboa&#9;FILE&#9;file:///home/vkarassouloff/training-java/projetmaven/WebContent/WEB-INF/views/dashboard.jsp&#10;Form&#9;PSI&#9;JAVA://utils.Format" />
     <property name="project.structure.last.edited" value="Facets" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -1373,7 +1411,7 @@
       <workItem from="1492332876558" duration="12207000" />
       <workItem from="1492499415431" duration="20658000" />
       <workItem from="1492527185672" duration="3246000" />
-      <workItem from="1492586712777" duration="16345000" />
+      <workItem from="1492586712777" duration="18283000" />
     </task>
     <servers />
   </component>
@@ -1395,7 +1433,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="61011000" />
+    <option name="totallyTimeSpent" value="62949000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1521,7 +1559,7 @@
           <option name="timeStamp" value="45" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="59" />
+      <option name="time" value="60" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1530,17 +1568,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/applicationcli/pages/MainPage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="29" column="32" lean-forward="false" selection-start-line="29" selection-start-column="32" selection-end-line="29" selection-end-column="32" />
-          <folding>
-            <element signature="e#209#210#0" expanded="false" />
-            <element signature="e#235#236#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/model/Company.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -1624,14 +1651,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="389">
           <caret line="166" column="50" lean-forward="true" selection-start-line="166" selection-start-column="50" selection-end-line="166" selection-end-column="50" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WebContent/WEB-INF/custom.tld">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="140">
-          <caret line="7" column="34" lean-forward="false" selection-start-line="7" selection-start-column="34" selection-end-line="7" selection-end-column="34" />
           <folding />
         </state>
       </provider>
@@ -1819,14 +1838,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/WebContent/WEB-INF/views/dashboard.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="140">
-          <caret line="10" column="71" lean-forward="true" selection-start-line="10" selection-start-column="71" selection-end-line="10" selection-end-column="71" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/model/Computer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
@@ -1856,7 +1867,7 @@
         <state relative-caret-position="603">
           <caret line="188" column="0" lean-forward="false" selection-start-line="188" selection-start-column="0" selection-end-line="188" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1895,16 +1906,6 @@
         <state relative-caret-position="426">
           <caret line="69" column="9" lean-forward="true" selection-start-line="69" selection-start-column="9" selection-end-line="69" selection-end-column="9" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/servlet/Index.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="169">
-          <caret line="55" column="24" lean-forward="true" selection-start-line="55" selection-start-column="24" selection-end-line="55" selection-end-column="24" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1948,10 +1949,36 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/WEB-INF/custom.tld">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="12" column="10" lean-forward="true" selection-start-line="4" selection-start-column="4" selection-end-line="12" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/servlet/Index.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="329">
+          <caret line="48" column="63" lean-forward="false" selection-start-line="48" selection-start-column="53" selection-end-line="48" selection-end-column="63" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/WEB-INF/views/dashboard.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="277">
+          <caret line="93" column="48" lean-forward="false" selection-start-line="93" selection-start-column="48" selection-end-line="93" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/bean/BeanParamUtils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="38" column="13" lean-forward="true" selection-start-line="38" selection-start-column="13" selection-end-line="38" selection-end-column="13" />
+        <state relative-caret-position="234">
+          <caret line="52" column="49" lean-forward="true" selection-start-line="52" selection-start-column="49" selection-end-line="52" selection-end-column="49" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#448#449#0" expanded="true" />
@@ -1964,10 +1991,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/WebContent/WEB-INF/tags/link.tag">
+    <entry file="file://$PROJECT_DIR$/WebContent/WEB-INF/tags/pagination-link.tag">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="95" column="125" lean-forward="true" selection-start-line="95" selection-start-column="125" selection-end-line="95" selection-end-column="125" />
+        <state relative-caret-position="380">
+          <caret line="103" column="71" lean-forward="true" selection-start-line="103" selection-start-column="12" selection-end-line="103" selection-end-column="71" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/WEB-INF/tags/pagination-length.tag">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="19" column="70" lean-forward="false" selection-start-line="19" selection-start-column="70" selection-end-line="19" selection-end-column="70" />
           <folding />
         </state>
       </provider>
