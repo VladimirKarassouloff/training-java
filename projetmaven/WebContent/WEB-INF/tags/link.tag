@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%@ attribute name="linkGenerated" required="true" type="java.lang.String" description="Url to this page" %>
 <%@ attribute name="currentPage" required="false" type="java.lang.Integer" description="Page being displayed" %>
@@ -29,7 +30,7 @@
 
 <!-- Default value for numberPageLeftRight -->
 <c:if test="${ empty numberPageLeftRight }">
-    <c:set var="numberPageLeftRight" value="3"/>
+    <c:set var="numberPageLeftRight" value="2"/>
 </c:if>
 
 
@@ -63,11 +64,45 @@
 ${paramUtils.copyGetParameterFromRequest(pageContext.request)}
 <table>
     <tr>
+
+        <!-- Generation du [1] [...] [currentpage-1] [currentpage] etc-->
+        <c:choose>
+            <c:when test="${beginLoop >= 2}">
+                ${paramUtils.overrideParam(paramNameUrlCurrent, 0)}
+                <li><a href="${pageContext.request.contextPath}/${linkGenerated}${paramUtils.buildUrl()}">1</a></li>
+                <li class="disabled"><a href="#">...</a></li>
+            </c:when>
+            <c:when test="${beginLoop == 1}">
+                ${paramUtils.overrideParam(paramNameUrlCurrent, 0)}
+                <li><a href="${pageContext.request.contextPath}/${linkGenerated}${paramUtils.buildUrl()}">1</a></li>
+            </c:when>
+        </c:choose>
+
+        <!-- Generation des pages a gauche et a droite de la current -->
         <c:forEach begin="${beginLoop}" end="${endLoop}" varStatus="loop">
-            ${paramUtils.overrideParam(paramNameUrlCurrent, loop.index+1)}
-            <li>
+            ${paramUtils.overrideParam(paramNameUrlCurrent, loop.index)}
+            <li <c:if test="${currentPage eq loop.index}">class="active"</c:if>>
                 <a href="${pageContext.request.contextPath}/${linkGenerated}${paramUtils.buildUrl()}">${loop.index+1}</a>
             </li>
         </c:forEach>
+
+        <!-- Generation du [currentpage] [currentpage+1] [...] [LASTPAGE] etc-->
+        <!-- parsing du pagecount+1 de double vers integer -->
+        <fmt:parseNumber var="i" integerOnly="true" type="number" value="${pageCount+1}" />
+        <c:choose>
+            <c:when test="${endLoop <= pageCount - 2}">
+                ${paramUtils.overrideParam(paramNameUrlCurrent, pageCount)}
+                <li class="disabled"><a href="#">...</a></li>
+                <li><a href="${pageContext.request.contextPath}/${linkGenerated}${paramUtils.buildUrl()}"><c:out value="${i}"/></a></li>
+            </c:when>
+            <c:when test="${endLoop <= pageCount - 1}">
+                ${paramUtils.overrideParam(paramNameUrlCurrent, pageCount)}
+                <li>
+                    <a href="${pageContext.request.contextPath}/${linkGenerated}${paramUtils.buildUrl()}">
+                        <c:out value="${i}" />
+                    </a>
+                </li>
+            </c:when>
+        </c:choose>
     </tr>
 </table>
