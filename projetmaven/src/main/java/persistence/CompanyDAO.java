@@ -1,6 +1,9 @@
 package persistence;
 
 import com.mysql.jdbc.PreparedStatement;
+import exception.DAOCountException;
+import exception.DAOSelectException;
+import exception.DAOUpdateException;
 import model.Company;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +36,11 @@ public class CompanyDAO {
 
     /**
      * Get all records.
+     *
      * @return resultsetcli
+     * @throws DAOSelectException if errors happened
      */
-    public static ResultSet getAll() {
+    public static ResultSet getAll() throws DAOSelectException {
         try {
             ResultSet rs = Connector.getInstance().preparedStatement(SELECT).executeQuery();
             LOGGER.info("Succes getAll CompanyDAO");
@@ -43,16 +48,18 @@ public class CompanyDAO {
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info("Error getAll CompanyDAO : " + e.getMessage());
+            throw new DAOSelectException("Company", SELECT);
         }
-        return null;
     }
 
     /**
      * Get specific record from DB.
+     *
      * @param id of the record returned
      * @return resultset
+     * @throws DAOSelectException if error happens
      */
-    public static ResultSet getById(int id) {
+    public static ResultSet getById(int id) throws DAOSelectException {
         ResultSet obj = null;
 
         try {
@@ -62,7 +69,8 @@ public class CompanyDAO {
             if (obj != null) {
                 LOGGER.info("Succes getById CompanyDAO => id = " + id);
             } else {
-                LOGGER.info("Succes getById CompanyDAO => null value => id = " + id);
+                LOGGER.info("Error getById CompanyDAO => null value => id = " + id);
+                throw new DAOSelectException("Company", SELECT + WHERE_FILTER_ID + " (id = " + id + ")");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -74,10 +82,12 @@ public class CompanyDAO {
 
     /**
      * Update the company having id = company.id.
+     *
      * @param company attributes used for updating
      * @return success
+     * @throws DAOUpdateException if error happens
      */
-    public static boolean update(Company company) {
+    public static boolean update(Company company) throws DAOUpdateException {
         try {
             PreparedStatement preparedStatement = Connector.getInstance().preparedStatement(UPDATE);
             preparedStatement.setString(1, company.getName());
@@ -89,15 +99,17 @@ public class CompanyDAO {
             return resExec != 0;
         } catch (Exception e) {
             LOGGER.info("Error Update CompanyDAO : " + e.getMessage() + " " + company);
+            throw new DAOUpdateException(company);
         }
-        return false;
     }
 
     /**
      * Get the number of companies.
+     *
      * @return number
+     * @throws DAOCountException if error happens while getting row count
      */
-    public static Integer getCount() {
+    public static Integer getCount() throws DAOCountException {
         try {
             ResultSet rs = Connector.getInstance().preparedStatement(COUNT).executeQuery();
             Integer count = null;
@@ -111,18 +123,19 @@ public class CompanyDAO {
             return count;
         } catch (Exception e) {
             LOGGER.info("Error getCount CompanyDAO : " + e.getMessage());
+            throw new DAOCountException("Company");
         }
-
-        return null;
     }
 
     /**
      * Result set of results.
-     * @param page asked
+     *
+     * @param page            asked
      * @param numberOfResults per page
      * @return resultset
+     * @throws DAOSelectException if error happens
      */
-    public static ResultSet getPagination(int page, int numberOfResults) {
+    public static ResultSet getPagination(int page, int numberOfResults) throws DAOSelectException {
         try {
             ResultSet rs = Connector.getInstance().preparedStatement(SELECT + " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults)).executeQuery();
             LOGGER.info("Succes getPagination CompanyDAO ");
@@ -130,9 +143,8 @@ public class CompanyDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             LOGGER.info("Error getPagination CompanyDAO : " + e.getMessage());
+            throw new DAOSelectException("Company", SELECT + " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults));
         }
-
-        return null;
     }
 
 }

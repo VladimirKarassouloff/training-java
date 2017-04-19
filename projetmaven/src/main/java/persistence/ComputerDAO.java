@@ -3,6 +3,7 @@ package persistence;
 
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
+import exception.*;
 import model.Company;
 import model.Computer;
 import org.slf4j.Logger;
@@ -68,8 +69,9 @@ public class ComputerDAO {
      * Get all records.
      *
      * @return resultset for all recors
+     * @throws DAOSelectException if error happens
      */
-    public static ResultSet getAll() {
+    public static ResultSet getAll() throws DAOSelectException {
         CACHE_COMPANY.clear();
         try {
             ResultSet rs = Connector.getInstance().preparedStatement(SELECT).executeQuery();
@@ -79,10 +81,9 @@ public class ComputerDAO {
         } catch (Exception e) {
             LOGGER.info("Erreur getAll computerdao : " + e.getMessage());
             e.printStackTrace();
+            CACHE_COMPANY.clear();
+            throw new DAOSelectException("Computer", SELECT);
         }
-
-        CACHE_COMPANY.clear();
-        return null;
     }
 
     /**
@@ -90,8 +91,9 @@ public class ComputerDAO {
      *
      * @param id of the computer requested
      * @return resultset
+     * @throws DAOSelectException if error happens
      */
-    public static ResultSet getById(int id) {
+    public static ResultSet getById(int id) throws DAOSelectException {
         CACHE_COMPANY.clear();
         ResultSet obj = null;
 
@@ -100,13 +102,13 @@ public class ComputerDAO {
             preparedStatement.setInt(1, id);
             obj = preparedStatement.executeQuery();
             LOGGER.info("Succes getbyid computerdao");
+            return obj;
         } catch (Exception e) {
             LOGGER.info("Erreur sql get by id : " + e.getMessage());
             e.printStackTrace();
+            CACHE_COMPANY.clear();
+            throw new DAOSelectException("Computer", SELECT + WHERE_FILTER_ID + " (id=" + id + ")");
         }
-
-        CACHE_COMPANY.clear();
-        return obj;
     }
 
     /**
@@ -114,8 +116,9 @@ public class ComputerDAO {
      *
      * @param computer contains attributes for representation in DB
      * @return id of new row, -1 if failed
+     * @throws DAOInsertException if error happens
      */
-    public static int insert(Computer computer) {
+    public static int insert(Computer computer) throws DAOInsertException {
         try {
             CACHE_COMPANY.clear();
 
@@ -139,7 +142,7 @@ public class ComputerDAO {
                     LOGGER.info("Erreur insert computerdao : " + computer);
                     statement.close();
                     CACHE_COMPANY.clear();
-                    return -1;
+                    throw new Exception();
                 }
 
             } else {
@@ -147,7 +150,7 @@ public class ComputerDAO {
                 LOGGER.info("Erreur 2 insert computerdao : " + computer);
                 statement.close();
                 CACHE_COMPANY.clear();
-                return -1;
+                throw new Exception();
             }
 
         } catch (Exception e) {
@@ -156,7 +159,7 @@ public class ComputerDAO {
         }
 
         CACHE_COMPANY.clear();
-        return -1;
+        throw new DAOInsertException(computer);
     }
 
     /**
@@ -164,8 +167,9 @@ public class ComputerDAO {
      *
      * @param id of the computer deleted
      * @return success
+     * @throws DAODeleteException if error happens
      */
-    public static boolean deleteById(int id) {
+    public static boolean deleteById(int id) throws DAODeleteException {
 
         try {
             PreparedStatement statement = Connector.getInstance().preparedStatement(DELETE);
@@ -177,9 +181,9 @@ public class ComputerDAO {
         } catch (Exception e) {
             LOGGER.info("Error delete Computerdao " + id + " : " + e.getMessage());
             e.printStackTrace();
+            throw new DAODeleteException("Computer", id);
         }
 
-        return false;
     }
 
     /**
@@ -187,8 +191,9 @@ public class ComputerDAO {
      *
      * @param computer values used to update computer in DB
      * @return success
+     * @throws DAOUpdateException if error happens
      */
-    public static boolean update(Computer computer) {
+    public static boolean update(Computer computer) throws DAOUpdateException {
         try {
             PreparedStatement statement = Connector.getInstance().preparedStatement(UPDATE);
             statement.setString(1, computer.getName());
@@ -205,7 +210,7 @@ public class ComputerDAO {
             System.out.println("Exce : " + e.getMessage());
             LOGGER.info("Error Update Computerdao : " + computer + " => " + e.getMessage());
         }
-        return false;
+        throw new DAOUpdateException(computer);
     }
 
 
@@ -216,13 +221,14 @@ public class ComputerDAO {
      * @param numberOfResults per page
      * @param filterName      filter results by name
      * @return resultset of the page asked
+     * @throws DAOSelectException if error happens
      */
-    public static ResultSet getPagination(int page, int numberOfResults, String filterName) {
+    public static ResultSet getPagination(int page, int numberOfResults, String filterName) throws DAOSelectException {
         CACHE_COMPANY.clear();
-        try {
+        String limitPage = " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults);
 
+        try {
             ResultSet rs = null;
-            String limitPage = " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults);
             if (filterName == null) {
                 rs = Connector.getInstance().preparedStatement(SELECT + limitPage).executeQuery();
             } else {
@@ -239,15 +245,16 @@ public class ComputerDAO {
         }
 
         CACHE_COMPANY.clear();
-        return null;
+        throw new DAOSelectException("Company", SELECT + limitPage);
     }
 
     /***
      * Get count.
      * @param searchByName nullable parameter to research computer by name
+     * @throws DAOCountException if error happens
      * @return count of computer considering filters
      */
-    public static Integer getCount(String searchByName) {
+    public static Integer getCount(String searchByName) throws DAOCountException {
         try {
             PreparedStatement pr = Connector.getInstance().preparedStatement(COUNT_FILTER_NAME);
             pr.setString(1, "%" + (searchByName != null ? searchByName : "") + "%");
@@ -265,7 +272,7 @@ public class ComputerDAO {
         } catch (Exception e) {
             LOGGER.info("Error Count Computerdao : " + e.getMessage());
         }
-        return null;
+        throw new DAOCountException("Computer");
     }
 
 

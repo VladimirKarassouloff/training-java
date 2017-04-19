@@ -1,9 +1,8 @@
-package test;
+package applicationcli;
 
-import applicationcli.Application;
 import persistence.Connector;
 
-public class Cli {
+public class CliMain {
 
     /**
      * Lancement application computer data base CLI.

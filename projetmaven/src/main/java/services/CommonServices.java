@@ -1,6 +1,11 @@
 package services;
 
 import dto.ComputerDTO;
+import exception.DAOCountException;
+import exception.DAOSelectException;
+import exception.DAOUpdateException;
+import exception.DAODeleteException;
+import exception.DAOInsertException;
 import mapper.MapperCompany;
 import mapper.MapperComputer;
 import mapper.MapperComputerDTO;
@@ -11,6 +16,7 @@ import persistence.ComputerDAO;
 import validator.CompanyValidator;
 import validator.ComputerValidator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommonServices {
@@ -24,7 +30,12 @@ public class CommonServices {
      * @return companies
      */
     public static List<Company> getCompanies() {
-        return MapperCompany.mapResultSetToObjects(CompanyDAO.getAll());
+        try {
+            return MapperCompany.mapResultSetToObjects(CompanyDAO.getAll());
+        } catch (DAOSelectException e) {
+            e.printStackTrace();
+            return new ArrayList<Company>();
+        }
     }
 
     /**
@@ -35,7 +46,12 @@ public class CommonServices {
      * @return companies
      */
     public static List<Company> getPagedCompany(int page, int numberItem) {
-        return MapperCompany.mapResultSetToObjects(CompanyDAO.getPagination(page, numberItem));
+        try {
+            return MapperCompany.mapResultSetToObjects(CompanyDAO.getPagination(page, numberItem));
+        } catch (DAOSelectException e) {
+            e.printStackTrace();
+            return new ArrayList<Company>();
+        }
     }
 
     /**
@@ -44,7 +60,12 @@ public class CommonServices {
      * @return number of companoes
      */
     public static int getCountCompany() {
-        return CompanyDAO.getCount();
+        try {
+            return CompanyDAO.getCount();
+        } catch (DAOCountException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     /**
@@ -54,7 +75,12 @@ public class CommonServices {
      * @return company having the id or null
      */
     public static Company getCompany(int id) {
-        return MapperCompany.mapResultSetToObject(CompanyDAO.getById(id));
+        try {
+            return MapperCompany.mapResultSetToObject(CompanyDAO.getById(id));
+        } catch (DAOSelectException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -67,7 +93,12 @@ public class CommonServices {
         if (!CompanyValidator.isValid(company)) {
             return false;
         }
-        return CompanyDAO.update(company);
+        try {
+            return CompanyDAO.update(company);
+        } catch (DAOUpdateException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 
@@ -79,7 +110,12 @@ public class CommonServices {
      * @return computers
      */
     public static List<Computer> getComputers() {
-        return MapperComputer.mapResultSetToObjects(ComputerDAO.getAll());
+        try {
+            return MapperComputer.mapResultSetToObjects(ComputerDAO.getAll());
+        } catch (DAOSelectException e) {
+            e.printStackTrace();
+            return new ArrayList<Computer>();
+        }
     }
 
     /**
@@ -91,7 +127,12 @@ public class CommonServices {
      * @return computers
      */
     public static List<ComputerDTO> getPagedComputerDTO(int page, int numberItem, String filterName) {
-        return MapperComputerDTO.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem, filterName));
+        try {
+            return MapperComputerDTO.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem, filterName));
+        } catch (DAOSelectException e) {
+            e.printStackTrace();
+            return new ArrayList<ComputerDTO>();
+        }
     }
 
     /**
@@ -103,7 +144,12 @@ public class CommonServices {
      * @return computers
      */
     public static List<Computer> getPagedComputer(int page, int numberItem, String filterName) {
-        return MapperComputer.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem, filterName));
+        try {
+            return MapperComputer.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem, filterName));
+        } catch (DAOSelectException e) {
+            e.printStackTrace();
+            return new ArrayList<Computer>();
+        }
     }
 
     /**
@@ -114,7 +160,12 @@ public class CommonServices {
      * @return computers
      */
     public static List<Computer> getPagedComputer(int page, int numberItem) {
-        return MapperComputer.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem, null));
+        try {
+            return MapperComputer.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem, null));
+        } catch (DAOSelectException e) {
+            e.printStackTrace();
+            return new ArrayList<Computer>();
+        }
     }
 
     /**
@@ -136,7 +187,12 @@ public class CommonServices {
      * @return number of computers matching
      */
     public static int getCountComputer(String searchByName) {
-        return ComputerDAO.getCount(searchByName);
+        try {
+            return ComputerDAO.getCount(searchByName);
+        } catch (DAOCountException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     /**
@@ -145,7 +201,12 @@ public class CommonServices {
      * @return number of computers
      */
     public static int getCountComputer() {
-        return ComputerDAO.getCount(null);
+        try {
+            return ComputerDAO.getCount(null);
+        } catch (DAOCountException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     /**
@@ -155,7 +216,12 @@ public class CommonServices {
      * @return computer or null
      */
     public static Computer getComputer(int id) {
-        return MapperComputer.mapResultSetToObject(ComputerDAO.getById(id));
+        try {
+            return MapperComputer.mapResultSetToObject(ComputerDAO.getById(id));
+        } catch (DAOSelectException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -168,7 +234,12 @@ public class CommonServices {
         if (!ComputerValidator.isValid(computer)) {
             return -1;
         }
-        return ComputerDAO.insert(computer);
+        try {
+            return ComputerDAO.insert(computer);
+        } catch (DAOInsertException e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     /**
@@ -181,7 +252,12 @@ public class CommonServices {
         if (!ComputerValidator.isValid(computer)) {
             return false;
         }
-        return ComputerDAO.update(computer);
+        try {
+            return ComputerDAO.update(computer);
+        } catch (DAOUpdateException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -191,7 +267,12 @@ public class CommonServices {
      * @return success query
      */
     public static boolean deleteComputer(Computer comp) {
-        return ComputerDAO.deleteById(comp.getId());
+        try {
+            return ComputerDAO.deleteById(comp.getId());
+        } catch (DAODeleteException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }
