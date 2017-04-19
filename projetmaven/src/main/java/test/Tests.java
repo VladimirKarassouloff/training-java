@@ -17,9 +17,9 @@ public class Tests {
             System.out.println(c);
             /*
             System.out.println("Up Computer");
-            Computer comp = CommonServices.getComputer(73);
+            Computer comp = CompanyServices.getComputer(73);
             comp.setDiscontinued(new Date());
-            comp.setCompany(CommonServices.getCompany(1));
+            comp.setCompany(CompanyServices.getCompany(1));
             comp.setName("Upated");
             comp.setIntroduced(null);
             System.out.println(ComputerDAO.update(comp));

@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%@ attribute name="linkGenerated" required="true" type="java.lang.String" description="Url to this page" %>
 <%@ attribute name="currentPage" required="false" type="java.lang.Integer" description="Page being displayed" %>
 <%@ attribute name="totalCount" required="true" type="java.lang.Integer" description="Total count" %>
@@ -20,13 +21,20 @@
     <c:set var="itemPerPage" value="20"/>
 </c:if>
 
+<!-- Default current page -->
 <c:if test="${ empty currentPage }">
     <c:set var="currentPage" value="0"/>
 </c:if>
 
+
+<!-- Default value for numberPageLeftRight -->
 <c:if test="${ empty numberPageLeftRight }">
     <c:set var="numberPageLeftRight" value="3"/>
 </c:if>
+
+
+<!-- Getting the total number of pages -->
+<c:set var="pageCount" value="${Math.max(0.0, Math.ceil(totalCount / itemPerPage) - 1)}"/>
 
 
 <!-- Left Page Generation -->
@@ -39,8 +47,6 @@
     </c:otherwise>
 </c:choose>
 
-<!-- Getting the total number of pages -->
-<c:set var="pageCount" value="${Math.ceil(totalCount / itemPerPage) - 1}"/>
 
 <!-- Right Page Generation -->
 <c:choose>
@@ -53,11 +59,14 @@
 </c:choose>
 
 
+<jsp:useBean id="paramUtils" scope="page" class="bean.BeanParamUtils"/>
+${paramUtils.copyGetParameterFromRequest(pageContext.request)}
 <table>
     <tr>
         <c:forEach begin="${beginLoop}" end="${endLoop}" varStatus="loop">
+            ${paramUtils.overrideParam(paramNameUrlCurrent, loop.index+1)}
             <li>
-                <a href="${pageContext.request.contextPath}/${linkGenerated}?${paramNameUrlItemPerPage}=${itemPerPage}&${paramNameUrlCurrent}=${loop.index}">${loop.index+1}</a>
+                <a href="${pageContext.request.contextPath}/${linkGenerated}${paramUtils.buildUrl()}">${loop.index+1}</a>
             </li>
         </c:forEach>
     </tr>

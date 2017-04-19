@@ -1,7 +1,7 @@
 package servlet;
 
 import dto.ComputerDTO;
-import services.CommonServices;
+import services.ComputerServices;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -68,17 +68,18 @@ public class Index extends HttpServlet {
         }
 
         // Get the page asked
-        computer = CommonServices.getPagedComputerDTO(pageDisplay, lengthPageDisplay, search);
+        computer = ComputerServices.getPagedComputerDTO(pageDisplay, lengthPageDisplay, search);
 
 
         // Get the total count filtered by name
-        int totalCount = CommonServices.getCountComputer(request.getParameter("search"));
+        int totalCount = ComputerServices.getCountComputer(request.getParameter("search"));
 
         // Set all params
         request.setAttribute("computers", computer);
         request.setAttribute("totalCount", totalCount);
         request.setAttribute("currentPage", pageDisplay);
         request.setAttribute("lengthPage", lengthPageDisplay);
+        request.setAttribute("search", (search == null ? "" : search));
         getServletContext().getRequestDispatcher(index).forward(request, response);
     }
 

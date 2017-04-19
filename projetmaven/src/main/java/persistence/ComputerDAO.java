@@ -102,6 +102,7 @@ public class ComputerDAO {
             preparedStatement.setInt(1, id);
             obj = preparedStatement.executeQuery();
             LOGGER.info("Succes getbyid computerdao");
+            CACHE_COMPANY.clear();
             return obj;
         } catch (Exception e) {
             LOGGER.info("Erreur sql get by id : " + e.getMessage());
@@ -126,7 +127,7 @@ public class ComputerDAO {
             statement.setString(1, computer.getName());
             statement.setDate(2, (computer.getIntroduced() != null ? new java.sql.Date(computer.getIntroduced().getTime()) : null));
             statement.setDate(3, (computer.getDiscontinued() != null ? new java.sql.Date(computer.getDiscontinued().getTime()) : null));
-            statement.setString(4, computer.getCompany() == null ? null : String.valueOf(computer.getCompany().getId()));
+            statement.setString(4, computer.getCompany() != null ? String.valueOf(computer.getCompany().getId()) : null);
 
             if (statement.executeUpdate() != 0) {
                 ResultSet generatedKeys = statement.getGeneratedKeys();
@@ -138,7 +139,6 @@ public class ComputerDAO {
                     CACHE_COMPANY.clear();
                     return newIdGenerated;
                 } else {
-                    // ??
                     LOGGER.info("Erreur insert computerdao : " + computer);
                     statement.close();
                     CACHE_COMPANY.clear();
@@ -147,7 +147,7 @@ public class ComputerDAO {
 
             } else {
                 // Aucune ligne affectée
-                LOGGER.info("Erreur 2 insert computerdao : " + computer);
+                LOGGER.info("Erreur insert 2 computerdao : " + computer);
                 statement.close();
                 CACHE_COMPANY.clear();
                 throw new Exception();
@@ -249,7 +249,7 @@ public class ComputerDAO {
     }
 
     /***
-     * Get count.
+     * Get computer count.
      * @param searchByName nullable parameter to research computer by name
      * @throws DAOCountException if error happens
      * @return count of computer considering filters

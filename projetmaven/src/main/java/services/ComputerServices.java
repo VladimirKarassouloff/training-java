@@ -1,108 +1,20 @@
 package services;
 
 import dto.ComputerDTO;
-import exception.DAOCountException;
-import exception.DAOSelectException;
-import exception.DAOUpdateException;
-import exception.DAODeleteException;
-import exception.DAOInsertException;
-import mapper.MapperCompany;
+import exception.*;
 import mapper.MapperComputer;
 import mapper.MapperComputerDTO;
-import model.Company;
 import model.Computer;
-import persistence.CompanyDAO;
 import persistence.ComputerDAO;
-import validator.CompanyValidator;
 import validator.ComputerValidator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommonServices {
-
-
-    ///// COMPANY
-
-    /**
-     * Get all companies in DB.
-     *
-     * @return companies
-     */
-    public static List<Company> getCompanies() {
-        try {
-            return MapperCompany.mapResultSetToObjects(CompanyDAO.getAll());
-        } catch (DAOSelectException e) {
-            e.printStackTrace();
-            return new ArrayList<Company>();
-        }
-    }
-
-    /**
-     * Get Page of campanies.
-     *
-     * @param page       number of page
-     * @param numberItem number of result per page
-     * @return companies
-     */
-    public static List<Company> getPagedCompany(int page, int numberItem) {
-        try {
-            return MapperCompany.mapResultSetToObjects(CompanyDAO.getPagination(page, numberItem));
-        } catch (DAOSelectException e) {
-            e.printStackTrace();
-            return new ArrayList<Company>();
-        }
-    }
-
-    /**
-     * Get the total count of companies in DB.
-     *
-     * @return number of companoes
-     */
-    public static int getCountCompany() {
-        try {
-            return CompanyDAO.getCount();
-        } catch (DAOCountException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    /**
-     * Get a specific company.
-     *
-     * @param id of the company returned
-     * @return company having the id or null
-     */
-    public static Company getCompany(int id) {
-        try {
-            return MapperCompany.mapResultSetToObject(CompanyDAO.getById(id));
-        } catch (DAOSelectException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * Update the company in DB with the value of the company parameter.
-     *
-     * @param company updated
-     * @return boolean for success
-     */
-    public static boolean updateCompany(Company company) {
-        if (!CompanyValidator.isValid(company)) {
-            return false;
-        }
-        try {
-            return CompanyDAO.update(company);
-        } catch (DAOUpdateException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-
-    ////COMPUTER
+/**
+ * Created by vkarassouloff on 19/04/17.
+ */
+public class ComputerServices {
 
     /**
      * Get all the computer from DB.
@@ -128,7 +40,7 @@ public class CommonServices {
      */
     public static List<ComputerDTO> getPagedComputerDTO(int page, int numberItem, String filterName) {
         try {
-            return MapperComputerDTO.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem, filterName));
+            return MapperComputerDTO.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem, ("".equals(filterName) ? null : filterName)));
         } catch (DAOSelectException e) {
             e.printStackTrace();
             return new ArrayList<ComputerDTO>();

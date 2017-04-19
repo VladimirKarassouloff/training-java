@@ -3,7 +3,7 @@ package applicationcli.pages;
 import applicationcli.Application;
 import applicationcli.FormulaireCli;
 import model.Computer;
-import services.CommonServices;
+import services.ComputerServices;
 import utils.Format;
 
 public class DetailComputer extends Page {
@@ -62,7 +62,7 @@ public class DetailComputer extends Page {
     public void onFirstGroundEvent() {
         if (isEditingCompanyId) {
             isEditingCompanyId = false;
-            if (CommonServices.updateComputer(computer)) {
+            if (ComputerServices.updateComputer(computer)) {
                 System.out.println("Succes de la modification");
             } else {
                 System.out.println("Erreur durant la modification");

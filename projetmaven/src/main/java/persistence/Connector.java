@@ -25,7 +25,6 @@ public final class Connector {
             Class.forName(Connector.JDBC_DRIVER);
             connection = (Connection) DriverManager.getConnection(Connector.DB_URL, Connector.USER, Connector.PASS);
         } catch (ClassNotFoundException | SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -54,15 +53,11 @@ public final class Connector {
     /**
      * Prepare a statement with the mysql connection.
      * @param sql string query
+     * @throws SQLException error from db
      * @return preparedstatement
      */
-    public PreparedStatement preparedStatement(String sql) {
-        try {
-            return (PreparedStatement) connection.prepareStatement(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public PreparedStatement preparedStatement(String sql) throws SQLException {
+        return (PreparedStatement) connection.prepareStatement(sql);
     }
 
     /**

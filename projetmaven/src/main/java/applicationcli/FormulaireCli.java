@@ -2,7 +2,8 @@ package applicationcli;
 
 import model.Company;
 import model.Computer;
-import services.CommonServices;
+import services.CompanyServices;
+import services.ComputerServices;
 import utils.Format;
 
 import java.util.Date;
@@ -149,7 +150,7 @@ public class FormulaireCli {
         System.out.println("Entrez la nouvelle date");
         Date newDate = FormulaireCli.reclaimDateOrNullInput();
         computer.setIntroduced(newDate);
-        CommonServices.updateComputer(computer);
+        ComputerServices.updateComputer(computer);
     }
 
     /**
@@ -160,7 +161,7 @@ public class FormulaireCli {
         System.out.println("Entrez la nouvelle date");
         Date newDate = FormulaireCli.reclaimDateOrNullInput();
         computer.setDiscontinued(newDate);
-        CommonServices.updateComputer(computer);
+        ComputerServices.updateComputer(computer);
     }
 
     /**
@@ -170,7 +171,7 @@ public class FormulaireCli {
     public static void updateComputerName(Computer computer) {
         System.out.println("Entrez le nouveau nom");
         computer.setName(FormulaireCli.input.nextLine());
-        CommonServices.updateComputer(computer);
+        ComputerServices.updateComputer(computer);
     }
 
     /**
@@ -180,7 +181,7 @@ public class FormulaireCli {
     public static void updateCompanyName(Company company) {
         System.out.println("Entrez le nouveau nom");
         company.setName(FormulaireCli.input.nextLine());
-        CommonServices.updateCompany(company);
+        CompanyServices.updateCompany(company);
     }
 
 

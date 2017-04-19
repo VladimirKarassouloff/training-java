@@ -2,7 +2,7 @@ package applicationcli.pages;
 
 import applicationcli.Application;
 import model.Company;
-import services.CommonServices;
+import services.CompanyServices;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +33,7 @@ public class ListCompaniesPage extends Pageable<Company> {
 
     @Override
     protected int orderFetchDataCountPageable() {
-        return CommonServices.getCountCompany();
+        return CompanyServices.getCountCompany();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class ListCompaniesPage extends Pageable<Company> {
 
     @Override
     protected void orderFetchNewDataForPage() {
-        this.list = CommonServices.getPagedCompany(currentPage, numberItemPage);
+        this.list = CompanyServices.getPagedCompany(currentPage, numberItemPage);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ListCompaniesPage extends Pageable<Company> {
         if (filterId.size() > 0) {
             this.app.pushPage(new DetailCompany(app, filterId.get(0)));
         } else {
-            Company tmp = CommonServices.getCompany(id);
+            Company tmp = CompanyServices.getCompany(id);
             if (tmp != null) {
                 this.app.pushPage(new DetailCompany(app, tmp));
             }

@@ -3,7 +3,7 @@ package applicationcli.pages;
 import applicationcli.Application;
 import model.Company;
 import model.Computer;
-import services.CommonServices;
+import services.CompanyServices;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +41,7 @@ public class ListCompaniesPageForm extends ListCompaniesPage {
 
         } else {
 
-            Company tmp = CommonServices.getCompany(id);
+            Company tmp = CompanyServices.getCompany(id);
 
             if (tmp != null) {
                 form.setCompany(tmp);
