@@ -1,5 +1,6 @@
 package applicationcli;
 
+import mapper.MapperDate;
 import model.Company;
 import model.Computer;
 import services.CompanyServices;
@@ -30,7 +31,7 @@ public class FormulaireCli {
             } else {
 
                 try {
-                    Date d = Format.dateFromString(inputUser);
+                    Date d = MapperDate.dateFromString(inputUser);
                     if (d != null) {
                         return d;
                     } else {
