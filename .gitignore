@@ -1,142 +1,125 @@
 
-# Created by https://www.gitignore.io/api/eclipse
+# Created by https://www.gitignore.io/api/maven,intellij,intellij+iml
 
-### Eclipse ###
+### Intellij ###
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
+# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
-projetmaven/.metadata
-projetmaven/bin/
-projetmaven/tmp/
-projetmaven/*.tmp
-projetmaven/*.bak
-projetmaven/*.swp
-projetmaven/*~.nib
-projetmaven/local.properties
-projetmaven/.settings/
-projetmaven/.loadpath
-projetmaven/.recommenders
+# User-specific stuff:
+projectmaven/.idea/**/workspace.xml
+projectmaven/.idea/**/tasks.xml
+projectmaven/.idea/dictionaries
 
-# Eclipse Core
-projetmaven/.project
+# Sensitive or high-churn files:
+projectmaven/.idea/**/dataSources/
+projectmaven/.idea/**/dataSources.ids
+projectmaven/.idea/**/dataSources.xml
+projectmaven/.idea/**/dataSources.local.xml
+projectmaven/.idea/**/sqlDataSources.xml
+projectmaven/.idea/**/dynamic.xml
+projectmaven/.idea/**/uiDesigner.xml
 
-# External tool builders
-projetmaven/.externalToolBuilders/
+# Gradle:
+projectmaven/.idea/**/gradle.xml
+projectmaven/.idea/**/libraries
 
-# Locally stored "Eclipse launch configurations"
-projetmaven/*.launch
+# CMake
+projectmaven/cmake-build-debug/
 
-# PyDev specific (Python IDE for Eclipse)
-projetmaven/*.pydevproject
+# Mongo Explorer plugin:
+projectmaven/.idea/**/mongoSettings.xml
 
-# CDT-specific (C/C++ Development Tooling)
-projetmaven/.cproject
+## File-based project format:
+projectmaven/*.iws
 
-# JDT-specific (Eclipse Java Development Tools)
-projetmaven/.classpath
+## Plugin-specific files:
 
-# Java annotation processor (APT)
-projetmaven/.factorypath
+# IntelliJ
+projectmaven/out/
 
-# PDT-specific (PHP Development Tools)
-projetmaven/.buildpath
+# mpeltonen/sbt-idea plugin
+projectmaven/.idea_modules/
 
-# sbteclipse plugin
-projetmaven/.target
+# JIRA plugin
+projectmaven/atlassian-ide-plugin.xml
 
-# Tern plugin
-projetmaven/.tern-project
+# Cursive Clojure plugin
+projectmaven/.idea/replstate.xml
 
-# TeXlipse plugin
-projetmaven/.texlipse
+# Crashlytics plugin (for Android Studio and IntelliJ)
+projectmaven/com_crashlytics_export_strings.xml
+projectmaven/crashlytics.properties
+projectmaven/crashlytics-build.properties
+projectmaven/fabric.properties
 
-# STS (Spring Tool Suite)
-projetmaven/.springBeans
+### Intellij Patch ###
+# Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
 
-# Code Recommenders
-projetmaven/.recommenders/
+# *.iml
+# modules.xml
+# projectmaven/.idea/misc.xml
+# *.ipr
 
-# Scala IDE specific (Scala & Java development for Eclipse)
-projetmaven/.cache-main
-projetmaven/.scala_dependencies
-projetmaven/.worksheet
-
-# End of https://www.gitignore.io/api/eclipse
-projetmaven/build/
-
-
-
-
-
-
-# Created by https://www.gitignore.io/api/intellij+iml
+# Sonarlint plugin
+projectmaven/.idea/sonarlint
 
 ### Intellij+iml ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff:
-projetmaven/.idea/**/workspace.xml
-projetmaven/.idea/**/tasks.xml
-projetmaven/.idea/dictionaries
 
 # Sensitive or high-churn files:
-projetmaven/.idea/**/dataSources/
-projetmaven/.idea/**/dataSources.ids
-projetmaven/.idea/**/dataSources.xml
-projetmaven/.idea/**/dataSources.local.xml
-projetmaven/.idea/**/sqlDataSources.xml
-projetmaven/.idea/**/dynamic.xml
-projetmaven/.idea/**/uiDesigner.xml
 
 # Gradle:
-projetmaven/.idea/**/gradle.xml
-projetmaven/.idea/**/libraries
+
+# CMake
 
 # Mongo Explorer plugin:
-projetmaven/.idea/**/mongoSettings.xml
 
 ## File-based project format:
-projetmaven/*.iws
 
 ## Plugin-specific files:
 
 # IntelliJ
-projetmaven/out/
 
 # mpeltonen/sbt-idea plugin
-projetmaven/.idea_modules/
 
 # JIRA plugin
-projetmaven/atlassian-ide-plugin.xml
 
 # Cursive Clojure plugin
-projetmaven/.idea/replstate.xml
 
 # Crashlytics plugin (for Android Studio and IntelliJ)
-projetmaven/com_crashlytics_export_strings.xml
-projetmaven/crashlytics.properties
-projetmaven/crashlytics-build.properties
-projetmaven/fabric.properties
 
 ### Intellij+iml Patch ###
 # Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
 
-projetmaven/*.iml
-projetmaven/modules.xml
-projetmaven/.idea/misc.xml
-projetmaven/*.ipr
+projectmaven/*.iml
+projectmaven/modules.xml
+projectmaven/.idea/misc.xml
+projectmaven/*.ipr
+
+### Maven ###
+projectmaven/target/
+projectmaven/pom.xml.tag
+projectmaven/pom.xml.releaseBackup
+projectmaven/pom.xml.versionsBackup
+projectmaven/pom.xml.next
+projectmaven/release.properties
+projectmaven/dependency-reduced-pom.xml
+projectmaven/buildNumber.properties
+projectmaven/.mvn/timing.properties
 
 
-projetmaven/.idea/libraries
-*.iml
-projetmaven/.idea/artifacts/
-# End of https://www.gitignore.io/api/intellij+iml
+
+projectmaven/.classpath
+projectmaven/.project
+projectmaven/.settings
+projectmaven/.idea/uiDesigner.xml
+projectmaven/.idea/libraries/*
+
+# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
+!projectmaven/.mvn/wrapper/maven-wrapper.jar
+
+# End of https://www.gitignore.io/api/maven,intellij,intellij+iml
 0
-
-
-
-projetmaven/.idea/artifacts/projet_maven_war.xml
-projetmaven/.idea/artifacts/projet_maven_war_exploded.xml
-projetmaven/.idea/kotlinc.xml
-projetmaven/.idea/libraries/
-projetmaven/.idea/workspace.xml
-projetmaven/projet-maven.iml
