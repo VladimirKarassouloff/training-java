@@ -1,7 +1,11 @@
 package services;
 
 import dto.ComputerDTO;
-import exception.*;
+import exception.DAOInsertException;
+import exception.DAODeleteException;
+import exception.DAOUpdateException;
+import exception.DAOSelectException;
+import exception.DAOCountException;
 import mapper.MapperComputer;
 import mapper.MapperComputerDTO;
 import model.Computer;

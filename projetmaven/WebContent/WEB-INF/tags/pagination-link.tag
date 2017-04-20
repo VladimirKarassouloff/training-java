@@ -8,15 +8,17 @@
 <%@ attribute name="totalCount" required="true" type="java.lang.Integer" description="Total count" %>
 <%@ attribute name="itemPerPage" required="true" type="java.lang.Integer" description="Items per page" %>
 
-<!--if currentpage is 10 and 'numberPageLeftRight'=3 => 7-8-9-10-11-12-13 -->
-<%@ attribute name="numberPageLeftRight" required="false" type="java.lang.Integer"
-              description="Number of page generated on left and right" %>
-
 
 <!-- Name of the get params generated -->
 <%@ attribute name="paramNameUrlCurrent" required="true" type="java.lang.String" description="Name of get parameter" %>
-<%@ attribute name="paramNameUrlItemPerPage" required="true" type="java.lang.String"
-              description="Name of get parameter" %>
+<%@ attribute name="paramNameUrlItemPerPage" required="true" type="java.lang.String" description="Name of get parameter" %>
+
+
+
+<!--if currentpage is 10 and 'numberPageLeftRight'=3 => 7-8-9-currentpage-11-12-13 -->
+<%@ attribute name="numberPageLeftRight" required="false" type="java.lang.Integer"
+              description="Number of page generated on left and right" %>
+
 
 
 <!-- Checking for default values -->
@@ -65,9 +67,11 @@
 <jsp:useBean id="paramUtils" scope="page" class="bean.BeanParamUtils"/>
 ${paramUtils.copyGetParameterFromRequest(pageContext.request)}
 
+
 <!-------------------------------------------------------------------------------------------------------->
 <!--------------------------------HTML GENERATION FOR PAGINATION------------------------------------------>
 <!-------------------------------------------------------------------------------------------------------->
+
 <ul class="pagination">
     <!-- Generation of [1] [...] [currentpage-1] [currentpage] etc-->
     <c:choose>

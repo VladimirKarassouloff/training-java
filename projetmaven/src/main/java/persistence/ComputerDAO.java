@@ -3,7 +3,11 @@ package persistence;
 
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
-import exception.*;
+import exception.DAOInsertException;
+import exception.DAODeleteException;
+import exception.DAOUpdateException;
+import exception.DAOSelectException;
+import exception.DAOCountException;
 import model.Company;
 import model.Computer;
 import org.slf4j.Logger;
