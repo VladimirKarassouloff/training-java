@@ -1,5 +1,6 @@
 package validator;
 
+import exception.InvalidComputerException;
 import model.Computer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,22 +14,39 @@ public class ComputerValidator {
 
     /**
      * Check whether a computer is valid or not before being updated / inserted in DB.
+     *
      * @param computer being manipulated
-     * @return validity
+     * @throws InvalidComputerException if computer is not valid for sql query
      */
-    public static boolean isValid(Computer computer) {
+    public static void checkValidity(Computer computer) throws InvalidComputerException {
         if (computer == null) {
             LOGGER.info("Computer not valid because null");
-            return false;
+            throw new InvalidComputerException("Computer not valid because null");
         } else if (computer.getName() == null || computer.getName().equals("")) {
             LOGGER.info("Computer not valid because name is empty");
-            return false;
+            throw new InvalidComputerException("Computer not valid because name is empty");
         } else if (computer.getDiscontinued() != null && computer.getIntroduced() != null && computer.getIntroduced().after(computer.getDiscontinued())) {
             LOGGER.info("Computer not valid because date aren't consistent");
-            return false;
+            throw new InvalidComputerException("Computer not valid because date aren't consistent");
         }
 
-        return true;
+    }
+
+    /**
+     * Check if computer has valid id, and if company pointed on exist (if any)
+     *
+     * @param computer checked
+     * @throws InvalidComputerException if computer is not valid for sql query
+     */
+    public static void checkValidityForUpdate(Computer computer) throws InvalidComputerException {
+        if (computer == null) {
+            LOGGER.info("Computer not valid because of null value");
+            throw new InvalidComputerException("Computer not valid because of null value");
+        } else if (computer.getId() == null || computer.getId() == 0) {
+            LOGGER.info("Computer not valid because id should not be null");
+            throw new InvalidComputerException("Computer not valid because id should not be null");
+        }
+        checkValidity(computer);
     }
 
 }

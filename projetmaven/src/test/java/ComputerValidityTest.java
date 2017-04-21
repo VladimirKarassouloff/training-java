@@ -1,3 +1,4 @@
+import exception.InvalidComputerException;
 import mapper.MapperDate;
 import model.Company;
 import model.Computer;
@@ -12,29 +13,38 @@ import static org.junit.Assert.assertEquals;
  */
 public class ComputerValidityTest {
 
+    //@Test(expected=IllegalArgumentException.class)
 
-    @Test
-    public void testValidityBadDates() {
+    @Test(expected=InvalidComputerException.class)
+    public void testValidityBadDates() throws InvalidComputerException {
         Computer computer = new Computer(null, "mdr", MapperDate.dateFromString("2017-04-05"), MapperDate.dateFromString("2017-04-04"));
-        assertEquals(false, ComputerValidator.isValid(computer));
+        ComputerValidator.checkValidity(computer);
     }
 
-    @Test
-    public void testValidityBadName() {
+    @Test(expected=InvalidComputerException.class)
+    public void testValidityBadName() throws InvalidComputerException {
         Computer computer = new Computer(null, "", null, null);
-        Computer computer2 = new Computer(null, null, null, null);
-        assertEquals(false, ComputerValidator.isValid(computer) && ComputerValidator.isValid(computer2));
+        ComputerValidator.checkValidity(computer);
+    }
+
+    @Test(expected=InvalidComputerException.class)
+    public void testValidityBadName2() throws InvalidComputerException {
+        Computer computer = new Computer(null, null, null, null);
+        ComputerValidator.checkValidity(computer);
     }
 
     @Test
-    public void testValidity() {
+    public void testValidity() throws InvalidComputerException {
         Computer computer = new Computer(null, "mdr", MapperDate.dateFromString("2017-04-03"), MapperDate.dateFromString("2017-04-04"));
         Computer computer2 = new Computer(new Company(0, "lol mdr"), "mdr", MapperDate.dateFromString("2017-04-03"), MapperDate.dateFromString("2017-04-04"));
         Computer computer3 = new Computer(new Company(0, "lol mdr"), "mdr", null, MapperDate.dateFromString("2017-04-04"));
         Computer computer4 = new Computer(new Company(0, "lol mdr"), "mdr", MapperDate.dateFromString("2017-04-03"), null);
         Computer computer5 = new Computer(new Company(0, "lol mdr"), "mdr", null, null);
-        assertEquals(true, ComputerValidator.isValid(computer) && ComputerValidator.isValid(computer2)
-                && ComputerValidator.isValid(computer3) && ComputerValidator.isValid(computer4) && ComputerValidator.isValid(computer5));
+        ComputerValidator.checkValidity(computer);
+        ComputerValidator.checkValidity(computer2);
+        ComputerValidator.checkValidity(computer3);
+        ComputerValidator.checkValidity(computer4);
+        ComputerValidator.checkValidity(computer5);
     }
 
 

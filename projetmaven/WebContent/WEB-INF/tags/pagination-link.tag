@@ -16,9 +16,12 @@
 
 
 <!--if currentpage is 10 and 'numberPageLeftRight'=3 => 7-8-9-currentpage-11-12-13 -->
-<%@ attribute name="numberPageLeftRight" required="false" type="java.lang.Integer"
-              description="Number of page generated on left and right" %>
+<%@ attribute name="numberPageLeftRight" required="false" type="java.lang.Integer" description="Number of page generated on left and right" %>
 
+<!-- Default value for numberPageLeftRight -->
+<c:if test="${ empty numberPageLeftRight }">
+    <c:set var="numberPageLeftRight" value="2"/>
+</c:if>
 
 
 <!-- Checking for default values -->
@@ -32,10 +35,7 @@
 </c:if>
 
 
-<!-- Default value for numberPageLeftRight -->
-<c:if test="${ empty numberPageLeftRight }">
-    <c:set var="numberPageLeftRight" value="2"/>
-</c:if>
+
 
 
 <!-- Getting the total number of pages -->

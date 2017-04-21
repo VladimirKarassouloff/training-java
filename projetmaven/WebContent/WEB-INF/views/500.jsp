@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,14 +21,15 @@
 			<div class="alert alert-danger">
 				Error 500: An error has occured!
 				<br/>
+				<c:if test="${not empty message}">${message}</c:if>
 				<!-- stacktrace -->
 			</div>
 		</div>
 	</section>
 
-	<script src="../js/jquery.min.js"></script>
-	<script src="../js/bootstrap.min.js"></script>
-	<script src="../js/dashboard.js"></script>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/dashboard.js"></script>
 
 </body>
 </html>

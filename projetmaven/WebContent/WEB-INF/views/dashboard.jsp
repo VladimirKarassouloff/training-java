@@ -74,7 +74,7 @@
                 <tr>
                     <td class="editMode"><input type="checkbox" name="cb"
                                                 class="cb" value="0"></td>
-                    <td><a href="editComputer.jsp" onclick="">${computer.name}</a></td>
+                    <td><a href="computer?id=${computer.id}" onclick="">${computer.name}</a></td>
                     <td>${computer.discontinued}</td>
                     <td>${computer.introduced}</td>
                     <td>${computer.companyName}</td>
@@ -91,9 +91,9 @@
 <footer class="navbar-fixed-bottom">
     <div class="container text-center">
         <mystuff:pagination-link totalCount="${totalCount}" itemPerPage="${lengthPage}" currentPage="${currentPage}"
-                                 linkGenerated="Index" paramNameUrlCurrent="currentPage" paramNameUrlItemPerPage="lengthPage"/>
+                                 linkGenerated="index" paramNameUrlCurrent="currentPage" paramNameUrlItemPerPage="lengthPage"/>
 
-        <mystuff:pagination-length linkGenerated="Index" paramNameLengthList="lengthPage" displayLength="${[20,30,50,100]}"/>
+        <mystuff:pagination-length linkGenerated="index" paramNameLengthList="lengthPage" displayLength="${[20,30,50,100]}"/>
 
     </div>
 </footer>

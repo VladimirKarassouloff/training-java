@@ -22,7 +22,7 @@ public class CompanyServices {
             return MapperCompany.mapResultSetToObjects(CompanyDAO.getAll());
         } catch (DAOSelectException e) {
             e.printStackTrace();
-            return new ArrayList<Company>();
+            return new ArrayList<>();
         }
     }
 

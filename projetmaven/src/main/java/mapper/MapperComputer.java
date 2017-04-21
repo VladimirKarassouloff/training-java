@@ -1,5 +1,7 @@
 package mapper;
 
+import dto.ComputerDTO;
+import exception.MapperException;
 import model.Company;
 import model.Computer;
 import persistence.ComputerDAO;
@@ -12,8 +14,32 @@ import java.util.List;
 
 public class MapperComputer {
 
+
+    /**
+     * Build computer from computerdto.
+     *
+     * @param computerDTO build from
+     * @return computer
+     * @throws MapperException if id point on non valid objects
+     */
+    public static Computer mapDTOToObject(ComputerDTO computerDTO) throws MapperException {
+        try {
+            return new Computer.Builder()
+                    .withId(computerDTO.getId() == null ? 0 : computerDTO.getId())
+                    .withName(computerDTO.getName())
+                    .withCompany(computerDTO.getCompanyId() == null ? null : new Company(computerDTO.getCompanyId(), null))
+                    .withDiscontinued(MapperDate.dateFromString(computerDTO.getDiscontinued()))
+                    .withIntroduced(MapperDate.dateFromString(computerDTO.getIntroduced()))
+                    .build();
+        } catch (Exception e) {
+            throw new MapperException("Error during mapping computerdto to computer");
+        }
+    }
+
+
     /**
      * Map resultset to computer.
+     *
      * @param rs resultset
      * @return computer
      */
@@ -32,6 +58,7 @@ public class MapperComputer {
 
     /**
      * Map resultset to computers.
+     *
      * @param rs resultset
      * @return computers
      */
@@ -50,6 +77,7 @@ public class MapperComputer {
 
     /**
      * Mapp Result set to computer without closing the resultset.
+     *
      * @param rs result set
      * @return computer
      */

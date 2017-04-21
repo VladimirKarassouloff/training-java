@@ -15,7 +15,7 @@ import java.util.List;
  * Servlet implementation class Index.
  */
 
-@WebServlet({"", "/Index"})
+@WebServlet({"", "/index"})
 public class Index extends HttpServlet {
     private static final long serialVersionUID = 1L;
 

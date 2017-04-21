@@ -11,6 +11,82 @@ public class Computer {
     private Date introduced;
     private Date discontinued;
 
+
+    public static class Builder {
+        private Computer computer;
+
+        /**
+         * Constructor for builder pattern.
+         */
+        public Builder() {
+            computer = new Computer();
+        }
+
+        /**
+         * Setter builder.
+         *
+         * @param id property set
+         * @return builder
+         */
+        public Builder withId(int id) {
+            computer.setId(id);
+            return this;
+        }
+
+        /**
+         * Setter builder.
+         *
+         * @param name property set
+         * @return builder
+         */
+        public Builder withName(String name) {
+            computer.setName(name);
+            return this;
+        }
+
+        /**
+         * Setter builder.
+         *
+         * @param introduced property set
+         * @return builder
+         */
+        public Builder withIntroduced(Date introduced) {
+            computer.setIntroduced(introduced);
+            return this;
+        }
+
+        /**
+         * Setter builder.
+         *
+         * @param discontinued property set
+         * @return builder
+         */
+        public Builder withDiscontinued(Date discontinued) {
+            computer.setDiscontinued(discontinued);
+            return this;
+        }
+
+        /**
+         * Setter builder.
+         *
+         * @param company property set
+         * @return builder
+         */
+        public Builder withCompany(Company company) {
+            computer.setCompany(company);
+            return this;
+        }
+
+        /**
+         * Build.
+         * @return computer built.
+         */
+        public Computer build() {
+            return computer;
+        }
+    }
+
+
     /**
      * Constructor.
      */
@@ -19,9 +95,10 @@ public class Computer {
 
     /**
      * Constructor.
-     * @param company attr
-     * @param name attr
-     * @param introduced attr
+     *
+     * @param company      attr
+     * @param name         attr
+     * @param introduced   attr
      * @param discontinued attr
      */
     public Computer(Company company, String name, Date introduced, Date discontinued) {
@@ -34,10 +111,11 @@ public class Computer {
 
     /**
      * Constructor.
-     * @param id attr
-     * @param company attr
-     * @param name attr
-     * @param introduced attr
+     *
+     * @param id           attr
+     * @param company      attr
+     * @param name         attr
+     * @param introduced   attr
      * @param discontinued attr
      */
     public Computer(int id, Company company, String name, Date introduced, Date discontinued) {
@@ -50,6 +128,7 @@ public class Computer {
 
     /**
      * Equality between 2 object.
+     *
      * @param obj compared to
      * @return equality
      */
@@ -73,7 +152,7 @@ public class Computer {
                 + " name : " + name + ", introduced : " + introduced + ", discontinued : " + discontinued + " } }";
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

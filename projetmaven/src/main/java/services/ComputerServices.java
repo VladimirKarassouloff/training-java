@@ -1,14 +1,19 @@
 package services;
 
 import dto.ComputerDTO;
-import exception.DAOInsertException;
-import exception.DAODeleteException;
-import exception.DAOUpdateException;
-import exception.DAOSelectException;
 import exception.DAOCountException;
+import exception.DAODeleteException;
+import exception.DAOInsertException;
+import exception.DAOSelectException;
+import exception.DAOUpdateException;
+import exception.FormException;
+import exception.InvalidComputerException;
+import exception.MapperException;
 import mapper.MapperComputer;
 import mapper.MapperComputerDTO;
 import model.Computer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import persistence.ComputerDAO;
 import validator.ComputerValidator;
 
@@ -19,6 +24,9 @@ import java.util.List;
  * Created by vkarassouloff on 19/04/17.
  */
 public class ComputerServices {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComputerServices.class);
+
 
     /**
      * Get all the computer from DB.
@@ -141,21 +149,37 @@ public class ComputerServices {
     }
 
     /**
+     * Get specific ComputerDTO having this id.
+     *
+     * @param id of the computer returned
+     * @return computer or null
+     */
+    public static ComputerDTO getComputerDTO(int id) {
+        try {
+            return MapperComputerDTO.mapResultSetToObject(ComputerDAO.getById(id));
+        } catch (DAOSelectException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * Add Computer to the DB.
      *
      * @param computer added
      * @return int for the id generated of the new computer, or -1 if insert failed
      */
     public static int addComputer(Computer computer) {
-        if (!ComputerValidator.isValid(computer)) {
-            return -1;
-        }
         try {
+            ComputerValidator.checkValidity(computer);
             return ComputerDAO.insert(computer);
         } catch (DAOInsertException e) {
             e.printStackTrace();
-            return -1;
+        } catch (InvalidComputerException e) {
+            LOGGER.info("Computer is not valid (" + computer + ")");
+            e.printStackTrace();
         }
+        return -1;
     }
 
     /**
@@ -165,15 +189,16 @@ public class ComputerServices {
      * @return success query
      */
     public static boolean updateComputer(Computer computer) {
-        if (!ComputerValidator.isValid(computer)) {
-            return false;
-        }
         try {
+            ComputerValidator.checkValidity(computer);
             return ComputerDAO.update(computer);
         } catch (DAOUpdateException e) {
             e.printStackTrace();
-            return false;
+        } catch (InvalidComputerException e) {
+            e.printStackTrace();
+            LOGGER.info("Computer is not valid (" + computer + ")");
         }
+        return false;
     }
 
     /**
@@ -191,4 +216,38 @@ public class ComputerServices {
         }
     }
 
+    /**
+     * Try updating a computer.
+     *
+     * @param form from user sent back from jsp
+     * @throws Exception error during validation
+     */
+    public static void formUpdateComputer(ComputerDTO form) throws Exception {
+        try {
+            Computer computer = MapperComputer.mapDTOToObject(form);
+            ComputerValidator.checkValidityForUpdate(computer);
+            updateComputer(computer);
+        } catch (MapperException e) {
+            throw new FormException(e.getMessage());
+        }
+    }
+
+    /**
+     * Try inserting new computer.
+     *
+     * @param form from user sent back from jsp
+     * @throws Exception error during validation
+     */
+    public static void formAddComputer(ComputerDTO form) throws Exception {
+        try {
+            Computer computer = MapperComputer.mapDTOToObject(form);
+            ComputerValidator.checkValidityForUpdate(computer);
+            addComputer(computer);
+        } catch (InvalidComputerException e) {
+            throw new FormException(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.info("Generic exception " + e.getMessage());
+            throw new FormException();
+        }
+    }
 }

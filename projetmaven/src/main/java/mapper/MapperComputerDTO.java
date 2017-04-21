@@ -39,7 +39,7 @@ public class MapperComputerDTO {
      * @return computers
      */
     public static List<ComputerDTO> mapResultSetToObjects(ResultSet rs) {
-        List<ComputerDTO> list = new ArrayList<ComputerDTO>();
+        List<ComputerDTO> list = new ArrayList<>();
         try {
             while (rs.next()) {
                 list.add(MapperComputerDTO.mapResultSetToObjectAux(rs));

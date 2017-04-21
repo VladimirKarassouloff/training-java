@@ -11,6 +11,7 @@ public class Tests {
      */
     public static void main(String[] args) {
         try {
+
             Class.forName(Connector.JDBC_DRIVER);
             System.out.println("Test get connection");
             Connector c = Connector.getInstance();
