@@ -21,22 +21,21 @@
 <section id="main">
 
 
-
     <div class="container">
-        <h1 id="homeTitle">${totalCount} Computers found  </h1>
+        <h1 id="homeTitle">${totalCount} Computers found </h1>
         <div id="actions" class="form-horizontal">
             <div class="pull-left">
                 <form id="searchForm" action="#" method="GET" class="form-inline">
                     <input value="${search}" type="search" id="searchbox" name="search"
-                           class="form-control" placeholder="Search name"/> <input
-                        type="submit" id="searchsubmit" value="Filter by name"
+                           class="form-control" placeholder="Search name"/>
+                    <input type="hidden" value="${lengthPage}" name="lengthPage" />
+                    <input type="submit" id="searchsubmit" value="Filter by name"
                         class="btn btn-primary"/>
                 </form>
             </div>
             <div class="pull-right">
-                <a class="btn btn-success" id="addComputer" href="addComputer.jsp">Add
-                    Computer</a> <a class="btn btn-default" id="editComputer" href="#"
-                                    onclick="$.fn.toggleEditMode();">Edit</a>
+                <a class="btn btn-success" id="addComputer" href="computer">Add Computer</a>
+                <a class="btn btn-default" id="editComputer" href="#" onclick="$.fn.toggleEditMode();">Edit</a>
             </div>
         </div>
     </div>
@@ -52,33 +51,31 @@
                 <!-- Variable declarations for passing labels as parameters -->
                 <!-- Table header for Computer Name -->
 
-                <th class="editMode" style="width: 60px; height: 22px;"><input
-                        type="checkbox" id="selectall"/> <span
-                        style="vertical-align: top;"> - <a href="#"
-                                                           id="deleteSelected" onclick="$.fn.deleteSelected();"> <i
-                        class="fa fa-trash-o fa-lg"></i>
-							</a>
-						</span></th>
+                <th class="editMode" style="width: 60px; height: 22px;">
+                    <input type="checkbox" id="selectall"/>
+                    <span style="vertical-align: top;"> -
+                        <a href="#" id="deleteSelected" onclick="$.fn.deleteSelected();">
+                            <i class="fa fa-trash-o fa-lg"></i>
+                        </a>
+                    </span>
+                </th>
                 <th>Computer name</th>
                 <th>Introduced date</th>
                 <!-- Table header for Discontinued Date -->
                 <th>Discontinued date</th>
                 <!-- Table header for Company -->
                 <th>Company</th>
-
             </tr>
             </thead>
             <!-- Browse attribute computers -->
             <tbody id="results">
             <c:forEach var="computer" items="${computers}">
                 <tr>
-                    <td class="editMode"><input type="checkbox" name="cb"
-                                                class="cb" value="0"></td>
+                    <td class="editMode"><input type="checkbox" name="cb" class="cb" value="0"></td>
                     <td><a href="computer?id=${computer.id}" onclick="">${computer.name}</a></td>
                     <td>${computer.introduced}</td>
                     <td>${computer.discontinued}</td>
                     <td>${computer.companyName}</td>
-
                 </tr>
             </c:forEach>
 
@@ -91,12 +88,13 @@
 <footer class="navbar-fixed-bottom">
     <div class="container text-center">
         <mystuff:pagination-link totalCount="${totalCount}" itemPerPage="${lengthPage}" currentPage="${currentPage}"
-                                 linkGenerated="index" paramNameUrlCurrent="currentPage" paramNameUrlItemPerPage="lengthPage"/>
+                                 linkGenerated="index" paramNameUrlCurrent="currentPage"/>
 
         <mystuff:pagination-length linkGenerated="index" paramNameLengthList="lengthPage" displayLength="${[20,30,50,100]}"/>
 
     </div>
 </footer>
+
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/dashboard.js"></script>

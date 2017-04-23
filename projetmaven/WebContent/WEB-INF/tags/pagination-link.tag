@@ -11,7 +11,6 @@
 
 <!-- Name of the get params generated -->
 <%@ attribute name="paramNameUrlCurrent" required="true" type="java.lang.String" description="Name of get parameter" %>
-<%@ attribute name="paramNameUrlItemPerPage" required="true" type="java.lang.String" description="Name of get parameter" %>
 
 
 

@@ -49,7 +49,6 @@ public class Computer extends HttpServlet {
         // Check Id parameter
         String idComputer = request.getParameter("id");
 
-
         if (idComputer == null) { // Trying to create a new computer
             form = new ComputerDTO();
         } else { // Trying to edit computer
@@ -88,14 +87,36 @@ public class Computer extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        // Error to display on form-page if any
+        String error = null;
+
         // Get back the form
-        Integer id = Integer.parseInt(request.getParameter(FORM_ID));
-        Integer companyId;
-        if (request.getParameter(FORM_COMPANY_ID) == null || request.getParameter(FORM_COMPANY_ID).equals("null")) {
+        Integer id = null;
+        Integer companyId = null;
+
+        // Parse Form id computer to check whether it's an edit or an add
+        if (request.getParameter(FORM_ID) == null || request.getParameter(FORM_ID).equals("")) {
+            id = null;
+        } else {
+            try {
+                id = Integer.parseInt(request.getParameter(FORM_ID));
+            } catch (Exception e) {
+                error = "Error parsing computer id";
+            }
+        }
+
+        // Parse Form id company
+        if (request.getParameter(FORM_COMPANY_ID) == null || request.getParameter(FORM_COMPANY_ID).equals("")) {
             companyId = null;
         } else {
-            companyId = Integer.parseInt(request.getParameter(FORM_COMPANY_ID));
+            try {
+                companyId = Integer.parseInt(request.getParameter(FORM_COMPANY_ID));
+            } catch (Exception e) {
+                error = "Error parsing company id";
+            }
         }
+
+        // Build computerdto from form
         ComputerDTO form = new ComputerDTO.Builder()
                 .withId(id)
                 .withName(request.getParameter(FORM_NAME))
@@ -104,17 +125,17 @@ public class Computer extends HttpServlet {
                 .withCompanyId(companyId)
                 .build();
 
-
-        // Insert or Update
-        String error = null;
-        try {
-            if (form.getId() == null) { // Create new Computer
-                ComputerServices.formAddComputer(form);
-            } else { // Edit a computer
-                ComputerServices.formUpdateComputer(form);
+        // Insert or Update if there are no id-parsing error
+        if (error == null) {
+            try {
+                if (form.getId() == null) { // Create new Computer
+                    ComputerServices.formAddComputer(form);
+                } else { // Edit a computer
+                    ComputerServices.formUpdateComputer(form);
+                }
+            } catch (Exception e) {
+                error = e.getMessage();
             }
-        } catch (Exception e) {
-            error = e.getMessage();
         }
 
         // Sendback to page if error, otherwise redirect to dashboard
@@ -123,11 +144,9 @@ public class Computer extends HttpServlet {
             request.setAttribute(ATTR_ERROR, error);
             request.setAttribute(ATTR_FORM, form);
             request.getRequestDispatcher(PAGE_FORM).forward(request, response);
-
         } else {
             response.sendRedirect(request.getContextPath() + PAGE_SUCCESS_FORM);
         }
-
 
     }
 

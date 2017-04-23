@@ -69,7 +69,7 @@
                             <label for="companyId">Company</label>
                             <select class="form-control" id="companyId" name="company_id_computer"
                                     value="${form.companyId}">
-                                <option value="null" <c:if test="${form.companyId == null}">selected</c:if>>--</option>
+                                <option value="" <c:if test="${form.companyId == null}">selected</c:if>>--</option>
                                 <c:forEach var="company" items="${companies}">
                                     <option value="${company.id}" <c:if
                                             test="${form.companyId == company.id}"> selected</c:if> >${company.name}</option>
@@ -79,8 +79,7 @@
                     </fieldset>
                     <div class="actions pull-right">
                         <input type="hidden" name="id_computer" value="${form.id}"/>
-                        <input type="submit"
-                               value="<c:choose><c:when test="${form.id == null}">Add</c:when><c:otherwise>Edit</c:otherwise></c:choose>"
+                        <input type="submit" value="<c:choose><c:when test="${form.id == null}">Add</c:when><c:otherwise>Edit</c:otherwise></c:choose>"
                                class="btn btn-primary">
                         or
                         <a href="index" class="btn btn-default">Cancel</a>
