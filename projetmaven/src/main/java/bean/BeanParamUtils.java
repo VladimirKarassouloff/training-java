@@ -22,6 +22,15 @@ public class BeanParamUtils implements Serializable {
     }
 
     /**
+     * Bean providing utils function for building urls with get parameters.
+     * @param request copy get parameter from request
+     */
+    public BeanParamUtils(HttpServletRequest request) {
+        paramsHash = new HashMap<>();
+        this.copyGetParameterFromRequest(request);
+    }
+
+    /**
      * Use request to get all parameter by name and build an URL saving all the values of GET parameters.
      *
      * @return url
@@ -51,16 +60,7 @@ public class BeanParamUtils implements Serializable {
         Enumeration<String> enu = request.getParameterNames();
         while (enu.hasMoreElements()) {
             String paramName = enu.nextElement();
-            System.out.println("Param name : " + paramName);
-            Object value = request.getAttribute(paramName);
-            if (value instanceof String) {
-                paramsHash.put(paramName, (String) value);
-            } else if (value instanceof Integer) {
-                Integer parsedInt = (Integer) value;
-                paramsHash.put(paramName, String.valueOf(parsedInt));
-            } else {
-                System.out.println("Javabean BeanParamUtils exclue parameter " + paramName);
-            }
+            paramsHash.put(paramName, request.getParameter(paramName));
         }
     }
 

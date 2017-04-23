@@ -1,5 +1,6 @@
 package servlet;
 
+import bean.BeanParamUtils;
 import dto.ComputerDTO;
 import services.ComputerServices;
 
@@ -18,6 +19,9 @@ import java.util.List;
 @WebServlet({"", "/index"})
 public class Index extends HttpServlet {
     private static final long serialVersionUID = 1L;
+
+    private static final String PAGE_SUCCESS_FORM = "/index";
+
 
     private static final int DEFAULT_LENGTH = 20;
     private static final int MAX_COMPUTER_DISPLAYED = 100;
@@ -75,10 +79,11 @@ public class Index extends HttpServlet {
         int totalCount = ComputerServices.getCountComputer(request.getParameter("search"));
 
         // Check user is at a valid page
+        double calc = ((double)totalCount / (double)lengthPageDisplay);
         if (pageDisplay < 0) {
             pageDisplay = 0;
-        } else if (pageDisplay > totalCount / lengthPageDisplay) {
-            pageDisplay = totalCount / lengthPageDisplay;
+        } else if ((double)pageDisplay >= calc) {
+            pageDisplay = (calc % 1 == 0) ? (int)calc - 1 : (int)calc;
         }
 
         // Get the page asked
@@ -93,4 +98,11 @@ public class Index extends HttpServlet {
         getServletContext().getRequestDispatcher(index).forward(request, response);
     }
 
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        BeanParamUtils bpu = new BeanParamUtils(req);
+        resp.sendRedirect(req.getContextPath() + PAGE_SUCCESS_FORM + bpu.buildUrl());
+
+    }
 }
