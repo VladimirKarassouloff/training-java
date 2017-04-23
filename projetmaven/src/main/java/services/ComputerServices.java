@@ -237,7 +237,7 @@ public class ComputerServices {
     public static void formAddComputer(ComputerDTO form) throws Exception {
         try {
             Computer computer = MapperComputer.mapDTOToObject(form);
-            ComputerValidator.checkValidityForUpdate(computer);
+            ComputerValidator.checkValidity(computer);
             if (addComputer(computer) == -1) {
                 throw new FormException("An error occured");
             }

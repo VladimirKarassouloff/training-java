@@ -2,6 +2,8 @@ package servlet;
 
 import bean.BeanParamUtils;
 import dto.ComputerDTO;
+import model.*;
+import model.Computer;
 import services.ComputerServices;
 
 import javax.servlet.ServletException;
@@ -79,11 +81,11 @@ public class Index extends HttpServlet {
         int totalCount = ComputerServices.getCountComputer(request.getParameter("search"));
 
         // Check user is at a valid page
-        double calc = ((double)totalCount / (double)lengthPageDisplay);
+        double calc = ((double) totalCount / (double) lengthPageDisplay);
         if (pageDisplay < 0) {
             pageDisplay = 0;
-        } else if ((double)pageDisplay >= calc) {
-            pageDisplay = (calc % 1 == 0) ? (int)calc - 1 : (int)calc;
+        } else if ((double) pageDisplay >= calc) {
+            pageDisplay = (calc % 1 == 0) ? (int) calc - 1 : (int) calc;
         }
 
         // Get the page asked
@@ -101,7 +103,20 @@ public class Index extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String deleteUnparsed = req.getParameter("selection");
+        if (deleteUnparsed != null) {
+            String[] deleteThoseIds = deleteUnparsed.split(",");
+            for (String idToDelete : deleteThoseIds) {
+                try {
+                 int id = Integer.parseInt(idToDelete);
+                 ComputerServices.deleteComputer(new Computer.Builder().withId(id).build());
+                } catch (Exception e) {
+                    System.err.println("Failed To Parse Id To Delete");
+                }
+            }
+        }
         BeanParamUtils bpu = new BeanParamUtils(req);
+        bpu.forget("selection");
         resp.sendRedirect(req.getContextPath() + PAGE_SUCCESS_FORM + bpu.buildUrl());
 
     }

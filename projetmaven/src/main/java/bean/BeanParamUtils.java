@@ -84,4 +84,11 @@ public class BeanParamUtils implements Serializable {
         paramsHash.put(key, String.valueOf(val.intValue()));
     }
 
+    /**
+     * Remove parameter from the list.
+     * @param selection name of the param
+     */
+    public void forget(String selection) {
+        paramsHash.remove(selection);
+    }
 }
