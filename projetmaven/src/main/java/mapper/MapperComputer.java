@@ -5,6 +5,7 @@ import exception.MapperException;
 import model.Company;
 import model.Computer;
 import persistence.ComputerDAO;
+import utils.Format;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,17 +24,21 @@ public class MapperComputer {
      * @throws MapperException if id point on non valid objects
      */
     public static Computer mapDTOToObject(ComputerDTO computerDTO) throws MapperException {
-        try {
-            return new Computer.Builder()
-                    .withId(computerDTO.getId() == null ? 0 : computerDTO.getId())
-                    .withName(computerDTO.getName())
-                    .withCompany(computerDTO.getCompanyId() == null ? null : new Company(computerDTO.getCompanyId(), null))
-                    .withDiscontinued(MapperDate.dateFromString(computerDTO.getDiscontinued()))
-                    .withIntroduced(MapperDate.dateFromString(computerDTO.getIntroduced()))
-                    .build();
-        } catch (Exception e) {
-            throw new MapperException("Error during mapping computerdto to computer");
+
+        Date dateDiscontinued = null, dateIntroduced = null;
+        if (!computerDTO.getIntroduced().isEmpty() && (dateIntroduced = MapperDate.dateFromString(computerDTO.getIntroduced())) == null) {
+            throw new MapperException("Something is wrong with introduction date");
+        } else if (!computerDTO.getDiscontinued().isEmpty() && (dateDiscontinued = MapperDate.dateFromString(computerDTO.getDiscontinued())) == null) {
+            throw new MapperException("Something is wrong with discontinued date");
         }
+
+        return new Computer.Builder()
+                .withId(computerDTO.getId() == null ? 0 : computerDTO.getId())
+                .withName(Format.protectAgainstInjection(computerDTO.getName()))
+                .withCompany(computerDTO.getCompanyId() == null ? null : new Company(computerDTO.getCompanyId(), null))
+                .withDiscontinued(dateDiscontinued)
+                .withIntroduced(dateIntroduced)
+                .build();
     }
 
 

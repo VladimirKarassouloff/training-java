@@ -6,13 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/bootstrap-datepicker.min.css" rel="stylesheet" media="screen">
     <link href="css/font-awesome.css" rel="stylesheet" media="screen">
     <link href="css/main.css" rel="stylesheet" media="screen">
+    <style>
+        .datepicker.datepicker-dropdown.dropdown-menu{
+            z-index: 1600;
+        }
+    </style>
 </head>
 <body>
 <header class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
-        <a class="navbar-brand" href="dashboard.html"> Application - Computer Database </a>
+        <a class="navbar-brand" href="index"> Application - Computer Database </a>
     </div>
 </header>
 
@@ -35,24 +41,30 @@
                             ${error}
                     </div>
                 </c:if>
-
-                <form action="computer" method="POST">
+                <form action="computer<c:if test="${form.id != null}">?id=${form.id}</c:if>" method="POST">
                     <fieldset>
                         <div class="form-group">
                             <label for="computerName">Computer name</label>
                             <input type="text" class="form-control" id="computerName" placeholder="Computer name"
                                    value="${form.name}" name="name_computer">
                         </div>
+
                         <div class="form-group">
                             <label for="introduced">Introduced date</label>
-                            <input type="date" class="form-control" id="introduced" placeholder="Introduced date"
-                                   value="${form.introduced}" name="introduced_computer">
+                            <div class="input-group date introduced">
+                                <input id="introduced" type="text" class="form-control" name="introduced_computer" value="${form.introduced}"><span
+                                    class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
                         </div>
+
                         <div class="form-group">
                             <label for="discontinued">Discontinued date</label>
-                            <input type="date" class="form-control" id="discontinued" placeholder="Discontinued date"
-                                   value="${form.discontinued}" name="discontinued_computer">
+                            <div class="input-group date discontinued">
+                                <input id="discontinued" type="text" class="form-control" name="discontinued_computer" value="${form.discontinued}"><span
+                                    class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
                         </div>
+
                         <div class="form-group">
                             <label for="companyId">Company</label>
                             <select class="form-control" id="companyId" name="company_id_computer"
@@ -81,5 +93,6 @@
 </body>
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-datepicker.js"></script>
 <script src="js/computer.js"></script>
 </html>

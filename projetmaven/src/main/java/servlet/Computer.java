@@ -118,7 +118,8 @@ public class Computer extends HttpServlet {
         }
 
         // Sendback to page if error, otherwise redirect to dashboard
-        if (error != null) { request.setAttribute(ATTR_COMPANIES, CompanyServices.getCompanies());
+        if (error != null) {
+            request.setAttribute(ATTR_COMPANIES, CompanyServices.getCompanies());
             request.setAttribute(ATTR_ERROR, error);
             request.setAttribute(ATTR_FORM, form);
             request.getRequestDispatcher(PAGE_FORM).forward(request, response);

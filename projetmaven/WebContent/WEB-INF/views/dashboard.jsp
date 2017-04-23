@@ -14,7 +14,7 @@
 <body>
 <header class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
-        <a class="navbar-brand" href="dashboard.html"> Application -
+        <a class="navbar-brand" href="index"> Application -
             Computer Database </a>
     </div>
 </header>
@@ -75,8 +75,8 @@
                     <td class="editMode"><input type="checkbox" name="cb"
                                                 class="cb" value="0"></td>
                     <td><a href="computer?id=${computer.id}" onclick="">${computer.name}</a></td>
-                    <td>${computer.discontinued}</td>
                     <td>${computer.introduced}</td>
+                    <td>${computer.discontinued}</td>
                     <td>${computer.companyName}</td>
 
                 </tr>

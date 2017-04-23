@@ -1,9 +1,12 @@
 package validator;
 
 import exception.InvalidComputerException;
+import mapper.MapperDate;
 import model.Computer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 
 /**
  * Created by vkarassouloff on 18/04/17.
@@ -11,6 +14,8 @@ import org.slf4j.LoggerFactory;
 public class ComputerValidator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComputerValidator.class);
+    private static final Date MOST_ANCIENT_DATE = MapperDate.dateFromString("1970-01-01");
+
 
     /**
      * Check whether a computer is valid or not before being updated / inserted in DB.
@@ -26,8 +31,14 @@ public class ComputerValidator {
             LOGGER.info("Computer not valid because name is empty");
             throw new InvalidComputerException("Computer not valid because name is empty");
         } else if (computer.getDiscontinued() != null && computer.getIntroduced() != null && computer.getIntroduced().after(computer.getDiscontinued())) {
-            LOGGER.info("Computer not valid because date aren't consistent");
+            LOGGER.info("Computer not valid because date aren't co nsistent");
             throw new InvalidComputerException("Computer not valid because date aren't consistent");
+        } else if (computer.getDiscontinued() != null && !computer.getDiscontinued().after(MOST_ANCIENT_DATE)) {
+            LOGGER.info("Computer not valid because discontinued date is before 1970-01-01");
+            throw new InvalidComputerException("Computer not valid because discontinued date is before 1970-01-01");
+        } else if (computer.getIntroduced() != null && !computer.getIntroduced().after(MOST_ANCIENT_DATE)) {
+            LOGGER.info("Computer not valid because introduced date is before 1970-01-01");
+            throw new InvalidComputerException("Computer not valid because introduced date is before 1970-01-01");
         }
 
     }

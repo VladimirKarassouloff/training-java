@@ -1,14 +1,7 @@
 package services;
 
 import dto.ComputerDTO;
-import exception.DAOCountException;
-import exception.DAODeleteException;
-import exception.DAOInsertException;
-import exception.DAOSelectException;
-import exception.DAOUpdateException;
-import exception.FormException;
-import exception.InvalidComputerException;
-import exception.MapperException;
+import exception.*;
 import mapper.MapperComputer;
 import mapper.MapperComputerDTO;
 import model.Computer;
@@ -220,13 +213,16 @@ public class ComputerServices {
      * Try updating a computer.
      *
      * @param form from user sent back from jsp
+     * @return success of update
      * @throws Exception error during validation
      */
     public static void formUpdateComputer(ComputerDTO form) throws Exception {
         try {
             Computer computer = MapperComputer.mapDTOToObject(form);
             ComputerValidator.checkValidityForUpdate(computer);
-            updateComputer(computer);
+            if (!updateComputer(computer)) {
+                throw new FormException("An error occured");
+            }
         } catch (MapperException e) {
             throw new FormException(e.getMessage());
         }
@@ -242,7 +238,9 @@ public class ComputerServices {
         try {
             Computer computer = MapperComputer.mapDTOToObject(form);
             ComputerValidator.checkValidityForUpdate(computer);
-            addComputer(computer);
+            if (addComputer(computer) == -1) {
+                throw new FormException("An error occured");
+            }
         } catch (InvalidComputerException e) {
             throw new FormException(e.getMessage());
         } catch (Exception e) {
