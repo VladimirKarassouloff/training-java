@@ -44,7 +44,7 @@ public class ComputerValidator {
     }
 
     /**
-     * Check if computer has valid id, and if company pointed on exist (if any)
+     * Check if computer has valid id, and if company pointed on exist (if any).
      *
      * @param computer checked
      * @throws InvalidComputerException if computer is not valid for sql query

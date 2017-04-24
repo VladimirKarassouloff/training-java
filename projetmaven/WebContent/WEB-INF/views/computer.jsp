@@ -81,7 +81,7 @@
                     </fieldset>
                     <div class="actions pull-right">
                         <input type="hidden" name="id_computer" value="${form.id}"/>
-                        <input type="submit" value="<c:choose><c:when test="${form.id == null}">Add</c:when><c:otherwise>Edit</c:otherwise></c:choose>"
+                        <input id="submit-button" type="submit" value="<c:choose><c:when test="${form.id == null}">Add</c:when><c:otherwise>Edit</c:otherwise></c:choose>"
                                class="btn btn-primary">
                         or
                         <a href="index" class="btn btn-default">Cancel</a>

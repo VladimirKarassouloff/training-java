@@ -1,7 +1,5 @@
 $(document).ready(function () {
 
-    console.log("ready");
-
     $('.input-group.date.introduced').datepicker({
         format: "yyyy-mm-dd"
     });

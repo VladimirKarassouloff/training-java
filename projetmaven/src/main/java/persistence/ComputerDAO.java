@@ -61,6 +61,8 @@ public class ComputerDAO {
     public static final String SELECT_FILTER_NAME = SELECT + " " + WHERE_NAME_FILTER;
 
     public static final String COUNT_FILTER_NAME = COUNT + WHERE_NAME_FILTER;
+
+    public static final String SELECT_LAST_COMPUTER_INSERTED = SELECT + " ORDER BY " + TABLE_NAME + "." + COL_COMPUTER_ID + " DESC LIMIT 1";
     ///////////////////
     ///////////////////
 
@@ -215,6 +217,30 @@ public class ComputerDAO {
             LOGGER.info("Error Update Computerdao : " + computer + " => " + e.getMessage());
         }
         throw new DAOUpdateException(computer);
+    }
+
+
+    /**
+     * Get result set for the last computer inserted in the DB.
+     *
+     * @return resultset
+     * @throws DAOSelectException if error happens
+     */
+    public static ResultSet getLastComputerInserted() throws DAOSelectException {
+        CACHE_COMPANY.clear();
+        try {
+            ResultSet rs = null;
+            rs = Connector.getInstance().preparedStatement(SELECT_LAST_COMPUTER_INSERTED).executeQuery();
+            LOGGER.info("Succes getLastComputerInserted Computerdao");
+            CACHE_COMPANY.clear();
+            return rs;
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.info("Error Get last computer inserted Computerdao : " + e.getMessage());
+        }
+
+        CACHE_COMPANY.clear();
+        throw new DAOSelectException("Company", SELECT_LAST_COMPUTER_INSERTED);
     }
 
 

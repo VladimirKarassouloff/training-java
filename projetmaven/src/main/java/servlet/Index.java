@@ -2,7 +2,6 @@ package servlet;
 
 import bean.BeanParamUtils;
 import dto.ComputerDTO;
-import model.*;
 import model.Computer;
 import services.ComputerServices;
 

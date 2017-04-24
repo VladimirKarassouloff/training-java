@@ -1,7 +1,14 @@
 package services;
 
 import dto.ComputerDTO;
-import exception.*;
+import exception.DAOCountException;
+import exception.DAODeleteException;
+import exception.DAOInsertException;
+import exception.DAOSelectException;
+import exception.DAOUpdateException;
+import exception.FormException;
+import exception.InvalidComputerException;
+import exception.MapperException;
 import mapper.MapperComputer;
 import mapper.MapperComputerDTO;
 import model.Computer;
@@ -213,7 +220,6 @@ public class ComputerServices {
      * Try updating a computer.
      *
      * @param form from user sent back from jsp
-     * @return success of update
      * @throws Exception error during validation
      */
     public static void formUpdateComputer(ComputerDTO form) throws Exception {
@@ -246,6 +252,19 @@ public class ComputerServices {
         } catch (Exception e) {
             LOGGER.info("Generic exception " + e.getMessage());
             throw new FormException();
+        }
+    }
+
+    /**
+     * Return the last computer inserted in DB.
+     * @return last computer inserted
+     */
+    public static Computer getLastComputerInserted() {
+        try {
+            return MapperComputer.mapResultSetToObject(ComputerDAO.getLastComputerInserted());
+        } catch (DAOSelectException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }
