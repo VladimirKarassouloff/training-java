@@ -37,11 +37,12 @@
                     </c:choose>
                 </h1>
                 <c:if test="${not empty error}">
-                    <div class="alert alert-danger">
+                    <div id="error" class="alert alert-danger">
                             ${error}
                     </div>
                 </c:if>
-                <form action="computer<c:if test="${form.id != null}">?id=${form.id}</c:if>" method="POST">
+
+                <form id="myform" action="computer<c:if test="${form.id != null}">?id=${form.id}</c:if>" method="POST">
                     <fieldset>
                         <div class="form-group">
                             <label for="computerName">Computer name</label>
