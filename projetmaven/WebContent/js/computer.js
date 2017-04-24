@@ -1,5 +1,6 @@
+$(document).ready(function () {
 
-(function() {
+    console.log("ready");
 
     $('.input-group.date.introduced').datepicker({
         format: "yyyy-mm-dd"
@@ -9,15 +10,38 @@
         format: "yyyy-mm-dd"
     });
 
-    var errorDom = $("#error");
-    var nameForm = $("#computerName");
 
-    $("#myform").submit( function(event) {
-        if(nameForm.val() === "" ) {
-            errorDom.html("Name should not be empty");
-            event.preventDefault();
+    $('#myform').bootstrapValidator({
+        framework: 'bootstrap',
+
+        fields: {
+            name_computer: {
+                validators: {
+                    notEmpty: {
+                        message: 'A computer must have a name'
+                    }
+                }
+            }/*,
+            introduced_computer: {
+                validators: {
+                    date: {
+                        format: 'YYYY-MM-DD',
+                        message: 'The value is not a valid date'
+                    }
+                }
+            },
+            discontinued_computer: {
+                validators: {
+                    date: {
+                        format: 'YYYY-MM-DD',
+                        message: 'The value is not a valid date'
+                    }
+                }
+            },
+            company_id_computer: {
+
+            }*/
         }
-
     });
 
-})();
+});

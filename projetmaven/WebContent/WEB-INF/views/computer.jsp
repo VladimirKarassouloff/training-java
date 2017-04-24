@@ -9,6 +9,7 @@
     <link href="css/bootstrap-datepicker.min.css" rel="stylesheet" media="screen">
     <link href="css/font-awesome.css" rel="stylesheet" media="screen">
     <link href="css/main.css" rel="stylesheet" media="screen">
+    <link href="css/bootstrapValidator.min.css" rel="stylesheet" media="screen">
     <style>
         .datepicker.datepicker-dropdown.dropdown-menu{
             z-index: 1600;
@@ -94,5 +95,6 @@
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/bootstrap-datepicker.js"></script>
+<script src="js/bootstrapValidator.min.js"></script>
 <script src="js/computer.js"></script>
 </html>
