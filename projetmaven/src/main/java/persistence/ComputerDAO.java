@@ -1,8 +1,5 @@
 package persistence;
 
-
-import com.mysql.jdbc.PreparedStatement;
-import com.mysql.jdbc.Statement;
 import exception.DAOInsertException;
 import exception.DAODeleteException;
 import exception.DAOUpdateException;
@@ -13,7 +10,9 @@ import model.Computer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.HashMap;
 
 public class ComputerDAO {

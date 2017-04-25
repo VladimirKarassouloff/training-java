@@ -1,3 +1,5 @@
+package unit;
+
 import model.Company;
 import org.junit.Test;
 import validator.CompanyValidator;

@@ -1,6 +1,5 @@
 package persistence;
 
-import com.mysql.jdbc.PreparedStatement;
 import exception.DAOCountException;
 import exception.DAOSelectException;
 import exception.DAOUpdateException;
@@ -8,6 +7,7 @@ import model.Company;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
