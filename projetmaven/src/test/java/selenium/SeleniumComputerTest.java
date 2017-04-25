@@ -20,23 +20,36 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class SeleniumAddComputerTest {
+public class SeleniumComputerTest {
 
     private WebDriver driver;
     private JavascriptExecutor jse;
 
-    private String baseUrl;
+    private static final String baseUrl = "http://localhost:8080/mydeploy/";
+    private static final String baseUrlAddEdit = baseUrl + "computer";
+    private static final String baseUrlRemove = baseUrl;
     private StringBuffer verificationErrors = new StringBuffer();
 
+    /////////////////////////////////////////
+    // IDs of element adding/editing computer
     private static final String NAME_COMPUTER_ID = "computerName";
     private static final String INTRODUCED_ID = "introduced";
     private static final String DISCONTINUED_ID = "discontinued";
     private static final String COMPANY_ID = "companyId";
     private static final String SUBMIT_ID = "submit-button";
 
+    /// Web Elements for adding / editing computer
     private WebElement nameWE, introducedWE, discontinuedWE, companyWE, submitWE, bodyWE;
     private Select companySelect;
+    /////////////////////////////
 
+    /////////////////////////////////
+
+    //private static final String SUBMIT_DELETION_ID = "deleteSelected";
+    //private static final String SUBMIT_DELETION_ID = "deleteSelected";
+    // Web Elements in dashboard
+    //private WebElement selectAllWE, submitDeletionWE;
+    ////////////////////////////////////////////////
     @Before
     public void setUp() throws Exception {
         /*
@@ -45,7 +58,6 @@ public class SeleniumAddComputerTest {
         */
         System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver");
         driver = new ChromeDriver();
-        baseUrl = "http://localhost:8080/mydeploy/computer";
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         jse = (JavascriptExecutor) driver;
 
@@ -53,20 +65,21 @@ public class SeleniumAddComputerTest {
 
     @Test
     public void testAddComputer() throws Exception {
-        driver.get(baseUrl);
+        driver.get(baseUrlAddEdit);
 
         // Grab inputs and submit
         getAllFormElement();
 
         // Default datas used for the test
         TestValues testValues = new Builder()
+                .withName("MDR SELE ADD")
                 .withCountBefore(ComputerServices.getCountComputer())
                 .build();
 
         System.out.println(testValues.countBeforeSubmit + " row before form post");
 
         // Post form
-        fillInputs(testValues);
+        fillFormAddEditInputs(testValues);
 
         submitWE.click();
 
@@ -76,7 +89,8 @@ public class SeleniumAddComputerTest {
         System.out.println("Count is ok");
 
         // Test if all values inserted are correct
-        Computer computerInserted = ComputerServices.getLastComputerInserted();
+        //Computer computerInserted = ComputerServices.getLastComputerInserted();
+        Computer computerInserted = ComputerServices.getPagedComputer(0, 1, testValues.getNameComputer()).get(0);
         System.out.println("Comparing now value of form vs inserted");
         assertEquals(testValues.nameComputer.equals(computerInserted.getName()), true);
         assertEquals(MapperDate.dateFromString(testValues.dateIntro).getTime(), computerInserted.getIntroduced().getTime());
@@ -84,25 +98,23 @@ public class SeleniumAddComputerTest {
         assertEquals(Integer.parseInt(testValues.companyId), computerInserted.getCompany().getId());
         System.out.println("Form inputs values are ok");
 
-
     }
 
     @Test
     public void testEditComputer() throws Exception {
-        testAddComputer();
         Computer computerJustAdded = ComputerServices.getLastComputerInserted();
-        driver.get(baseUrl + "?id=" + computerJustAdded.getId());
+        driver.get(baseUrlAddEdit + "?id=" + computerJustAdded.getId());
         driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
 
 
         // Datas used for the test
         TestValues testValues = new Builder()
+                .withName("MDR SELE MODIF")
                 .withDateDisc("")
                 .withDateIntro("1999-06-08")
                 .withCompanyId("")
                 .withCountBefore(ComputerServices.getCountComputer())
                 .build();
-        testValues.setNameComputer("MDR SELE MODIF " + testValues.d.getTime());
 
         // Taking count of computer before test
         System.out.println(testValues.countBeforeSubmit + " row before form post");
@@ -122,7 +134,7 @@ public class SeleniumAddComputerTest {
         System.out.println("All inputs are preselected");
 
         // Now we change values of inputs
-        fillInputs(testValues);
+        fillFormAddEditInputs(testValues);
         submitWE.click();
 
         // Asserting no computer got insert
@@ -141,10 +153,23 @@ public class SeleniumAddComputerTest {
     }
 
 
+    /*
+    @Test
+    public void testRemoveComputer() throws Exception {
+        Computer computerJustAdded = ComputerServices.getLastComputerInserted();
+        driver.get(baseUrlRemove + "?search=" + computerJustAdded.getName());
+        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+
+        submitDeletionWE = driver.findElement(By.id(""));
+
+    }
+    */
+
+
     /**
      * Post test values in web elements.
      */
-    private void fillInputs(TestValues test) {
+    private void fillFormAddEditInputs(TestValues test) {
         nameWE.clear();
         nameWE.sendKeys(test.nameComputer);
         introducedWE.clear();
@@ -166,6 +191,7 @@ public class SeleniumAddComputerTest {
         companyWE = driver.findElement(By.id(COMPANY_ID));
         companySelect = new Select(driver.findElement(By.id(COMPANY_ID)));
     }
+
 
     @After
     public void tearDown() throws Exception {
@@ -195,7 +221,6 @@ public class SeleniumAddComputerTest {
          */
         public TestValues() {
             d = new Date();
-            nameComputer = "MDR TEST SELENIUM " + d.getTime();
             dateIntro = "1999-04-04";
             dateDisc = "1999-04-05";
             companyId = "1";
@@ -225,11 +250,15 @@ public class SeleniumAddComputerTest {
             this.d = d;
         }
 
-        public String getFormNameComputer() {
+        public String getNameComputer() {
             return nameComputer;
         }
 
         public void setNameComputer(String nameComputer) {
+            this.nameComputer = nameComputer + d.getTime();
+        }
+
+        public void setForcedNameComputer(String nameComputer) {
             this.nameComputer = nameComputer;
         }
 
@@ -273,7 +302,7 @@ public class SeleniumAddComputerTest {
         }
 
         public Builder withName(String s) {
-            test.nameComputer = s;
+            test.setNameComputer(s);
             return this;
         }
 
