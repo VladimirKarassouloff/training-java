@@ -150,7 +150,7 @@ public class FormulaireCli {
         System.out.println("Entrez la nouvelle date");
         Date newDate = FormulaireCli.reclaimDateOrNullInput();
         computer.setIntroduced(newDate);
-        ComputerServices.updateComputer(computer);
+        ComputerServices.getInstance().updateComputer(computer);
     }
 
     /**
@@ -161,7 +161,7 @@ public class FormulaireCli {
         System.out.println("Entrez la nouvelle date");
         Date newDate = FormulaireCli.reclaimDateOrNullInput();
         computer.setDiscontinued(newDate);
-        ComputerServices.updateComputer(computer);
+        ComputerServices.getInstance().updateComputer(computer);
     }
 
     /**
@@ -171,7 +171,7 @@ public class FormulaireCli {
     public static void updateComputerName(Computer computer) {
         System.out.println("Entrez le nouveau nom");
         computer.setName(FormulaireCli.input.nextLine());
-        ComputerServices.updateComputer(computer);
+        ComputerServices.getInstance().updateComputer(computer);
     }
 
     /**
@@ -181,7 +181,7 @@ public class FormulaireCli {
     public static void updateCompanyName(Company company) {
         System.out.println("Entrez le nouveau nom");
         company.setName(FormulaireCli.input.nextLine());
-        CompanyServices.updateCompany(company);
+        CompanyServices.getInstance().updateCompany(company);
     }
 
 

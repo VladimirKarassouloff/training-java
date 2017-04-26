@@ -41,7 +41,7 @@ public class ListCompaniesPageForm extends ListCompaniesPage {
 
         } else {
 
-            Company tmp = CompanyServices.getCompany(id);
+            Company tmp = CompanyServices.getInstance().getCompany(id);
 
             if (tmp != null) {
                 form.setCompany(tmp);

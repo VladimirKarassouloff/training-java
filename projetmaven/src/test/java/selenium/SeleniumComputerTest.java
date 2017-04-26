@@ -73,7 +73,7 @@ public class SeleniumComputerTest {
         // Default datas used for the test
         TestValues testValues = new Builder()
                 .withName("MDR SELE ADD")
-                .withCountBefore(ComputerServices.getCountComputer())
+                .withCountBefore(ComputerServices.getInstance().getCountComputer())
                 .build();
 
         System.out.println(testValues.countBeforeSubmit + " row before form post");
@@ -84,13 +84,13 @@ public class SeleniumComputerTest {
         submitWE.click();
 
         // Check if there is a new Computer
-        testValues.countAfterSubmit = ComputerServices.getCountComputer();
+        testValues.countAfterSubmit = ComputerServices.getInstance().getCountComputer();
         assertEquals(testValues.countBeforeSubmit + 1, testValues.countAfterSubmit);
         System.out.println("Count is ok");
 
         // Test if all values inserted are correct
         //Computer computerInserted = ComputerServices.getLastComputerInserted();
-        Computer computerInserted = ComputerServices.getPagedComputer(0, 1, testValues.getNameComputer()).get(0);
+        Computer computerInserted = ComputerServices.getInstance().getPagedComputer(0, 1, testValues.getNameComputer()).get(0);
         System.out.println("Comparing now value of form vs inserted");
         assertEquals(testValues.nameComputer.equals(computerInserted.getName()), true);
         assertEquals(MapperDate.dateFromString(testValues.dateIntro).getTime(), computerInserted.getIntroduced().getTime());
@@ -102,7 +102,7 @@ public class SeleniumComputerTest {
 
     @Test
     public void testEditComputer() throws Exception {
-        Computer computerJustAdded = ComputerServices.getLastComputerInserted();
+        Computer computerJustAdded = ComputerServices.getInstance().getLastComputerInserted();
         driver.get(baseUrlAddEdit + "?id=" + computerJustAdded.getId());
         driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
 
@@ -113,7 +113,7 @@ public class SeleniumComputerTest {
                 .withDateDisc("")
                 .withDateIntro("1999-06-08")
                 .withCompanyId("")
-                .withCountBefore(ComputerServices.getCountComputer())
+                .withCountBefore(ComputerServices.getInstance().getCountComputer())
                 .build();
 
         // Taking count of computer before test
@@ -138,12 +138,12 @@ public class SeleniumComputerTest {
         submitWE.click();
 
         // Asserting no computer got insert
-        testValues.countAfterSubmit = ComputerServices.getCountComputer();
+        testValues.countAfterSubmit = ComputerServices.getInstance().getCountComputer();
         assertEquals(testValues.countAfterSubmit, testValues.countBeforeSubmit);
         System.out.println("Computer count is ok");
 
         // Comparing now the values
-        Computer computerEdited = ComputerServices.getComputer(computerJustAdded.getId());
+        Computer computerEdited = ComputerServices.getInstance().getComputer(computerJustAdded.getId());
         assertEquals(computerEdited.getName().equals(testValues.nameComputer), true);
         assertEquals(computerEdited.getIntroduced().getTime(), MapperDate.dateFromString(testValues.dateIntro).getTime());
         assertEquals(computerEdited.getDiscontinued(), null);

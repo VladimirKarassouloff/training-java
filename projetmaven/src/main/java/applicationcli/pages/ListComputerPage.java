@@ -50,10 +50,10 @@ public class ListComputerPage extends Pageable<Computer> {
         System.out.println("Entrez le numero l'id de l'ordinateur a supprimer");
         try {
             int idDelete = Integer.parseInt(input.nextLine());
-            Computer comp = ComputerServices.getComputer(idDelete);
+            Computer comp = ComputerServices.getInstance().getComputer(idDelete);
             if (comp == null) {
                 throw new Exception("Id invalide");
-            } else if (ComputerServices.deleteComputer(comp)) {
+            } else if (ComputerServices.getInstance().deleteComputer(comp)) {
                 countItemTotal--;
                 if (!checkPageIsCorrect()) {
                     orderFetchNewDataForPage();
@@ -101,12 +101,12 @@ public class ListComputerPage extends Pageable<Computer> {
 
     @Override
     protected void orderFetchNewDataForPage() {
-        this.list = ComputerServices.getPagedComputer(currentPage, numberItemPage);
+        this.list = ComputerServices.getInstance().getPagedComputer(currentPage, numberItemPage);
     }
 
     @Override
     protected int orderFetchDataCountPageable() {
-        return ComputerServices.getCountComputer();
+        return ComputerServices.getInstance().getCountComputer();
     }
 
     @Override
@@ -117,9 +117,9 @@ public class ListComputerPage extends Pageable<Computer> {
         if (filterId.size() > 0) {
             this.app.pushPage(new DetailComputer(app, filterId.get(0)));
         } else {
-            Computer idComputer = ComputerServices.getComputer(id);
+            Computer idComputer = ComputerServices.getInstance().getComputer(id);
             if (idComputer != null) {
-                this.app.pushPage(new DetailComputer(app, ComputerServices.getComputer(id)));
+                this.app.pushPage(new DetailComputer(app, ComputerServices.getInstance().getComputer(id)));
             } else {
                 System.out.println("Cet ordinateur n'existe pas");
             }
@@ -130,7 +130,7 @@ public class ListComputerPage extends Pageable<Computer> {
     @Override
     public void onFirstGroundEvent() {
         if (isCreatingComputer) {
-            ComputerServices.addComputer(this.computerCreation);
+            ComputerServices.getInstance().addComputer(this.computerCreation);
             isCreatingComputer = false;
             this.countItemTotal++;
             this.orderFetchNewDataForPage();

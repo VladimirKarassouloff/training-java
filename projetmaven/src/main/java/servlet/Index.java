@@ -28,6 +28,7 @@ public class Index extends HttpServlet {
     private static final int MAX_COMPUTER_DISPLAYED = 100;
     public static String index = "/WEB-INF/views/dashboard.jsp";
 
+    private static ComputerServices services = ComputerServices.getInstance();
 
     /**
      * Get informations for computers.
@@ -77,7 +78,7 @@ public class Index extends HttpServlet {
         }
 
         // Get the total count filtered by name
-        int totalCount = ComputerServices.getCountComputer(request.getParameter("search"));
+        int totalCount = services.getCountComputer(request.getParameter("search"));
 
         // Check user is at a valid page
         double calc = ((double) totalCount / (double) lengthPageDisplay);
@@ -88,7 +89,7 @@ public class Index extends HttpServlet {
         }
 
         // Get the page asked
-        computer = ComputerServices.getPagedComputerDTO(pageDisplay, lengthPageDisplay, search);
+        computer = services.getPagedComputerDTO(pageDisplay, lengthPageDisplay, search);
 
         // Set all params
         request.setAttribute("computers", computer);
@@ -108,7 +109,7 @@ public class Index extends HttpServlet {
             for (String idToDelete : deleteThoseIds) {
                 try {
                  int id = Integer.parseInt(idToDelete);
-                 ComputerServices.deleteComputer(new Computer.Builder().withId(id).build());
+                    services.deleteComputer(new Computer.Builder().withId(id).build());
                 } catch (Exception e) {
                     System.err.println("Failed To Parse Id To Delete");
                 }

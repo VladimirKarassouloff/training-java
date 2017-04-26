@@ -33,7 +33,7 @@ public class ListCompaniesPage extends Pageable<Company> {
 
     @Override
     protected int orderFetchDataCountPageable() {
-        return CompanyServices.getCountCompany();
+        return CompanyServices.getInstance().getCountCompany();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class ListCompaniesPage extends Pageable<Company> {
 
     @Override
     protected void orderFetchNewDataForPage() {
-        this.list = CompanyServices.getPagedCompany(currentPage, numberItemPage);
+        this.list = CompanyServices.getInstance().getPagedCompany(currentPage, numberItemPage);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ListCompaniesPage extends Pageable<Company> {
         if (filterId.size() > 0) {
             this.app.pushPage(new DetailCompany(app, filterId.get(0)));
         } else {
-            Company tmp = CompanyServices.getCompany(id);
+            Company tmp = CompanyServices.getInstance().getCompany(id);
             if (tmp != null) {
                 this.app.pushPage(new DetailCompany(app, tmp));
             }

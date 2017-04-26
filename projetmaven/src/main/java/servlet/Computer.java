@@ -32,6 +32,8 @@ public class Computer extends HttpServlet {
     private static final String FORM_DATE_INTRODUCED = "introduced_computer";
     private static final String FORM_DATE_DISCONTINUED = "discontinued_computer";
 
+    private static ComputerServices serviceComputer = ComputerServices.getInstance();
+    private static CompanyServices serviceCompany = CompanyServices.getInstance();
 
     /**
      * Present form for adding / editing computer.
@@ -55,7 +57,7 @@ public class Computer extends HttpServlet {
 
             try {
                 int parsedIdComputer = Integer.parseInt(idComputer);
-                form = ComputerServices.getComputerDTO(parsedIdComputer);
+                form = serviceComputer.getComputerDTO(parsedIdComputer);
 
                 // Computer not found while giving a precise id, error, redirect to 404
                 if (form == null) {
@@ -71,7 +73,7 @@ public class Computer extends HttpServlet {
             }
         }
 
-        request.setAttribute(ATTR_COMPANIES, CompanyServices.getCompanies());
+        request.setAttribute(ATTR_COMPANIES, serviceCompany.getCompanies());
         request.setAttribute(ATTR_FORM, form);
         request.setAttribute(ATTR_ERROR, "");
         getServletContext().getRequestDispatcher(PAGE_FORM).forward(request, response);
@@ -129,9 +131,9 @@ public class Computer extends HttpServlet {
         if (error == null) {
             try {
                 if (form.getId() == null) { // Create new Computer
-                    ComputerServices.formAddComputer(form);
+                    serviceComputer.formAddComputer(form);
                 } else { // Edit a computer
-                    ComputerServices.formUpdateComputer(form);
+                    serviceComputer.formUpdateComputer(form);
                 }
             } catch (Exception e) {
                 error = e.getMessage();
@@ -140,7 +142,7 @@ public class Computer extends HttpServlet {
 
         // Sendback to page if error, otherwise redirect to dashboard
         if (error != null) {
-            request.setAttribute(ATTR_COMPANIES, CompanyServices.getCompanies());
+            request.setAttribute(ATTR_COMPANIES, serviceCompany.getCompanies());
             request.setAttribute(ATTR_ERROR, error);
             request.setAttribute(ATTR_FORM, form);
             request.getRequestDispatcher(PAGE_FORM).forward(request, response);

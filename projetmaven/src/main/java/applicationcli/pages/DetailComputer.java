@@ -63,7 +63,7 @@ public class DetailComputer extends Page {
     public void onFirstGroundEvent() {
         if (isEditingCompanyId) {
             isEditingCompanyId = false;
-            if (ComputerServices.updateComputer(computer)) {
+            if (ComputerServices.getInstance().updateComputer(computer)) {
                 System.out.println("Succes de la modification");
             } else {
                 System.out.println("Erreur durant la modification");
