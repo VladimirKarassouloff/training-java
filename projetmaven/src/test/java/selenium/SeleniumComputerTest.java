@@ -25,7 +25,7 @@ public class SeleniumComputerTest {
     private WebDriver driver;
     private JavascriptExecutor jse;
 
-    private static final String baseUrl = "http://localhost:8080/mydeploy/";
+    private static final String baseUrl = "http://localhost:8080/mydeployyy/";
     private static final String baseUrlAddEdit = baseUrl + "computer";
     private static final String baseUrlRemove = baseUrl;
     private StringBuffer verificationErrors = new StringBuffer();
@@ -124,8 +124,8 @@ public class SeleniumComputerTest {
 
         // Check if all input are preselected in inputs
         assertEquals(computerJustAdded.getName().equals(nameWE.getAttribute("value")), true);
-        assertEquals(Format.formatDate(computerJustAdded.getIntroduced()).equals(introducedWE.getAttribute("value")), true);
-        assertEquals(Format.formatDate(computerJustAdded.getDiscontinued()).equals(discontinuedWE.getAttribute("value")), true);
+        assertEquals(MapperDate.formatDate(computerJustAdded.getIntroduced()).equals(introducedWE.getAttribute("value")), true);
+        assertEquals(MapperDate.formatDate(computerJustAdded.getDiscontinued()).equals(discontinuedWE.getAttribute("value")), true);
         if (computerJustAdded.getCompany() == null) {
             assertEquals(companySelect.getFirstSelectedOption().getAttribute("value").equals(""), true);
         } else {

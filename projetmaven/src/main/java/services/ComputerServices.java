@@ -35,7 +35,7 @@ public class ComputerServices {
      */
     public static List<Computer> getComputers() {
         try {
-            return MapperComputer.mapResultSetToObjects(ComputerDAO.getAll());
+            return ComputerDAO.getAll();
         } catch (DAOSelectException e) {
             e.printStackTrace();
             return new ArrayList<Computer>();
@@ -52,7 +52,7 @@ public class ComputerServices {
      */
     public static List<ComputerDTO> getPagedComputerDTO(int page, int numberItem, String filterName) {
         try {
-            return MapperComputerDTO.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem, ("".equals(filterName) ? null : filterName)));
+            return MapperComputer.toDTOs(ComputerDAO.getPagination(page, numberItem, ("".equals(filterName) ? null : filterName)));
         } catch (DAOSelectException e) {
             e.printStackTrace();
             return new ArrayList<ComputerDTO>();
@@ -69,7 +69,7 @@ public class ComputerServices {
      */
     public static List<Computer> getPagedComputer(int page, int numberItem, String filterName) {
         try {
-            return MapperComputer.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem, filterName));
+            return ComputerDAO.getPagination(page, numberItem, filterName);
         } catch (DAOSelectException e) {
             e.printStackTrace();
             return new ArrayList<Computer>();
@@ -85,7 +85,7 @@ public class ComputerServices {
      */
     public static List<Computer> getPagedComputer(int page, int numberItem) {
         try {
-            return MapperComputer.mapResultSetToObjects(ComputerDAO.getPagination(page, numberItem, null));
+            return ComputerDAO.getPagination(page, numberItem, null);
         } catch (DAOSelectException e) {
             e.printStackTrace();
             return new ArrayList<Computer>();
@@ -141,7 +141,7 @@ public class ComputerServices {
      */
     public static Computer getComputer(int id) {
         try {
-            return MapperComputer.mapResultSetToObject(ComputerDAO.getById(id));
+            return ComputerDAO.getById(id);
         } catch (DAOSelectException e) {
             e.printStackTrace();
             return null;
@@ -156,7 +156,7 @@ public class ComputerServices {
      */
     public static ComputerDTO getComputerDTO(int id) {
         try {
-            return MapperComputerDTO.mapResultSetToObject(ComputerDAO.getById(id));
+            return MapperComputer.toDTO(ComputerDAO.getById(id));
         } catch (DAOSelectException e) {
             e.printStackTrace();
             return null;
@@ -261,7 +261,7 @@ public class ComputerServices {
      */
     public static Computer getLastComputerInserted() {
         try {
-            return MapperComputer.mapResultSetToObject(ComputerDAO.getLastComputerInserted());
+            return ComputerDAO.getLastComputerInserted();
         } catch (DAOSelectException e) {
             e.printStackTrace();
             return null;

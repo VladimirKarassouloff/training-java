@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MapperComputer {
 
@@ -111,4 +112,32 @@ public class MapperComputer {
     }
 
 
+    /**
+     * Take a computer and map it to computer dto.
+     * @param computer that you want to map
+     * @return
+     */
+    public static ComputerDTO toDTO(Computer computer) {
+        if (computer == null) {
+            return null;
+        }
+
+        return new ComputerDTO.Builder()
+                .withId(computer.getId())
+                .withName(computer.getName())
+                .withCompanyId(computer.getCompany() != null ? computer.getCompany().getId() : null)
+                .withCompanyName(computer.getCompany() != null ? computer.getCompany().getName() : "")
+                .withIntroducedDate(MapperDate.formatDate(computer.getIntroduced()))
+                .withDiscontinuedDate(MapperDate.formatDate(computer.getDiscontinued()))
+                .build();
+    }
+
+    /**
+     * Take list of computer, and map them to computerdto.
+     * @param computers that you want to convert to DTOs
+     * @return
+     */
+    public static List<ComputerDTO> toDTOs(List<Computer> computers) {
+        return (computers == null || computers.isEmpty()) ? new ArrayList<>() : computers.stream().map(c -> MapperComputer.toDTO(c)).collect(Collectors.toList());
+    }
 }

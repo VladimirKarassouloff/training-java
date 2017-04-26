@@ -19,7 +19,7 @@ public class CompanyServices {
      */
     public static List<Company> getCompanies() {
         try {
-            return MapperCompany.mapResultSetToObjects(CompanyDAO.getAll());
+            return CompanyDAO.getAll();
         } catch (DAOSelectException e) {
             e.printStackTrace();
             return new ArrayList<>();
@@ -34,7 +34,7 @@ public class CompanyServices {
      */
     public static List<Company> getPagedCompany(int page, int numberItem) {
         try {
-            return MapperCompany.mapResultSetToObjects(CompanyDAO.getPagination(page, numberItem));
+            return CompanyDAO.getPagination(page, numberItem);
         } catch (DAOSelectException e) {
             e.printStackTrace();
             return new ArrayList<Company>();
@@ -63,7 +63,7 @@ public class CompanyServices {
      */
     public static Company getCompany(int id) {
         try {
-            return MapperCompany.mapResultSetToObject(CompanyDAO.getById(id));
+            return CompanyDAO.getById(id);
         } catch (DAOSelectException e) {
             e.printStackTrace();
             return null;

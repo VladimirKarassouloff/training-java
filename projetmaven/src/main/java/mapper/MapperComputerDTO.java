@@ -64,7 +64,7 @@ public class MapperComputerDTO {
             Date introduced = rs.getDate(ComputerDAO.COL_COMPUTER_INTRODUCED);
             Date discontinued = rs.getDate(ComputerDAO.COL_COMPUTERDISCONTINUED);
             String companyName = rs.getString(ComputerDAO.COL_JOINED_COMPANY_NAME);
-            return new ComputerDTO(computerName, computerId, Format.formatDate(introduced), Format.formatDate(discontinued), companyName, companyId);
+            return new ComputerDTO(computerName, computerId, MapperDate.formatDate(introduced), MapperDate.formatDate(discontinued), companyName, companyId);
         } catch (Exception e) {
             e.printStackTrace();
         }

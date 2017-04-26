@@ -3,6 +3,7 @@ package persistence;
 import exception.DAOCountException;
 import exception.DAOSelectException;
 import exception.DAOUpdateException;
+import mapper.MapperCompany;
 import model.Company;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class CompanyDAO {
 
@@ -40,11 +42,11 @@ public class CompanyDAO {
      * @return resultsetcli
      * @throws DAOSelectException if errors happened
      */
-    public static ResultSet getAll() throws DAOSelectException {
+    public static List<Company> getAll() throws DAOSelectException {
         try {
             ResultSet rs = Connector.getInstance().preparedStatement(SELECT).executeQuery();
             LOGGER.info("Succes getAll CompanyDAO");
-            return rs;
+            return MapperCompany.mapResultSetToObjects(rs);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info("Error getAll CompanyDAO : " + e.getMessage());
@@ -59,7 +61,7 @@ public class CompanyDAO {
      * @return resultset
      * @throws DAOSelectException if error happens
      */
-    public static ResultSet getById(int id) throws DAOSelectException {
+    public static Company getById(int id) throws DAOSelectException {
         ResultSet obj = null;
 
         try {
@@ -77,7 +79,7 @@ public class CompanyDAO {
             LOGGER.info("Error getById CompanyDAO : " + e.getMessage() + " => id = " + id);
         }
 
-        return obj;
+        return MapperCompany.mapResultSetToObject(obj);
     }
 
     /**
@@ -135,11 +137,11 @@ public class CompanyDAO {
      * @return resultset
      * @throws DAOSelectException if error happens
      */
-    public static ResultSet getPagination(int page, int numberOfResults) throws DAOSelectException {
+    public static List<Company> getPagination(int page, int numberOfResults) throws DAOSelectException {
         try {
             ResultSet rs = Connector.getInstance().preparedStatement(SELECT + " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults)).executeQuery();
             LOGGER.info("Succes getPagination CompanyDAO ");
-            return rs;
+            return MapperCompany.mapResultSetToObjects(rs);
         } catch (SQLException e) {
             e.printStackTrace();
             LOGGER.info("Error getPagination CompanyDAO : " + e.getMessage());

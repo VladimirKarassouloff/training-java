@@ -1,5 +1,7 @@
 package mapper;
 
+import utils.Format;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,7 +11,6 @@ import java.util.Date;
  */
 public class MapperDate {
 
-    public static SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
      * Create a date from string with format yyyy-MM-dd.
@@ -19,7 +20,7 @@ public class MapperDate {
      */
     public static Date dateFromString(String s) {
         try {
-            return dateFormatter.parse(s);
+            return Format.dateFormatter.parse(s);
         } catch (ParseException e) {
             //e.printStackTrace();
         }
@@ -35,5 +36,17 @@ public class MapperDate {
     public static java.sql.Date convertJavaDateToSqlDate(java.util.Date date) {
         return date == null ? null : new java.sql.Date(date.getTime());
     }
+
+
+    /**
+     * Format date.
+     *
+     * @param d date
+     * @return formatted string date
+     */
+    public static String formatDate(Date d) {
+        return (d == null ? "" : Format.dateFormatter.format(d));
+    }
+
 
 }

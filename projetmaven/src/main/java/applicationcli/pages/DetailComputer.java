@@ -2,6 +2,7 @@ package applicationcli.pages;
 
 import applicationcli.Application;
 import applicationcli.FormulaireCli;
+import mapper.MapperDate;
 import model.Computer;
 import services.ComputerServices;
 import utils.Format;
@@ -35,8 +36,8 @@ public class DetailComputer extends Page {
         System.out.println();
         System.out.println("--Infos--");
         System.out.println("Marque : " + (this.computer.getCompany() != null ? this.computer.getCompany().getName() : "Inconnue"));
-        System.out.println("Date d'introduction dans le marché : " + Format.formatDate(computer.getIntroduced()));
-        System.out.println("Date d'arret de commercialisation : " + Format.formatDate(computer.getDiscontinued()));
+        System.out.println("Date d'introduction dans le marché : " + MapperDate.formatDate(computer.getIntroduced()));
+        System.out.println("Date d'arret de commercialisation : " + MapperDate.formatDate(computer.getDiscontinued()));
     }
 
     @Override
