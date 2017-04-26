@@ -1,0 +1,83 @@
+26-Apr-2017 10:33:50.533 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: init: Associated with Deployer 'Catalina:type=Deployer,host=localhost'
+26-Apr-2017 10:33:50.533 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: init: Global resources are available
+26-Apr-2017 10:33:50.542 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 10:33:50.543 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/Bureau/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 10:41:20.370 INFOS [http-nio-8080-exec-3] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 10:41:20.390 INFOS [http-nio-8080-exec-4] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 10:41:20.404 INFOS [http-nio-8080-exec-5] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 10:41:20.413 INFOS [http-nio-8080-exec-6] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 10:42:59.815 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: init: Associated with Deployer 'Catalina:type=Deployer,host=localhost'
+26-Apr-2017 10:42:59.815 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: init: Global resources are available
+26-Apr-2017 10:42:59.826 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 10:43:04.462 INFOS [http-nio-8080-exec-8] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 10:43:04.462 INFOS [http-nio-8080-exec-8] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/Bureau/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 10:45:25.684 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: init: Associated with Deployer 'Catalina:type=Deployer,host=localhost'
+26-Apr-2017 10:45:25.684 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: init: Global resources are available
+26-Apr-2017 10:45:25.695 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 10:45:30.343 INFOS [http-nio-8080-exec-8] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 10:45:30.344 INFOS [http-nio-8080-exec-8] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/training-java/resources/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 10:46:09.245 INFOS [http-nio-8080-exec-3] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 10:46:13.531 INFOS [http-nio-8080-exec-6] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 10:46:13.531 INFOS [http-nio-8080-exec-6] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/training-java/resources/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 10:49:20.617 INFOS [http-nio-8080-exec-15] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 10:49:24.772 INFOS [http-nio-8080-exec-16] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 10:49:24.772 INFOS [http-nio-8080-exec-16] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/training-java/resources/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 10:49:40.733 INFOS [http-nio-8080-exec-12] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 10:49:46.029 INFOS [http-nio-8080-exec-20] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 10:49:46.029 INFOS [http-nio-8080-exec-20] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/training-java/resources/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 10:51:16.150 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: init: Associated with Deployer 'Catalina:type=Deployer,host=localhost'
+26-Apr-2017 10:51:16.150 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: init: Global resources are available
+26-Apr-2017 10:51:16.161 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 10:51:21.278 INFOS [http-nio-8080-exec-2] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 10:51:21.278 INFOS [http-nio-8080-exec-2] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/training-java/resources/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 10:55:04.229 INFOS [http-nio-8080-exec-12] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 10:55:08.244 INFOS [http-nio-8080-exec-16] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 10:55:08.244 INFOS [http-nio-8080-exec-16] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/training-java/resources/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 11:13:15.707 INFOS [http-nio-8080-exec-2] org.apache.catalina.core.ApplicationContext.log Manager: init: Associated with Deployer 'Catalina:type=Deployer,host=localhost'
+26-Apr-2017 11:13:15.707 INFOS [http-nio-8080-exec-2] org.apache.catalina.core.ApplicationContext.log Manager: init: Global resources are available
+26-Apr-2017 11:13:15.718 INFOS [http-nio-8080-exec-2] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 11:13:21.016 INFOS [http-nio-8080-exec-6] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 11:13:21.016 INFOS [http-nio-8080-exec-6] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/training-java/resources/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 11:16:31.064 INFOS [http-nio-8080-exec-11] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 11:16:35.691 INFOS [http-nio-8080-exec-5] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 11:16:35.691 INFOS [http-nio-8080-exec-5] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/training-java/resources/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 11:28:01.506 INFOS [http-nio-8080-exec-18] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 11:28:42.033 INFOS [http-nio-8080-exec-24] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 11:33:21.777 INFOS [http-nio-8080-exec-28] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 11:34:14.250 INFOS [http-nio-8080-exec-30] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 11:34:41.700 INFOS [http-nio-8080-exec-32] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 11:35:24.044 INFOS [http-nio-8080-exec-34] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 11:35:38.266 INFOS [http-nio-8080-exec-36] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 11:35:53.273 INFOS [http-nio-8080-exec-29] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 11:36:11.856 INFOS [http-nio-8080-exec-30] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 11:36:35.709 INFOS [http-nio-8080-exec-32] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 11:36:53.337 INFOS [http-nio-8080-exec-34] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 11:37:26.336 INFOS [http-nio-8080-exec-36] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 13:13:14.844 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: init: Associated with Deployer 'Catalina:type=Deployer,host=localhost'
+26-Apr-2017 13:13:14.844 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: init: Global resources are available
+26-Apr-2017 13:13:14.863 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 13:13:20.362 INFOS [http-nio-8080-exec-2] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 13:13:20.363 INFOS [http-nio-8080-exec-2] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/training-java/resources/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 13:13:33.029 INFOS [http-nio-8080-exec-5] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 13:13:38.461 INFOS [http-nio-8080-exec-2] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 13:13:38.461 INFOS [http-nio-8080-exec-2] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/training-java/resources/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 13:14:44.115 INFOS [http-nio-8080-exec-11] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 13:14:49.565 INFOS [http-nio-8080-exec-7] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 13:14:49.565 INFOS [http-nio-8080-exec-7] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/training-java/resources/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 13:15:09.304 INFOS [http-nio-8080-exec-9] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 13:15:16.299 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 13:15:16.299 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/training-java/resources/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 13:16:30.631 INFOS [http-nio-8080-exec-2] org.apache.catalina.core.ApplicationContext.log Manager: init: Associated with Deployer 'Catalina:type=Deployer,host=localhost'
+26-Apr-2017 13:16:30.631 INFOS [http-nio-8080-exec-2] org.apache.catalina.core.ApplicationContext.log Manager: init: Global resources are available
+26-Apr-2017 13:16:30.632 INFOS [http-nio-8080-exec-2] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 13:16:36.387 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 13:16:36.388 INFOS [http-nio-8080-exec-1] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/training-java/resources/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 13:16:58.881 INFOS [http-nio-8080-exec-8] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 13:17:04.450 INFOS [http-nio-8080-exec-11] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 13:17:04.450 INFOS [http-nio-8080-exec-11] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/training-java/resources/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 13:18:00.614 INFOS [http-nio-8080-exec-14] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 13:18:06.209 INFOS [http-nio-8080-exec-13] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 13:18:06.209 INFOS [http-nio-8080-exec-13] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/training-java/resources/apache-tomcat-8.0.43/webapps/mydeployyy.war
+26-Apr-2017 13:18:16.432 INFOS [http-nio-8080-exec-15] org.apache.catalina.core.ApplicationContext.log Manager: undeploy: Undeploying web application at '/mydeployyy'
+26-Apr-2017 13:18:22.234 INFOS [http-nio-8080-exec-17] org.apache.catalina.core.ApplicationContext.log Manager: deploy: Deploying web application '/mydeployyy'
+26-Apr-2017 13:18:22.234 INFOS [http-nio-8080-exec-17] org.apache.catalina.core.ApplicationContext.log Manager: Uploading WAR file to /home/vkarassouloff/training-java/resources/apache-tomcat-8.0.43/webapps/mydeployyy.war
