@@ -11,9 +11,11 @@ import model.Computer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -64,6 +66,9 @@ public class ComputerDAO {
     public static final String COUNT_FILTER_NAME = COUNT + WHERE_NAME_FILTER;
 
     public static final String SELECT_LAST_COMPUTER_INSERTED = SELECT + " ORDER BY " + TABLE_NAME + "." + COL_COMPUTER_ID + " DESC LIMIT 1";
+
+    public static final String LIMIT_PAGE = " LIMIT ? OFFSET ? ";
+
     ///////////////////
     ///////////////////
 
@@ -80,11 +85,19 @@ public class ComputerDAO {
      */
     public static List<Computer> getAll() throws DAOSelectException {
         CACHE_COMPANY.clear();
+        Connection connection = null;
+        ResultSet rs = null;
+        List<Computer> result = null;
+
         try {
-            ResultSet rs = Connector.getInstance().preparedStatement(SELECT).executeQuery();
+            connection = Connector.getDataSource().getConnection();
+            rs = connection.prepareStatement(SELECT).executeQuery();
+            result = MapperComputer.mapResultSetToObjects(rs);
+
+            connection.close();
             LOGGER.info("Succes getAll computerdao");
             CACHE_COMPANY.clear();
-            return MapperComputer.mapResultSetToObjects(rs);
+            return result;
         } catch (Exception e) {
             LOGGER.info("Erreur getAll computerdao : " + e.getMessage());
             e.printStackTrace();
@@ -102,15 +115,23 @@ public class ComputerDAO {
      */
     public static Computer getById(int id) throws DAOSelectException {
         CACHE_COMPANY.clear();
-        ResultSet obj = null;
+        Connection connection = null;
+        ResultSet rs = null;
+        PreparedStatement preparedStatement = null;
+        Computer result = null;
 
         try {
-            PreparedStatement preparedStatement = Connector.getInstance().preparedStatement(SELECT + WHERE_FILTER_ID);
+            connection = Connector.getDataSource().getConnection();
+            preparedStatement = connection.prepareStatement(SELECT + WHERE_FILTER_ID);
             preparedStatement.setInt(1, id);
-            obj = preparedStatement.executeQuery();
+            rs = preparedStatement.executeQuery();
+            result = MapperComputer.mapResultSetToObject(rs);
+
+            preparedStatement.close();
+            connection.close();
             LOGGER.info("Succes getbyid computerdao");
             CACHE_COMPANY.clear();
-            return MapperComputer.mapResultSetToObject(obj);
+            return result;
         } catch (Exception e) {
             LOGGER.info("Erreur sql get by id : " + e.getMessage());
             e.printStackTrace();
@@ -127,28 +148,33 @@ public class ComputerDAO {
      * @throws DAOInsertException if error happens
      */
     public static int insert(Computer computer) throws DAOInsertException {
-        try {
-            CACHE_COMPANY.clear();
+        CACHE_COMPANY.clear();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet generatedKeys = null;
 
-            PreparedStatement statement = Connector.getInstance().preparedStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
+        try {
+            connection = Connector.getDataSource().getConnection();
+            statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, computer.getName());
             statement.setDate(2, (computer.getIntroduced() != null ? new java.sql.Date(computer.getIntroduced().getTime()) : null));
             statement.setDate(3, (computer.getDiscontinued() != null ? new java.sql.Date(computer.getDiscontinued().getTime()) : null));
             statement.setString(4, computer.getCompany() != null ? String.valueOf(computer.getCompany().getId()) : null);
 
             if (statement.executeUpdate() != 0) {
-                ResultSet generatedKeys = statement.getGeneratedKeys();
+                generatedKeys = statement.getGeneratedKeys();
                 if (generatedKeys.next()) {
-                    int newIdGenerated = (int) generatedKeys.getLong(1);
-                    computer.setId(newIdGenerated);
+                    computer.setId((int) generatedKeys.getLong(1));
                     statement.close();
+                    connection.close();
                     LOGGER.info("Success insert computerdao : " + computer);
                     CACHE_COMPANY.clear();
-                    return newIdGenerated;
+                    return computer.getId();
                 } else {
+                    // No id returned
                     LOGGER.info("Erreur insert computerdao : " + computer);
                     statement.close();
-                    CACHE_COMPANY.clear();
+                    connection.close();
                     throw new Exception();
                 }
 
@@ -156,7 +182,7 @@ public class ComputerDAO {
                 // Aucune ligne affectée
                 LOGGER.info("Erreur insert 2 computerdao : " + computer);
                 statement.close();
-                CACHE_COMPANY.clear();
+                connection.close();
                 throw new Exception();
             }
 
@@ -177,12 +203,17 @@ public class ComputerDAO {
      * @throws DAODeleteException if error happens
      */
     public static boolean deleteById(int id) throws DAODeleteException {
+        Connection connection = null;
+        PreparedStatement statement = null;
 
         try {
-            PreparedStatement statement = Connector.getInstance().preparedStatement(DELETE);
+            connection = Connector.getDataSource().getConnection();
+            statement = connection.prepareStatement(DELETE);
             statement.setInt(1, id);
             int resultExec = statement.executeUpdate();
+
             statement.close();
+            connection.close();
             LOGGER.info("Succes delete " + id + " computerdao");
             return resultExec != 0;
         } catch (Exception e) {
@@ -201,16 +232,21 @@ public class ComputerDAO {
      * @throws DAOUpdateException if error happens
      */
     public static boolean update(Computer computer) throws DAOUpdateException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
         try {
-            PreparedStatement statement = Connector.getInstance().preparedStatement(UPDATE);
+            connection = Connector.getDataSource().getConnection();
+            statement = connection.prepareStatement(UPDATE);
             statement.setString(1, computer.getName());
             statement.setDate(2, (computer.getIntroduced() != null ? new java.sql.Date(computer.getIntroduced().getTime()) : null));
             statement.setDate(3, (computer.getDiscontinued() != null ? new java.sql.Date(computer.getDiscontinued().getTime()) : null));
             statement.setString(4, (computer.getCompany() == null ? null : String.valueOf(computer.getCompany().getId())));
             statement.setInt(5, computer.getId());
-
             int resultExec = statement.executeUpdate();
+
             statement.close();
+            connection.close();
             LOGGER.info("Succes Update Computerdao : " + computer);
             return resultExec != 0;
         } catch (Exception e) {
@@ -229,12 +265,18 @@ public class ComputerDAO {
      */
     public static Computer getLastComputerInserted() throws DAOSelectException {
         CACHE_COMPANY.clear();
+        Connection connection = null;
+        ResultSet rs = null;
+        Computer result = null;
         try {
-            ResultSet rs = null;
-            rs = Connector.getInstance().preparedStatement(SELECT_LAST_COMPUTER_INSERTED).executeQuery();
+            connection = Connector.getDataSource().getConnection();
+            rs = connection.prepareStatement(SELECT_LAST_COMPUTER_INSERTED).executeQuery();
+            result = MapperComputer.mapResultSetToObject(rs);
+
+            connection.close();
             LOGGER.info("Succes getLastComputerInserted Computerdao");
             CACHE_COMPANY.clear();
-            return MapperComputer.mapResultSetToObject(rs);
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info("Error Get last computer inserted Computerdao : " + e.getMessage());
@@ -256,27 +298,39 @@ public class ComputerDAO {
      */
     public static List<Computer> getPagination(int page, int numberOfResults, String filterName) throws DAOSelectException {
         CACHE_COMPANY.clear();
-        String limitPage = " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults);
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<Computer> res = null;
 
         try {
-            ResultSet rs = null;
+            connection = Connector.getDataSource().getConnection();
+
             if (filterName == null) {
-                rs = Connector.getInstance().preparedStatement(SELECT + limitPage).executeQuery();
+                ps = connection.prepareStatement(SELECT + LIMIT_PAGE);
+                ps.setInt(1, numberOfResults);
+                ps.setInt(2, page * numberOfResults);
             } else {
-                PreparedStatement ps = Connector.getInstance().preparedStatement(SELECT_FILTER_NAME + limitPage);
+                ps = connection.prepareStatement(SELECT_FILTER_NAME + LIMIT_PAGE);
                 ps.setString(1, "%" + filterName + "%");
-                rs = ps.executeQuery();
+                ps.setInt(2, numberOfResults);
+                ps.setInt(3, page * numberOfResults);
             }
+            rs = ps.executeQuery();
+            res = MapperComputer.mapResultSetToObjects(rs);
+
+            ps.close();
+            connection.close();
             LOGGER.info("Succes pagination Computerdao");
             CACHE_COMPANY.clear();
-            return MapperComputer.mapResultSetToObjects(rs);
+            return res;
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info("Error Pagination Computerdao : " + e.getMessage());
         }
 
         CACHE_COMPANY.clear();
-        throw new DAOSelectException("Company", SELECT + limitPage);
+        throw new DAOSelectException("Company", SELECT + LIMIT_PAGE);
     }
 
     /***
@@ -286,17 +340,22 @@ public class ComputerDAO {
      * @return count of computer considering filters
      */
     public static Integer getCount(String searchByName) throws DAOCountException {
-        try {
-            PreparedStatement pr = Connector.getInstance().preparedStatement(COUNT_FILTER_NAME);
-            pr.setString(1, "%" + (searchByName != null ? searchByName : "") + "%");
-            ResultSet rs = pr.executeQuery();
+        Connection connection = null;
+        PreparedStatement pr = null;
+        ResultSet rs = null;
+        Integer count = null;
 
-            Integer count = null;
+        try {
+            connection = Connector.getDataSource().getConnection();
+            pr = connection.prepareStatement(COUNT_FILTER_NAME);
+            pr.setString(1, "%" + (searchByName != null ? searchByName : "") + "%");
+            rs = pr.executeQuery();
             if (rs.next()) {
                 count = rs.getInt(1);
             }
 
             rs.close();
+            connection.close();
             LOGGER.info("Success Count Computerdao ");
             return count;
 

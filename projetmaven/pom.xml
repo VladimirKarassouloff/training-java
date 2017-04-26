@@ -18,6 +18,14 @@
 
 	<dependencies>
 
+		<!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>2.6.1</version>
+		</dependency>
+
+
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
 			<groupId>mysql</groupId>
@@ -163,7 +171,7 @@
 				<executions>
 					<execution><!-- Run our version calculation script -->
 						<id>Launch catalina</id>
-						<phase>prepare-package</phase>
+						<phase>clean</phase>
 						<configuration>
 							<executable>${basedir}/scripts/run-catalina.sh</executable>
 						</configuration>
@@ -187,8 +195,16 @@
 					<username>root</username>
 					<password>root</password>
 					<contextReloadable>true</contextReloadable>
-
 				</configuration>
+				<executions>
+					<execution>
+						<id>tomcat-deploy</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 			<!-- Exclude selenium test because it needs the app to be deployed-->

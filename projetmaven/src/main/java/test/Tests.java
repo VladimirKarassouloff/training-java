@@ -14,8 +14,8 @@ public class Tests {
 
             Class.forName(Connector.JDBC_DRIVER);
             System.out.println("Test get connection");
-            Connector c = Connector.getInstance();
-            System.out.println(c);
+            //Connector c = Connector.getInstance();
+            //System.out.println(c);
             /*
             System.out.println("Up Computer");
             Computer comp = CompanyServices.getComputer(73);

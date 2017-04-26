@@ -8,6 +8,7 @@ import model.Company;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,8 +44,12 @@ public class CompanyDAO {
      * @throws DAOSelectException if errors happened
      */
     public static List<Company> getAll() throws DAOSelectException {
+        Connection connection = null;
+        ResultSet rs = null;
+
         try {
-            ResultSet rs = Connector.getInstance().preparedStatement(SELECT).executeQuery();
+            connection = Connector.getDataSource().getConnection();
+            rs = connection.prepareStatement(SELECT).executeQuery();
             LOGGER.info("Succes getAll CompanyDAO");
             return MapperCompany.mapResultSetToObjects(rs);
         } catch (Exception e) {
@@ -62,24 +67,27 @@ public class CompanyDAO {
      * @throws DAOSelectException if error happens
      */
     public static Company getById(int id) throws DAOSelectException {
-        ResultSet obj = null;
-
+        ResultSet rs = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        Company result = null;
         try {
-            PreparedStatement preparedStatement = Connector.getInstance().preparedStatement(SELECT + WHERE_FILTER_ID);
+            connection = Connector.getDataSource().getConnection();
+            preparedStatement = connection.prepareStatement(SELECT + WHERE_FILTER_ID);
             preparedStatement.setInt(1, id);
-            obj = preparedStatement.executeQuery();
-            if (obj != null) {
-                LOGGER.info("Succes getById CompanyDAO => id = " + id);
-            } else {
-                LOGGER.info("Error getById CompanyDAO => null value => id = " + id);
-                throw new DAOSelectException("Company", SELECT + WHERE_FILTER_ID + " (id = " + id + ")");
-            }
+            rs = preparedStatement.executeQuery();
+            result = MapperCompany.mapResultSetToObject(rs);
+
+            preparedStatement.close();
+            connection.close();
+            LOGGER.info("Error getById CompanyDAO => null value => id = " + id);
+            return result;
         } catch (SQLException e) {
             e.printStackTrace();
             LOGGER.info("Error getById CompanyDAO : " + e.getMessage() + " => id = " + id);
         }
 
-        return MapperCompany.mapResultSetToObject(obj);
+        return null;
     }
 
     /**
@@ -90,13 +98,17 @@ public class CompanyDAO {
      * @throws DAOUpdateException if error happens
      */
     public static boolean update(Company company) throws DAOUpdateException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
         try {
-            PreparedStatement preparedStatement = Connector.getInstance().preparedStatement(UPDATE);
+            connection = Connector.getDataSource().getConnection();
+            preparedStatement = connection.prepareStatement(UPDATE);
             preparedStatement.setString(1, company.getName());
             preparedStatement.setInt(2, company.getId());
-
             int resExec = preparedStatement.executeUpdate();
+
             preparedStatement.close();
+            connection.close();
             LOGGER.info("Succes Update CompanyDAO " + company);
             return resExec != 0;
         } catch (Exception e) {
@@ -112,15 +124,19 @@ public class CompanyDAO {
      * @throws DAOCountException if error happens while getting row count
      */
     public static Integer getCount() throws DAOCountException {
-        try {
-            ResultSet rs = Connector.getInstance().preparedStatement(COUNT).executeQuery();
-            Integer count = null;
+        Connection connection = null;
+        ResultSet rs = null;
+        Integer count = null;
 
+        try {
+            connection = Connector.getDataSource().getConnection();
+            rs = connection.prepareStatement(COUNT).executeQuery();
             if (rs.next()) {
                 count = rs.getInt(1);
             }
 
             rs.close();
+            connection.close();
             LOGGER.info("Succes getCount CompanyDAO ");
             return count;
         } catch (Exception e) {
@@ -138,10 +154,18 @@ public class CompanyDAO {
      * @throws DAOSelectException if error happens
      */
     public static List<Company> getPagination(int page, int numberOfResults) throws DAOSelectException {
+        Connection connection = null;
+        ResultSet rs = null;
+        List<Company> res = null;
+
         try {
-            ResultSet rs = Connector.getInstance().preparedStatement(SELECT + " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults)).executeQuery();
+            connection = Connector.getDataSource().getConnection();
+            rs = connection.prepareStatement(SELECT + " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults)).executeQuery();
+            res = MapperCompany.mapResultSetToObjects(rs);
+
+            connection.close();
             LOGGER.info("Succes getPagination CompanyDAO ");
-            return MapperCompany.mapResultSetToObjects(rs);
+            return res;
         } catch (SQLException e) {
             e.printStackTrace();
             LOGGER.info("Error getPagination CompanyDAO : " + e.getMessage());
