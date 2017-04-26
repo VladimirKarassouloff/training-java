@@ -32,7 +32,7 @@ public class ComputerDAO {
     public static final String COL_JOINED_COMPANY_NAME = "company_name";
 
 
-    ////////////////
+    //////////////////////////////////////////////////////////////////////
     /////Query parts
     public static final String SELECT = "SELECT " + TABLE_NAME + "." + COL_COMPUTER_ID + ", " + TABLE_NAME + "." + COL_COMPUTER_NAME + ", " + COL_COMPUTER_INTRODUCED + ", " + COL_COMPUTERDISCONTINUED +
             ", " + COL_COMPUTER_COMPANY_ID + ", " + CompanyDAO.TABLE_NAME + "." + CompanyDAO.COL_COMPANY_NAME + " as " + COL_JOINED_COMPANY_NAME + " FROM " + ComputerDAO.TABLE_NAME +
@@ -70,20 +70,26 @@ public class ComputerDAO {
     public static final String LIMIT_PAGE = " LIMIT ? OFFSET ? ";
 
     ///////////////////
-    ///////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    // Comme on construit l'object company pour chaque computer, on évite d'aller en base récuperer une Company pour chaque Computer et on fait
-    // pointer les objets computer sur les meme objets company
+    public static ComputerDAO dao = new ComputerDAO();
+
+    private ComputerDAO() {
+
+    }
+
+    public static ComputerDAO getInstance() {
+        return dao;
+    }
+
+
+
+    // When selecting multiple computer, if they belong to the same company, we make them point on the same Company object
+    // Each company is build at most one time
     public static final HashMap<Integer, Company> CACHE_COMPANY = new HashMap<>();
 
-    /**
-     * Get all records.
-     *
-     * @return resultset for all recors
-     * @throws DAOSelectException if error happens
-     */
-    public static List<Computer> getAll() throws DAOSelectException {
+    public List<Computer> getAll() throws DAOSelectException {
         CACHE_COMPANY.clear();
         Connection connection = null;
         ResultSet rs = null;
@@ -106,14 +112,7 @@ public class ComputerDAO {
         }
     }
 
-    /**
-     * Get Computer.
-     *
-     * @param id of the computer requested
-     * @return resultset
-     * @throws DAOSelectException if error happens
-     */
-    public static Computer getById(int id) throws DAOSelectException {
+    public Computer getById(int id) throws DAOSelectException {
         CACHE_COMPANY.clear();
         Connection connection = null;
         ResultSet rs = null;
@@ -140,14 +139,7 @@ public class ComputerDAO {
         }
     }
 
-    /**
-     * Insert new record in DB.
-     *
-     * @param computer contains attributes for representation in DB
-     * @return id of new row, -1 if failed
-     * @throws DAOInsertException if error happens
-     */
-    public static int insert(Computer computer) throws DAOInsertException {
+    public int insert(Computer computer) throws DAOInsertException {
         CACHE_COMPANY.clear();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -195,14 +187,7 @@ public class ComputerDAO {
         throw new DAOInsertException(computer);
     }
 
-    /**
-     * Delete computer.
-     *
-     * @param id of the computer deleted
-     * @return success
-     * @throws DAODeleteException if error happens
-     */
-    public static boolean deleteById(int id) throws DAODeleteException {
+    public boolean deleteById(int id) throws DAODeleteException {
         Connection connection = null;
         PreparedStatement statement = null;
 
@@ -224,14 +209,7 @@ public class ComputerDAO {
 
     }
 
-    /**
-     * Updated computer.
-     *
-     * @param computer values used to update computer in DB
-     * @return success
-     * @throws DAOUpdateException if error happens
-     */
-    public static boolean update(Computer computer) throws DAOUpdateException {
+    public boolean update(Computer computer) throws DAOUpdateException {
         Connection connection = null;
         PreparedStatement statement = null;
 
@@ -257,13 +235,7 @@ public class ComputerDAO {
     }
 
 
-    /**
-     * Get result set for the last computer inserted in the DB.
-     *
-     * @return resultset
-     * @throws DAOSelectException if error happens
-     */
-    public static Computer getLastComputerInserted() throws DAOSelectException {
+    public Computer getLastComputerInserted() throws DAOSelectException {
         CACHE_COMPANY.clear();
         Connection connection = null;
         ResultSet rs = null;
@@ -287,16 +259,7 @@ public class ComputerDAO {
     }
 
 
-    /**
-     * Get Paged result.
-     *
-     * @param page            requested
-     * @param numberOfResults per page
-     * @param filterName      filter results by name
-     * @return resultset of the page asked
-     * @throws DAOSelectException if error happens
-     */
-    public static List<Computer> getPagination(int page, int numberOfResults, String filterName) throws DAOSelectException {
+    public List<Computer> getPagination(int page, int numberOfResults, String filterName) throws DAOSelectException {
         CACHE_COMPANY.clear();
         Connection connection = null;
         PreparedStatement ps = null;
@@ -333,13 +296,7 @@ public class ComputerDAO {
         throw new DAOSelectException("Company", SELECT + LIMIT_PAGE);
     }
 
-    /***
-     * Get computer count.
-     * @param searchByName nullable parameter to research computer by name
-     * @throws DAOCountException if error happens
-     * @return count of computer considering filters
-     */
-    public static Integer getCount(String searchByName) throws DAOCountException {
+    public Integer getCount(String searchByName) throws DAOCountException {
         Connection connection = null;
         PreparedStatement pr = null;
         ResultSet rs = null;

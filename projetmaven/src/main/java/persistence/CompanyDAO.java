@@ -22,7 +22,8 @@ public class CompanyDAO {
     public static final String COL_COMPANY_ID = "id";
     public static final String COL_COMPANY_NAME = "name";
 
-    ////////////////
+
+    /////////////////////////////////////////////////////////
     /////Query parts
 
     public static final String SELECT = "SELECT * FROM " + CompanyDAO.TABLE_NAME;
@@ -35,15 +36,21 @@ public class CompanyDAO {
             + CompanyDAO.COL_COMPANY_ID + "= ? ";
 
     ///////////////////
-    ///////////////////
+    //////////////////////////////////////////////////////////
 
-    /**
-     * Get all records.
-     *
-     * @return resultsetcli
-     * @throws DAOSelectException if errors happened
-     */
-    public static List<Company> getAll() throws DAOSelectException {
+
+
+    public static CompanyDAO dao = new CompanyDAO();
+
+    private CompanyDAO() {
+
+    }
+
+    public static CompanyDAO getInstance() {
+        return dao;
+    }
+
+    public List<Company> getAll() throws DAOSelectException {
         Connection connection = null;
         ResultSet rs = null;
 
@@ -59,18 +66,12 @@ public class CompanyDAO {
         }
     }
 
-    /**
-     * Get specific record from DB.
-     *
-     * @param id of the record returned
-     * @return resultset
-     * @throws DAOSelectException if error happens
-     */
-    public static Company getById(int id) throws DAOSelectException {
+    public Company getById(int id) throws DAOSelectException {
         ResultSet rs = null;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         Company result = null;
+
         try {
             connection = Connector.getDataSource().getConnection();
             preparedStatement = connection.prepareStatement(SELECT + WHERE_FILTER_ID);
@@ -90,14 +91,7 @@ public class CompanyDAO {
         return null;
     }
 
-    /**
-     * Update the company having id = company.id.
-     *
-     * @param company attributes used for updating
-     * @return success
-     * @throws DAOUpdateException if error happens
-     */
-    public static boolean update(Company company) throws DAOUpdateException {
+    public boolean update(Company company) throws DAOUpdateException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -117,13 +111,7 @@ public class CompanyDAO {
         }
     }
 
-    /**
-     * Get the number of companies.
-     *
-     * @return number
-     * @throws DAOCountException if error happens while getting row count
-     */
-    public static Integer getCount() throws DAOCountException {
+    public Integer getCount() throws DAOCountException {
         Connection connection = null;
         ResultSet rs = null;
         Integer count = null;
@@ -145,15 +133,7 @@ public class CompanyDAO {
         }
     }
 
-    /**
-     * Result set of results.
-     *
-     * @param page            asked
-     * @param numberOfResults per page
-     * @return resultset
-     * @throws DAOSelectException if error happens
-     */
-    public static List<Company> getPagination(int page, int numberOfResults) throws DAOSelectException {
+    public List<Company> getPagination(int page, int numberOfResults) throws DAOSelectException {
         Connection connection = null;
         ResultSet rs = null;
         List<Company> res = null;

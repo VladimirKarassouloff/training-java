@@ -11,77 +11,63 @@ import validator.CompanyValidator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompanyServices {
+public class CompanyServices implements ICompanyServices {
 
-    /**
-     * Get all companies in DB.
-     * @return companies
-     */
-    public static List<Company> getCompanies() {
+
+    private static CompanyServices service = new CompanyServices();
+
+    private CompanyDAO companyDao;
+
+    private CompanyServices() {
+        companyDao = CompanyDAO.getInstance();
+    }
+
+    public static CompanyServices getInstance() {
+        return service;
+    }
+
+    public List<Company> getCompanies() {
         try {
-            return CompanyDAO.getAll();
+            return companyDao.getAll();
         } catch (DAOSelectException e) {
             e.printStackTrace();
             return new ArrayList<>();
         }
     }
 
-    /**
-     * Get Page of campanies.
-     * @param page       number of page
-     * @param numberItem number of result per page
-     * @return companies
-     */
-    public static List<Company> getPagedCompany(int page, int numberItem) {
+    public List<Company> getPagedCompany(int page, int numberItem) {
         try {
-            return CompanyDAO.getPagination(page, numberItem);
+            return companyDao.getPagination(page, numberItem);
         } catch (DAOSelectException e) {
             e.printStackTrace();
-            return new ArrayList<Company>();
+            return new ArrayList<>();
         }
     }
 
-    /**
-     * Get the total count of companies in DB.
-     *
-     * @return number of companoes
-     */
-    public static int getCountCompany() {
+    public int getCountCompany() {
         try {
-            return CompanyDAO.getCount();
+            return companyDao.getCount();
         } catch (DAOCountException e) {
             e.printStackTrace();
             return 0;
         }
     }
 
-    /**
-     * Get a specific company.
-     *
-     * @param id of the company returned
-     * @return company having the id or null
-     */
-    public static Company getCompany(int id) {
+    public Company getCompany(int id) {
         try {
-            return CompanyDAO.getById(id);
+            return companyDao.getById(id);
         } catch (DAOSelectException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    /**
-     * Update the company in DB with the value of the company parameter.
-     *
-     * @param company updated
-     * @return boolean for success
-     */
-    public static boolean updateCompany(Company company) {
+    public boolean updateCompany(Company company) {
         if (!CompanyValidator.isValid(company)) {
             return false;
         }
         try {
-            return CompanyDAO.update(company);
+            return companyDao.update(company);
         } catch (DAOUpdateException e) {
             e.printStackTrace();
             return false;
