@@ -42,8 +42,10 @@ public class CompanyDAO {
 
     public static CompanyDAO dao = new CompanyDAO();
 
-    private CompanyDAO() {
+    public Connector connector;
 
+    private CompanyDAO() {
+        connector = Connector.getInstance();
     }
 
     public static CompanyDAO getInstance() {
@@ -53,15 +55,19 @@ public class CompanyDAO {
     public List<Company> getAll() throws DAOSelectException {
         Connection connection = null;
         ResultSet rs = null;
+        List<Company> result = null;
 
         try {
-            connection = Connector.getDataSource().getConnection();
+            connection = connector.getDataSource().getConnection();
             rs = connection.prepareStatement(SELECT).executeQuery();
+            connection.commit();
             LOGGER.info("Succes getAll CompanyDAO");
-            return MapperCompany.mapResultSetToObjects(rs);
-        } catch (Exception e) {
+            result = MapperCompany.mapResultSetToObjects(rs);
+            return result;
+        } catch (SQLException e) {
             e.printStackTrace();
             LOGGER.info("Error getAll CompanyDAO : " + e.getMessage());
+            connector.rollback(connection);
             throw new DAOSelectException("Company", SELECT);
         }
     }
@@ -73,11 +79,12 @@ public class CompanyDAO {
         Company result = null;
 
         try {
-            connection = Connector.getDataSource().getConnection();
+            connection = connector.getDataSource().getConnection();
             preparedStatement = connection.prepareStatement(SELECT + WHERE_FILTER_ID);
             preparedStatement.setInt(1, id);
             rs = preparedStatement.executeQuery();
             result = MapperCompany.mapResultSetToObject(rs);
+            connection.commit();
 
             preparedStatement.close();
             connection.close();
@@ -86,6 +93,7 @@ public class CompanyDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             LOGGER.info("Error getById CompanyDAO : " + e.getMessage() + " => id = " + id);
+            connector.rollback(connection);
         }
 
         return null;
@@ -94,19 +102,22 @@ public class CompanyDAO {
     public boolean update(Company company) throws DAOUpdateException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+
         try {
-            connection = Connector.getDataSource().getConnection();
+            connection = connector.getDataSource().getConnection();
             preparedStatement = connection.prepareStatement(UPDATE);
             preparedStatement.setString(1, company.getName());
             preparedStatement.setInt(2, company.getId());
+            connection.commit();
             int resExec = preparedStatement.executeUpdate();
 
             preparedStatement.close();
             connection.close();
             LOGGER.info("Succes Update CompanyDAO " + company);
             return resExec != 0;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             LOGGER.info("Error Update CompanyDAO : " + e.getMessage() + " " + company);
+            connector.rollback(connection);
             throw new DAOUpdateException(company);
         }
     }
@@ -117,8 +128,9 @@ public class CompanyDAO {
         Integer count = null;
 
         try {
-            connection = Connector.getDataSource().getConnection();
+            connection = connector.getDataSource().getConnection();
             rs = connection.prepareStatement(COUNT).executeQuery();
+            connection.commit();
             if (rs.next()) {
                 count = rs.getInt(1);
             }
@@ -129,6 +141,7 @@ public class CompanyDAO {
             return count;
         } catch (Exception e) {
             LOGGER.info("Error getCount CompanyDAO : " + e.getMessage());
+            connector.rollback(connection);
             throw new DAOCountException("Company");
         }
     }
@@ -139,8 +152,9 @@ public class CompanyDAO {
         List<Company> res = null;
 
         try {
-            connection = Connector.getDataSource().getConnection();
+            connection = connector.getDataSource().getConnection();
             rs = connection.prepareStatement(SELECT + " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults)).executeQuery();
+            connection.commit();
             res = MapperCompany.mapResultSetToObjects(rs);
 
             connection.close();
@@ -149,6 +163,7 @@ public class CompanyDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             LOGGER.info("Error getPagination CompanyDAO : " + e.getMessage());
+            connector.rollback(connection);
             throw new DAOSelectException("Company", SELECT + " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults));
         }
     }

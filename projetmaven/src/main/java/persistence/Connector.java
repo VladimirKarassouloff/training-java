@@ -18,14 +18,13 @@ public final class Connector {
     private static final String PASS = "qwerty1234";
 
 
-    private static DataSource datasource;
+    private static Connector connector = new Connector();
 
-    public static DataSource getDataSource() {
+    private DataSource datasource;
+    public DataSource getDataSource() {
         return datasource;
     }
 
-    public static Connector connector = new Connector();
-    
     private Connector() {
         HikariConfig config = new HikariConfig();
 
@@ -42,5 +41,19 @@ public final class Connector {
         datasource = new HikariDataSource(config);
     }
 
+    public static Connector getInstance() {
+        return connector;
+    }
 
+    public void rollback(Connection connection) {
+        if (connection == null) {
+            return;
+        }
+
+        try {
+            connection.rollback();
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+    }
 }

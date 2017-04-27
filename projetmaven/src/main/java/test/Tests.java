@@ -1,5 +1,6 @@
 package test;
 
+import persistence.ComputerDAO;
 import persistence.Connector;
 
 public class Tests {
@@ -12,8 +13,9 @@ public class Tests {
     public static void main(String[] args) {
         try {
 
-            Class.forName(Connector.JDBC_DRIVER);
-            System.out.println("Test get connection");
+            ComputerDAO computerDao = ComputerDAO.getInstance();
+            System.out.println(computerDao.getPagination(0,10,"apple"));
+
             //Connector c = Connector.getInstance();
             //System.out.println(c);
             /*
@@ -61,7 +63,7 @@ public class Tests {
             System.out.println("Get des 0-20 premieres computer Computer");
             System.out.println(ComputerDAO.getPagination(0, 20));
 */
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
