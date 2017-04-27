@@ -195,6 +195,7 @@
 					<username>root</username>
 					<password>root</password>
 					<contextReloadable>true</contextReloadable>
+					<update>true</update>
 				</configuration>
 				<executions>
 					<execution>

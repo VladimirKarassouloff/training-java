@@ -22,7 +22,7 @@
 
 
     <div class="container">
-        <h1 id="homeTitle">${totalCount} Computers found</h1>
+        <h1 id="homeTitle">${totalCount} Computers found TTEST</h1>
         <div id="actions" class="form-horizontal">
             <div class="pull-left">
                 <form id="searchForm" action="#" method="GET" class="form-inline">
@@ -59,7 +59,9 @@
                         </a>
                     </span>
                 </th>
-                <th>Computer name</th>
+                <th><mystuff:link-orderby linkGenerated="index" innerhtml="Computer nameaeeaze"
+                                          ascgetparameter="asc" ordergetparameter="colOrder" value-asc="true" value-order="0" />
+                </th>
                 <th>Introduced date</th>
                 <!-- Table header for Discontinued Date -->
                 <th>Discontinued date</th>

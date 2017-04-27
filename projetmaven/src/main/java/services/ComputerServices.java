@@ -12,6 +12,7 @@ import exception.MapperException;
 import mapper.MapperComputer;
 import mapper.MapperComputerDTO;
 import model.Computer;
+import model.FilterSelect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import persistence.CompanyDAO;
@@ -52,6 +53,15 @@ public class ComputerServices implements IComputerServices {
     public List<ComputerDTO> getPagedComputerDTO(int page, int numberItem, String filterName) {
         try {
             return MapperComputer.toDTOs(computerDao.getPagination(page, numberItem, ("".equals(filterName) ? null : filterName)));
+        } catch (DAOSelectException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ComputerDTO> getPagedComputerDTO(FilterSelect filter) {
+        try{
+            return MapperComputer.toDTOs(computerDao.getFromFilter(filter));
         } catch (DAOSelectException e) {
             e.printStackTrace();
             return new ArrayList<>();
@@ -186,4 +196,6 @@ public class ComputerServices implements IComputerServices {
             return null;
         }
     }
+
+
 }
