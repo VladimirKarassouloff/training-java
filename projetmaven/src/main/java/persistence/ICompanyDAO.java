@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by vkarassouloff on 26/04/17.
  */
-public interface ICompanyDAO {
+interface ICompanyDAO {
 
     /**
      * Get all records.
@@ -18,7 +18,7 @@ public interface ICompanyDAO {
      * @return resultsetcli
      * @throws DAOSelectException if errors happened
      */
-    public List<Company> getAll() throws DAOSelectException;
+    List<Company> getAll() throws DAOSelectException;
 
     /**
      * Get specific record from DB.
@@ -27,7 +27,7 @@ public interface ICompanyDAO {
      * @return resultset
      * @throws DAOSelectException if error happens
      */
-    public Company getById(int id) throws DAOSelectException;
+    Company getById(int id) throws DAOSelectException;
 
     /**
      * Update the company having id = company.id.
@@ -36,7 +36,7 @@ public interface ICompanyDAO {
      * @return success
      * @throws DAOUpdateException if error happens
      */
-    public boolean update(Company company) throws DAOUpdateException;
+    boolean update(Company company) throws DAOUpdateException;
 
     /**
      * Get the number of companies.
@@ -44,7 +44,7 @@ public interface ICompanyDAO {
      * @return number
      * @throws DAOCountException if error happens while getting row count
      */
-    public Integer getCount() throws DAOCountException;
+    Integer getCount() throws DAOCountException;
 
     /**
      * Result set of results.
@@ -54,9 +54,7 @@ public interface ICompanyDAO {
      * @return resultset
      * @throws DAOSelectException if error happens
      */
-    public List<Company> getPagination(int page, int numberOfResults) throws DAOSelectException;
-
-
+    List<Company> getPagination(int page, int numberOfResults) throws DAOSelectException;
 
 
 }

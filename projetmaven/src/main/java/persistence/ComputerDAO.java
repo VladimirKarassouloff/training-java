@@ -11,7 +11,7 @@ import model.Computer;
 import model.FilterSelect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import persistence.operator.Operator;
+import persistence.operator.Filter;
 import utils.SqlNames;
 
 import java.sql.Connection;
@@ -23,10 +23,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class ComputerDAO {
+public class ComputerDAO implements IComputerDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAO.class);
-
 
 
     //////////////////////////////////////////////////////////////////////
@@ -74,6 +73,9 @@ public class ComputerDAO {
 
     private Connector connector;
 
+    /**
+     * Constructor.
+     */
     private ComputerDAO() {
         connector = Connector.getInstance();
     }
@@ -87,6 +89,7 @@ public class ComputerDAO {
     // Each company is build at most one time
     public static final HashMap<Integer, Company> CACHE_COMPANY = new HashMap<>();
 
+    @Override
     public List<Computer> getAll() throws DAOSelectException {
         CACHE_COMPANY.clear();
         Connection connection = null;
@@ -112,6 +115,7 @@ public class ComputerDAO {
         }
     }
 
+    @Override
     public List<Computer> getFromFilter(FilterSelect fs) throws DAOSelectException {
         CACHE_COMPANY.clear();
         List<Computer> result = null;
@@ -130,7 +134,7 @@ public class ComputerDAO {
                 query.append(" WHERE ");
                 while (it.hasNext()) {
                     String col = it.next();
-                    query.append(col+" "+ fs.getFilterValue(col).getOperator() +" ? ");
+                    query.append(col + " " + fs.getFilterValue(col).getOperator() + " ? ");
                     if (it.hasNext()) {
                         query.append(" OR ");
                     }
@@ -139,7 +143,7 @@ public class ComputerDAO {
 
             // Looking for order
             if (fs.getOrderOnColumn() != null) {
-                query.append("ORDER BY "+fs.getOrderOnColumn()+" "+ (fs.isAsc() ? " ASC " : " DESC ") );
+                query.append("ORDER BY " + fs.getOrderOnColumn() + " " + (fs.isAsc() ? " ASC " : " DESC "));
             }
 
             // Looking for pagination
@@ -152,11 +156,11 @@ public class ComputerDAO {
             int paramCount = 1;
 
             // Binding for where
-            for (Operator op : fs.getFilterValues()) {
-                preparedStatement.setString(paramCount++, op.boundValue());
+            for (Filter op : fs.getFilterValues()) {
+                preparedStatement.setString(paramCount++, op.getValue());
             }
 
-
+            System.out.println(rs);
             rs = preparedStatement.executeQuery();
             connection.commit();
             result = MapperComputer.mapResultSetToObjects(rs);
@@ -172,6 +176,7 @@ public class ComputerDAO {
         throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, "Computer Select From Filter Exception");
     }
 
+    @Override
     public Computer getById(int id) throws DAOSelectException {
         CACHE_COMPANY.clear();
         Connection connection = null;
@@ -201,6 +206,7 @@ public class ComputerDAO {
         }
     }
 
+    @Override
     public int insert(Computer computer) throws DAOInsertException {
         CACHE_COMPANY.clear();
         Connection connection = null;
@@ -252,6 +258,7 @@ public class ComputerDAO {
         throw new DAOInsertException(computer);
     }
 
+    @Override
     public boolean deleteById(int id) throws DAODeleteException {
         Connection connection = null;
         PreparedStatement statement = null;
@@ -276,6 +283,7 @@ public class ComputerDAO {
 
     }
 
+    @Override
     public boolean update(Computer computer) throws DAOUpdateException {
         Connection connection = null;
         PreparedStatement statement = null;
@@ -302,7 +310,7 @@ public class ComputerDAO {
         throw new DAOUpdateException(computer);
     }
 
-
+    @Override
     public Computer getLastComputerInserted() throws DAOSelectException {
         CACHE_COMPANY.clear();
         Connection connection = null;
@@ -328,7 +336,7 @@ public class ComputerDAO {
         throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT_LAST_COMPUTER_INSERTED);
     }
 
-
+    @Override
     public List<Computer> getPagination(int page, int numberOfResults, String filterName) throws DAOSelectException {
         CACHE_COMPANY.clear();
         Connection connection = null;
@@ -368,6 +376,7 @@ public class ComputerDAO {
         throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT + LIMIT_PAGE);
     }
 
+    @Override
     public Integer getCount(String searchByName) throws DAOCountException {
         Connection connection = null;
         PreparedStatement pr = null;

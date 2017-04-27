@@ -3,7 +3,6 @@ package services;
 import exception.DAOCountException;
 import exception.DAOSelectException;
 import exception.DAOUpdateException;
-import mapper.MapperCompany;
 import model.Company;
 import persistence.CompanyDAO;
 import validator.CompanyValidator;
@@ -18,6 +17,9 @@ public class CompanyServices implements ICompanyServices {
 
     private CompanyDAO companyDao;
 
+    /**
+     * Get singleton.
+     */
     private CompanyServices() {
         companyDao = CompanyDAO.getInstance();
     }
@@ -26,6 +28,7 @@ public class CompanyServices implements ICompanyServices {
         return service;
     }
 
+    @Override
     public List<Company> getCompanies() {
         try {
             return companyDao.getAll();
@@ -35,6 +38,7 @@ public class CompanyServices implements ICompanyServices {
         }
     }
 
+    @Override
     public List<Company> getPagedCompany(int page, int numberItem) {
         try {
             return companyDao.getPagination(page, numberItem);
@@ -44,6 +48,7 @@ public class CompanyServices implements ICompanyServices {
         }
     }
 
+    @Override
     public int getCountCompany() {
         try {
             return companyDao.getCount();
@@ -53,6 +58,7 @@ public class CompanyServices implements ICompanyServices {
         }
     }
 
+    @Override
     public Company getCompany(int id) {
         try {
             return companyDao.getById(id);
@@ -62,6 +68,7 @@ public class CompanyServices implements ICompanyServices {
         }
     }
 
+    @Override
     public boolean updateCompany(Company company) {
         if (!CompanyValidator.isValid(company)) {
             return false;

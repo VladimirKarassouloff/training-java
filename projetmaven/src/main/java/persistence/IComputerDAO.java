@@ -6,13 +6,14 @@ import exception.DAOInsertException;
 import exception.DAOSelectException;
 import exception.DAOUpdateException;
 import model.Computer;
+import model.FilterSelect;
 
 import java.util.List;
 
 /**
  * Created by vkarassouloff on 26/04/17.
  */
-public interface IComputerDAO {
+interface IComputerDAO {
 
     /**
      * Get all records.
@@ -20,7 +21,7 @@ public interface IComputerDAO {
      * @return resultset for all recors
      * @throws DAOSelectException if error happens
      */
-    public List<Computer> getAll() throws DAOSelectException;
+    List<Computer> getAll() throws DAOSelectException;
 
     /**
      * Get Computer.
@@ -29,7 +30,7 @@ public interface IComputerDAO {
      * @return resultset
      * @throws DAOSelectException if error happens
      */
-    public Computer getById(int id) throws DAOSelectException;
+    Computer getById(int id) throws DAOSelectException;
 
     /**
      * Insert new record in DB.
@@ -38,7 +39,7 @@ public interface IComputerDAO {
      * @return id of new row, -1 if failed
      * @throws DAOInsertException if error happens
      */
-    public int insert(Computer computer) throws DAOInsertException;
+    int insert(Computer computer) throws DAOInsertException;
 
 
     /**
@@ -48,7 +49,7 @@ public interface IComputerDAO {
      * @return success
      * @throws DAODeleteException if error happens
      */
-    public boolean deleteById(int id) throws DAODeleteException;
+    boolean deleteById(int id) throws DAODeleteException;
 
     /**
      * Updated computer.
@@ -57,7 +58,7 @@ public interface IComputerDAO {
      * @return success
      * @throws DAOUpdateException if error happens
      */
-    public boolean update(Computer computer) throws DAOUpdateException;
+    boolean update(Computer computer) throws DAOUpdateException;
 
 
     /**
@@ -66,7 +67,7 @@ public interface IComputerDAO {
      * @return resultset
      * @throws DAOSelectException if error happens
      */
-    public Computer getLastComputerInserted() throws DAOSelectException;
+    Computer getLastComputerInserted() throws DAOSelectException;
 
     /**
      * Get Paged result.
@@ -77,7 +78,7 @@ public interface IComputerDAO {
      * @return resultset of the page asked
      * @throws DAOSelectException if error happens
      */
-    public List<Computer> getPagination(int page, int numberOfResults, String filterName) throws DAOSelectException;
+    List<Computer> getPagination(int page, int numberOfResults, String filterName) throws DAOSelectException;
 
     /***
      * Get computer count.
@@ -85,10 +86,16 @@ public interface IComputerDAO {
      * @throws DAOCountException if error happens
      * @return count of computer considering filters
      */
-    public Integer getCount(String searchByName) throws DAOCountException;
+    Integer getCount(String searchByName) throws DAOCountException;
 
 
-
+    /**
+     * Get Computer matching filter.
+     * @param fs filter
+     * @return computers
+     * @throws DAOSelectException if an error occurs with DB
+     */
+    List<Computer> getFromFilter(FilterSelect fs) throws DAOSelectException;
 
 
 }

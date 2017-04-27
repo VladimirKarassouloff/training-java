@@ -5,7 +5,6 @@ import applicationcli.FormulaireCli;
 import mapper.MapperDate;
 import model.Computer;
 import services.ComputerServices;
-import utils.Format;
 
 public class DetailComputer extends Page {
 

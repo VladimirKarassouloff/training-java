@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,15 +83,18 @@ public class Index extends HttpServlet {
         }
 
         // Parsing if order is asc or desc
-        try{
+        try {
             asc = Boolean.parseBoolean(ascStr);
-        } catch(Exception e) {
+        } catch (Exception e) {
             asc = DEFAULT_ORDER_ASC;
         }
 
         // Parse what column we're ordering
-        if( colOrder != null) {
-
+        if (colOrder != null) {
+            System.out.println("TODOOOOO");
+            System.out.println("TODOOOOO");
+            System.out.println("TODOOOOO");
+            System.out.println("TODOOOOO");
         }
 
         ////////////////////////
@@ -115,7 +119,7 @@ public class Index extends HttpServlet {
         }
 
         // Get the page asked
-        computer = services.getPagedComputerDTO( new FilterSelect.Builder()
+        computer = services.getPagedComputerDTO(new FilterSelect.Builder()
                 .withPage(pageDisplay)
                 .withLengthPage(lengthPageDisplay)
                 .withSearch(SqlNames.COMPUTER_COL_JOINED_COMPANY_NAME, new LikeBoth(search))
@@ -124,6 +128,7 @@ public class Index extends HttpServlet {
                 .build()
         );
         //computer = services.getPagedComputerDTO(pageDisplay, lengthPageDisplay, search);
+        computer = new ArrayList<>();
 
         // Set all params
         request.setAttribute("computers", computer);
@@ -142,7 +147,7 @@ public class Index extends HttpServlet {
             String[] deleteThoseIds = deleteUnparsed.split(",");
             for (String idToDelete : deleteThoseIds) {
                 try {
-                 int id = Integer.parseInt(idToDelete);
+                    int id = Integer.parseInt(idToDelete);
                     services.deleteComputer(new Computer.Builder().withId(id).build());
                 } catch (Exception e) {
                     System.err.println("Failed To Parse Id To Delete");

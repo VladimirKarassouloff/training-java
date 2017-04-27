@@ -15,7 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class CompanyDAO {
+public class CompanyDAO implements ICompanyDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDAO.class);
 
@@ -43,6 +43,9 @@ public class CompanyDAO {
 
     public Connector connector;
 
+    /**
+     * Get singleton.
+     */
     private CompanyDAO() {
         connector = Connector.getInstance();
     }
@@ -51,6 +54,7 @@ public class CompanyDAO {
         return dao;
     }
 
+    @Override
     public List<Company> getAll() throws DAOSelectException {
         Connection connection = null;
         ResultSet rs = null;
@@ -71,6 +75,7 @@ public class CompanyDAO {
         }
     }
 
+    @Override
     public Company getById(int id) throws DAOSelectException {
         ResultSet rs = null;
         Connection connection = null;
@@ -98,6 +103,7 @@ public class CompanyDAO {
         return null;
     }
 
+    @Override
     public boolean update(Company company) throws DAOUpdateException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -121,6 +127,7 @@ public class CompanyDAO {
         }
     }
 
+    @Override
     public Integer getCount() throws DAOCountException {
         Connection connection = null;
         ResultSet rs = null;
@@ -145,6 +152,7 @@ public class CompanyDAO {
         }
     }
 
+    @Override
     public List<Company> getPagination(int page, int numberOfResults) throws DAOSelectException {
         Connection connection = null;
         ResultSet rs = null;

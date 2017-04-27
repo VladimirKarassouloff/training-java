@@ -1,10 +1,9 @@
 package model;
 
-import persistence.operator.Operator;
+import persistence.operator.Filter;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,12 +19,15 @@ public class FilterSelect {
     private int numberOfResult;
 
     // Research filter
-    private HashMap<String,Operator> filters;
+    private HashMap<String, Filter> filters;
 
     // Order filter
     private String orderOnColumn;
     private boolean asc;
 
+    /**
+     * Constructor.
+     */
     public FilterSelect() {
         this.paginated = true;
         this.numberOfResult = DEFAULT_NUMBER_OF_RESULT;
@@ -37,11 +39,16 @@ public class FilterSelect {
         return filters.keySet();
     }
 
-    public Collection<Operator> getFilterValues() {
+    public Collection<Filter> getFilterValues() {
         return filters.values();
     }
 
-    public Operator getFilterValue(String col) {
+    /**
+     * Get the value for a filter.
+     * @param col filtered
+     * @return filter
+     */
+    public Filter getFilterValue(String col) {
         return filters.get(col);
     }
 
@@ -63,11 +70,11 @@ public class FilterSelect {
         this.numberOfResult = numberOfResult;
     }
 
-    public HashMap<String, Operator> getFilters() {
+    public HashMap<String, Filter> getFilters() {
         return filters;
     }
 
-    public void setFilters(HashMap<String, Operator> filters) {
+    public void setFilters(HashMap<String, Filter> filters) {
         this.filters = filters;
     }
 
@@ -99,36 +106,70 @@ public class FilterSelect {
 
         private FilterSelect filter;
 
+        /**
+         * Builder for FilterSelect.
+         */
         public Builder() {
             filter = new FilterSelect();
         }
 
-        public Builder withSearch(String s, Operator op) {
-            filter.filters.put(s,op);
+        /**
+         * Builder for FilterSelect.
+         * @param colname colname
+         * @param op filter
+         * @return builder
+         */
+        public Builder withSearch(String colname, Filter op) {
+            filter.filters.put(colname, op);
             return this;
         }
 
+        /**
+         * Builder for FilterSelect.
+         * @param p page you are trying to select
+         * @return builder
+         */
         public Builder withPage(int p) {
             filter.page = p;
             return this;
         }
 
+        /**
+         * Builder for FilterSelect.
+         * @param nb length of page
+         * @return builder
+         */
         public Builder withResultsPerPage(int nb) {
             filter.numberOfResult = nb;
             return this;
         }
 
+        /**
+         * Builder for FilterSelect.
+         * @param s column filtered
+         * @param asc if filtering asc or desc
+         * @return builder
+         */
         public Builder withOrder(String s, boolean asc) {
             filter.orderOnColumn = s;
             filter.asc = asc;
             return this;
         }
 
+        /**
+         * Builder for FilterSelect.
+         * @param i new length
+         * @return builder
+         */
         public Builder withLengthPage(int i) {
             filter.numberOfResult = i;
             return this;
         }
 
+        /**
+         * Get the FilterSelect built.
+         * @return filter built
+         */
         public FilterSelect build() {
             return filter;
         }

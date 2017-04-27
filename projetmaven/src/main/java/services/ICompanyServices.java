@@ -7,13 +7,13 @@ import java.util.List;
 /**
  * Created by vkarassouloff on 26/04/17.
  */
-public interface ICompanyServices {
+interface ICompanyServices {
 
     /**
      * Get all companies in DB.
      * @return companies
      */
-    public List<Company> getCompanies();
+    List<Company> getCompanies();
 
     /**
      * Get Page of campanies.
@@ -21,14 +21,14 @@ public interface ICompanyServices {
      * @param numberItem number of result per page
      * @return companies
      */
-    public List<Company> getPagedCompany(int page, int numberItem);
+    List<Company> getPagedCompany(int page, int numberItem);
 
     /**
      * Get the total count of companies in DB.
      *
      * @return number of companoes
      */
-    public int getCountCompany();
+    int getCountCompany();
 
 
     /**
@@ -37,7 +37,7 @@ public interface ICompanyServices {
      * @param id of the company returned
      * @return company having the id or null
      */
-    public Company getCompany(int id);
+    Company getCompany(int id);
 
     /**
      * Update the company in DB with the value of the company parameter.
@@ -45,5 +45,5 @@ public interface ICompanyServices {
      * @param company updated
      * @return boolean for success
      */
-    public boolean updateCompany(Company company);
+    boolean updateCompany(Company company);
 }

@@ -3,12 +3,17 @@ package persistence.operator;
 /**
  * Created by vkarassouloff on 27/04/17.
  */
-public abstract class Operator {
+public abstract class Filter {
 
     protected String operator;
     protected String value;
 
-    public Operator(String operator, String value) {
+    /**
+     * Constructor for building query parts.
+     * @param operator Like / = / ....
+     * @param value 'Apple' / ...
+     */
+    public Filter(String operator, String value) {
         this.operator = operator;
         this.value = value;
     }
@@ -29,7 +34,5 @@ public abstract class Operator {
         this.value = value;
     }
 
-    public String boundValue() {
-        return value;
-    }
+
 }

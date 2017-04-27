@@ -115,8 +115,9 @@ public class MapperComputer {
 
     /**
      * Take a computer and map it to computer dto.
+     *
      * @param computer that you want to map
-     * @return
+     * @return computerDto
      */
     public static ComputerDTO toDTO(Computer computer) {
         if (computer == null) {
@@ -135,8 +136,9 @@ public class MapperComputer {
 
     /**
      * Take list of computer, and map them to computerdto.
+     *
      * @param computers that you want to convert to DTOs
-     * @return
+     * @return list of computer
      */
     public static List<ComputerDTO> toDTOs(List<Computer> computers) {
         return (computers == null || computers.isEmpty()) ? new ArrayList<>() : computers.stream().map(c -> MapperComputer.toDTO(c)).collect(Collectors.toList());

@@ -53,27 +53,17 @@
 		<!-- Provided -->
 		<!-- -->
 
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-servlet-api</artifactId>
-			<version>7.0.47</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-jsp-api -->
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-jsp-api</artifactId>
-			<version>7.0.47</version>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
 
 		<!-- https://mvnrepository.com/artifact/jstl/jstl -->
 		<dependency>
-			<groupId>jstl</groupId>
+            <groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
-			<scope>runtime</scope>
 		</dependency>
 
 		<!-- -->
@@ -108,17 +98,30 @@
 
 	<build>
 
+
+
 		<directory>${project.basedir}/target</directory>
 		<outputDirectory>${project.build.directory}/classes</outputDirectory>
 		<finalName>${project.artifactId}-${project.version}</finalName>
 		<testOutputDirectory>${project.build.directory}/test-classes</testOutputDirectory>
 		<sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
 		<testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
+
 		<resources>
 			<resource>
 				<directory>${project.basedir}/src/main/resources</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/webapp</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
 			</resource>
 		</resources>
+
 		<testResources>
 			<testResource>
 				<directory>${project.basedir}/src/test/resources</directory>
@@ -137,7 +140,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- BUild war -->
+			<!-- Build war -->
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.0.0</version>
@@ -151,8 +154,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<configuration>
-					<configLocation>${basedir}/src/test/resources/checkstyle/checkstyle.xml</configLocation>
-					<suppressionsLocation>${basedir}/src/test/resources/checkstyle/suppressions.xml</suppressionsLocation>
+					<configLocation>${project.basedir}/src/test/resources/checkstyle/checkstyle.xml</configLocation>
+					<suppressionsLocation>${project.basedir}/src/test/resources/checkstyle/suppressions.xml</suppressionsLocation>
 					<consoleOutput>true</consoleOutput>
 				</configuration>
 				<executions>
@@ -164,12 +167,12 @@
 					</execution>
 				</executions>
 			</plugin>
-
+<!--
 			<plugin>
 				<artifactId>exec-maven-plugin</artifactId>
 				<groupId>org.codehaus.mojo</groupId>
 				<executions>
-					<execution><!-- Run our version calculation script -->
+					<execution>
 						<id>Launch catalina</id>
 						<phase>clean</phase>
 						<configuration>
@@ -181,8 +184,7 @@
 					</execution>
 				</executions>
 			</plugin>
-
-
+-->
 			<!-- War deployment -->
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>

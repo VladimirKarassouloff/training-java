@@ -10,12 +10,10 @@ import exception.FormException;
 import exception.InvalidComputerException;
 import exception.MapperException;
 import mapper.MapperComputer;
-import mapper.MapperComputerDTO;
 import model.Computer;
 import model.FilterSelect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import persistence.CompanyDAO;
 import persistence.ComputerDAO;
 import validator.ComputerValidator;
 
@@ -33,6 +31,9 @@ public class ComputerServices implements IComputerServices {
 
     private ComputerDAO computerDao;
 
+    /**
+     * Get singleton.
+     */
     private ComputerServices() {
         computerDao = ComputerDAO.getInstance();
     }
@@ -41,6 +42,7 @@ public class ComputerServices implements IComputerServices {
         return service;
     }
 
+    @Override
     public List<Computer> getComputers() {
         try {
             return computerDao.getAll();
@@ -50,6 +52,7 @@ public class ComputerServices implements IComputerServices {
         }
     }
 
+    @Override
     public List<ComputerDTO> getPagedComputerDTO(int page, int numberItem, String filterName) {
         try {
             return MapperComputer.toDTOs(computerDao.getPagination(page, numberItem, ("".equals(filterName) ? null : filterName)));
@@ -59,8 +62,9 @@ public class ComputerServices implements IComputerServices {
         }
     }
 
+    @Override
     public List<ComputerDTO> getPagedComputerDTO(FilterSelect filter) {
-        try{
+        try {
             return MapperComputer.toDTOs(computerDao.getFromFilter(filter));
         } catch (DAOSelectException e) {
             e.printStackTrace();
@@ -68,6 +72,7 @@ public class ComputerServices implements IComputerServices {
         }
     }
 
+    @Override
     public List<Computer> getPagedComputer(int page, int numberItem, String filterName) {
         try {
             return computerDao.getPagination(page, numberItem, filterName);
@@ -77,6 +82,7 @@ public class ComputerServices implements IComputerServices {
         }
     }
 
+    @Override
     public List<Computer> getPagedComputer(int page, int numberItem) {
         try {
             return computerDao.getPagination(page, numberItem, null);
@@ -86,10 +92,12 @@ public class ComputerServices implements IComputerServices {
         }
     }
 
+    @Override
     public List<ComputerDTO> getPagedComputerDTO(int page, int numberItem) {
         return null;
     }
 
+    @Override
     public int getCountComputer(String searchByName) {
         try {
             return computerDao.getCount(searchByName);
@@ -99,6 +107,7 @@ public class ComputerServices implements IComputerServices {
         }
     }
 
+    @Override
     public int getCountComputer() {
         try {
             return computerDao.getCount(null);
@@ -108,6 +117,7 @@ public class ComputerServices implements IComputerServices {
         }
     }
 
+    @Override
     public Computer getComputer(int id) {
         try {
             return computerDao.getById(id);
@@ -117,6 +127,7 @@ public class ComputerServices implements IComputerServices {
         }
     }
 
+    @Override
     public ComputerDTO getComputerDTO(int id) {
         try {
             return MapperComputer.toDTO(computerDao.getById(id));
@@ -126,6 +137,7 @@ public class ComputerServices implements IComputerServices {
         }
     }
 
+    @Override
     public int addComputer(Computer computer) {
         try {
             ComputerValidator.checkValidity(computer);
@@ -139,6 +151,7 @@ public class ComputerServices implements IComputerServices {
         return -1;
     }
 
+    @Override
     public boolean updateComputer(Computer computer) {
         try {
             ComputerValidator.checkValidity(computer);
@@ -152,6 +165,7 @@ public class ComputerServices implements IComputerServices {
         return false;
     }
 
+    @Override
     public boolean deleteComputer(Computer comp) {
         try {
             return computerDao.deleteById(comp.getId());
@@ -161,6 +175,7 @@ public class ComputerServices implements IComputerServices {
         }
     }
 
+    @Override
     public void formUpdateComputer(ComputerDTO form) throws Exception {
         try {
             Computer computer = MapperComputer.mapDTOToObject(form);
@@ -173,6 +188,7 @@ public class ComputerServices implements IComputerServices {
         }
     }
 
+    @Override
     public void formAddComputer(ComputerDTO form) throws Exception {
         try {
             Computer computer = MapperComputer.mapDTOToObject(form);
@@ -188,6 +204,7 @@ public class ComputerServices implements IComputerServices {
         }
     }
 
+    @Override
     public Computer getLastComputerInserted() {
         try {
             return computerDao.getLastComputerInserted();

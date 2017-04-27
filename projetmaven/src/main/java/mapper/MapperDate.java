@@ -3,7 +3,6 @@ package mapper;
 import utils.Format;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**

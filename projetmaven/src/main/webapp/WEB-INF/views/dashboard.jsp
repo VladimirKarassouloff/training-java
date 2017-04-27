@@ -59,8 +59,8 @@
                         </a>
                     </span>
                 </th>
-                <th><mystuff:link-orderby linkGenerated="index" innerhtml="Computer nameaeeaze"
-                                          ascgetparameter="asc" ordergetparameter="colOrder" value-asc="true" value-order="0" />
+                <th>
+                    azeazeaze
                 </th>
                 <th>Introduced date</th>
                 <!-- Table header for Discontinued Date -->
