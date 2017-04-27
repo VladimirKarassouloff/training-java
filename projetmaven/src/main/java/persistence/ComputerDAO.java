@@ -8,8 +8,10 @@ import exception.DAOCountException;
 import mapper.MapperComputer;
 import model.Company;
 import model.Computer;
+import model.FilterSelect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import persistence.operator.Operator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,13 +20,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class ComputerDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAO.class);
 
-    private static final String TABLE_NAME = "computer";
+    public static final String TABLE_NAME = "computer";
     public static final String COL_COMPUTER_ID = "id";
     public static final String COL_COMPUTER_NAME = "name";
     public static final String COL_COMPUTER_INTRODUCED = "introduced";
@@ -112,8 +116,68 @@ public class ComputerDAO {
             e.printStackTrace();
             CACHE_COMPANY.clear();
             connector.rollback(connection);
-            throw new DAOSelectException("Computer", SELECT);
+            throw new DAOSelectException(TABLE_NAME, SELECT);
         }
+    }
+
+    public List<Computer> getFromFilter(FilterSelect fs) throws DAOSelectException {
+        CACHE_COMPANY.clear();
+        List<Computer> result = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        StringBuilder query = new StringBuilder();
+        query.append(SELECT);
+
+        try {
+            connection = connector.getDataSource().getConnection();
+
+            // If we have at least one column filtered
+            Iterator<String> it = fs.getFilteredColumns().iterator();
+            if (it.hasNext()) {
+                query.append(" WHERE ");
+                while (it.hasNext()) {
+                    String col = it.next();
+                    query.append(col+" "+ fs.getFilterValue(col).getOperator() +" ? ");
+                    if (it.hasNext()) {
+                        query.append(" OR ");
+                    }
+                }
+            }
+
+            // Looking for order
+            if (fs.getOrderOnColumn() != null) {
+                query.append("ORDER BY "+fs.getOrderOnColumn()+" "+ (fs.isAsc() ? " ASC " : " DESC ") );
+            }
+
+            // Looking for pagination
+            if (fs.isPaginated()) {
+                query.append(" LIMIT " + (fs.getNumberOfResult()) + " OFFSET " + (fs.getPage() * fs.getNumberOfResult()) + " ");
+            }
+
+            // Preparing query and binding arguments
+            preparedStatement = connection.prepareStatement(query.toString());
+            int paramCount = 1;
+
+            // Binding for where
+            for (Operator op : fs.getFilterValues()) {
+                preparedStatement.setString(paramCount++, op.boundValue());
+            }
+
+
+            rs = preparedStatement.executeQuery();
+            connection.commit();
+            result = MapperComputer.mapResultSetToObjects(rs);
+            preparedStatement.close();
+            connection.close();
+            LOGGER.info("Succes getFromFilter ComputerDAO");
+            return result;
+        } catch (SQLException e) {
+            connector.rollback(connection);
+            LOGGER.info("Erreur getFromFilter ComputerDAO : " + e.getMessage() + " query built : " + query.toString());
+        }
+
+        throw new DAOSelectException(TABLE_NAME, "Computer Select From Filter Exception");
     }
 
     public Computer getById(int id) throws DAOSelectException {
@@ -141,7 +205,7 @@ public class ComputerDAO {
             e.printStackTrace();
             CACHE_COMPANY.clear();
             connector.rollback(connection);
-            throw new DAOSelectException("Computer", SELECT + WHERE_FILTER_ID + " (id=" + id + ")");
+            throw new DAOSelectException(TABLE_NAME, SELECT + WHERE_FILTER_ID + " (id=" + id + ")");
         }
     }
 
@@ -215,7 +279,7 @@ public class ComputerDAO {
             LOGGER.info("Error delete Computerdao " + id + " : " + e.getMessage());
             e.printStackTrace();
             connector.rollback(connection);
-            throw new DAODeleteException("Computer", id);
+            throw new DAODeleteException(TABLE_NAME, id);
         }
 
     }
@@ -269,7 +333,7 @@ public class ComputerDAO {
         }
 
         CACHE_COMPANY.clear();
-        throw new DAOSelectException("Company", SELECT_LAST_COMPUTER_INSERTED);
+        throw new DAOSelectException(TABLE_NAME, SELECT_LAST_COMPUTER_INSERTED);
     }
 
 
@@ -309,7 +373,7 @@ public class ComputerDAO {
         }
 
         CACHE_COMPANY.clear();
-        throw new DAOSelectException("Company", SELECT + LIMIT_PAGE);
+        throw new DAOSelectException(TABLE_NAME, SELECT + LIMIT_PAGE);
     }
 
     public Integer getCount(String searchByName) throws DAOCountException {

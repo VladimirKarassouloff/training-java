@@ -1,7 +1,9 @@
 package test;
 
+import model.FilterSelect;
 import persistence.ComputerDAO;
-import persistence.Connector;
+import persistence.operator.Equal;
+import persistence.operator.LikeBoth;
 
 public class Tests {
 
@@ -14,8 +16,37 @@ public class Tests {
         try {
 
             ComputerDAO computerDao = ComputerDAO.getInstance();
-            System.out.println(computerDao.getPagination(0,10,"apple"));
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            FilterSelect fs = new FilterSelect.Builder()
+                    .withSearch(ComputerDAO.TABLE_NAME + "." + ComputerDAO.COL_COMPUTER_NAME, new LikeBoth("app"))
+                    .withOrder(ComputerDAO.TABLE_NAME+"."+ComputerDAO.COL_COMPUTER_NAME,true)
+                    .withLengthPage(1)
+                    .build();
+            System.out.println(computerDao.getFromFilter(fs).get(0));
+            System.out.println();
 
+            FilterSelect fs2 = new FilterSelect.Builder()
+                    .withSearch(ComputerDAO.TABLE_NAME + "." + ComputerDAO.COL_COMPUTER_NAME, new LikeBoth("app"))
+                    .withOrder(ComputerDAO.TABLE_NAME+"."+ComputerDAO.COL_COMPUTER_NAME,false)
+                    .withLengthPage(1)
+                    .build();
+            System.out.println(computerDao.getFromFilter(fs2).get(0));
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+
+            FilterSelect fs3 = new FilterSelect.Builder()
+                    .withSearch(ComputerDAO.TABLE_NAME + "." + ComputerDAO.COL_COMPUTER_NAME, new Equal("Apple Lisa"))
+                    .withOrder(ComputerDAO.TABLE_NAME+"."+ComputerDAO.COL_COMPUTER_NAME,false)
+                    .withLengthPage(2)
+                    .build();
+            System.out.println(computerDao.getFromFilter(fs3));
+            System.out.println(computerDao.getFromFilter(fs3).size());
+            System.out.println();
+            System.out.println();
             //Connector c = Connector.getInstance();
             //System.out.println(c);
             /*
