@@ -2,8 +2,8 @@ package test;
 
 import model.FilterSelect;
 import persistence.ComputerDAO;
-import persistence.operator.Equal;
 import persistence.operator.LikeBoth;
+import utils.SqlNames;
 
 public class Tests {
 
@@ -20,16 +20,16 @@ public class Tests {
             System.out.println();
             System.out.println();
             FilterSelect fs = new FilterSelect.Builder()
-                    .withSearch(ComputerDAO.TABLE_NAME + "." + ComputerDAO.COL_COMPUTER_NAME, new LikeBoth("app"))
-                    .withOrder(ComputerDAO.TABLE_NAME+"."+ComputerDAO.COL_COMPUTER_NAME,true)
+                    .withSearch(SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME, new LikeBoth("app"))
+                    .withOrder(SqlNames.COMPUTER_TABLE_NAME+"."+ SqlNames.COMPUTER_COL_COMPUTER_NAME,true)
                     .withLengthPage(1)
                     .build();
             System.out.println(computerDao.getFromFilter(fs).get(0));
             System.out.println();
 
             FilterSelect fs2 = new FilterSelect.Builder()
-                    .withSearch(ComputerDAO.TABLE_NAME + "." + ComputerDAO.COL_COMPUTER_NAME, new LikeBoth("app"))
-                    .withOrder(ComputerDAO.TABLE_NAME+"."+ComputerDAO.COL_COMPUTER_NAME,false)
+                    .withSearch(SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME, new LikeBoth("app"))
+                    .withOrder(SqlNames.COMPUTER_TABLE_NAME+"."+ SqlNames.COMPUTER_COL_COMPUTER_NAME,false)
                     .withLengthPage(1)
                     .build();
             System.out.println(computerDao.getFromFilter(fs2).get(0));
@@ -39,8 +39,8 @@ public class Tests {
             System.out.println();
 
             FilterSelect fs3 = new FilterSelect.Builder()
-                    .withSearch(ComputerDAO.TABLE_NAME + "." + ComputerDAO.COL_COMPUTER_NAME, new Equal("Apple Lisa"))
-                    .withOrder(ComputerDAO.TABLE_NAME+"."+ComputerDAO.COL_COMPUTER_NAME,false)
+                    .withSearch(SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME, new LikeBoth("Apple Lisa"))
+                    .withOrder(SqlNames.COMPUTER_TABLE_NAME+"."+ SqlNames.COMPUTER_COL_COMPUTER_NAME,false)
                     .withLengthPage(2)
                     .build();
             System.out.println(computerDao.getFromFilter(fs3));

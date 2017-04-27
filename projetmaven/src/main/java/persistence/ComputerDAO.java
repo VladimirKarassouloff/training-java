@@ -12,65 +12,57 @@ import model.FilterSelect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import persistence.operator.Operator;
+import utils.SqlNames;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 public class ComputerDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAO.class);
 
-    public static final String TABLE_NAME = "computer";
-    public static final String COL_COMPUTER_ID = "id";
-    public static final String COL_COMPUTER_NAME = "name";
-    public static final String COL_COMPUTER_INTRODUCED = "introduced";
-    public static final String COL_COMPUTERDISCONTINUED = "discontinued";
-    public static final String COL_COMPUTER_COMPANY_ID = "company_id";
-    public static final String COL_JOINED_COMPANY_NAME = "company_name";
 
 
     //////////////////////////////////////////////////////////////////////
     /////Query parts
-    public static final String SELECT = "SELECT " + TABLE_NAME + "." + COL_COMPUTER_ID + ", " + TABLE_NAME + "." + COL_COMPUTER_NAME + ", " + COL_COMPUTER_INTRODUCED + ", " + COL_COMPUTERDISCONTINUED +
-            ", " + COL_COMPUTER_COMPANY_ID + ", " + CompanyDAO.TABLE_NAME + "." + CompanyDAO.COL_COMPANY_NAME + " as " + COL_JOINED_COMPANY_NAME + " FROM " + ComputerDAO.TABLE_NAME +
-            " LEFT JOIN " + CompanyDAO.TABLE_NAME + " ON " + CompanyDAO.TABLE_NAME + "." + CompanyDAO.COL_COMPANY_ID +
-            "=" + ComputerDAO.TABLE_NAME + "." + ComputerDAO.COL_COMPUTER_COMPANY_ID;
+    public static final String SELECT = "SELECT " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + ", " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME + ", " + SqlNames.COMPUTER_COL_COMPUTER_INTRODUCED + ", " + SqlNames.COMPUTER_COL_COMPUTERDISCONTINUED +
+            ", " + SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID + ", " + SqlNames.COMPANY_TABLE_NAME + "." + SqlNames.COMPANY_COL_COMPANY_NAME + " as " + SqlNames.COMPUTER_COL_JOINED_COMPANY_NAME + " FROM " + SqlNames.COMPUTER_TABLE_NAME +
+            " LEFT JOIN " + SqlNames.COMPANY_TABLE_NAME + " ON " + SqlNames.COMPANY_TABLE_NAME + "." + SqlNames.COMPANY_COL_COMPANY_ID +
+            "=" + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID;
 
 
-    public static final String COUNT = "SELECT Count(*) FROM " + ComputerDAO.TABLE_NAME;
+    public static final String COUNT = "SELECT Count(*) FROM " + SqlNames.COMPUTER_TABLE_NAME;
 
-    public static final String WHERE_FILTER_ID = " WHERE " + ComputerDAO.TABLE_NAME + "." + ComputerDAO.COL_COMPUTER_ID + "=?";
+    public static final String WHERE_FILTER_ID = " WHERE " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + "=?";
 
-    public static final String DELETE = "DELETE FROM " + ComputerDAO.TABLE_NAME + " WHERE " + ComputerDAO.TABLE_NAME + "." + ComputerDAO.COL_COMPUTER_ID + "=?";
+    public static final String DELETE = "DELETE FROM " + SqlNames.COMPUTER_TABLE_NAME + " WHERE " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + "=?";
 
 
-    public static final String INSERT = "INSERT INTO " + ComputerDAO.TABLE_NAME + "(" + COL_COMPUTER_NAME + ","
-            + COL_COMPUTER_INTRODUCED + "," + COL_COMPUTERDISCONTINUED + "," + COL_COMPUTER_COMPANY_ID + ") "
+    public static final String INSERT = "INSERT INTO " + SqlNames.COMPUTER_TABLE_NAME + "(" + SqlNames.COMPUTER_COL_COMPUTER_NAME + ","
+            + SqlNames.COMPUTER_COL_COMPUTER_INTRODUCED + "," + SqlNames.COMPUTER_COL_COMPUTERDISCONTINUED + "," + SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID + ") "
             + "VALUES (?,?,?,?)";
 
 
-    public static final String UPDATE = "UPDATE " + TABLE_NAME + " SET " + ComputerDAO.COL_COMPUTER_NAME + " = ?,"
-            + ComputerDAO.COL_COMPUTER_INTRODUCED + " = ?, "
-            + ComputerDAO.COL_COMPUTERDISCONTINUED + " = ?, "
-            + ComputerDAO.COL_COMPUTER_COMPANY_ID + " = ? "
-            + "WHERE " + ComputerDAO.COL_COMPUTER_ID + "= ?";
+    public static final String UPDATE = "UPDATE " + SqlNames.COMPUTER_TABLE_NAME + " SET " + SqlNames.COMPUTER_COL_COMPUTER_NAME + " = ?,"
+            + SqlNames.COMPUTER_COL_COMPUTER_INTRODUCED + " = ?, "
+            + SqlNames.COMPUTER_COL_COMPUTERDISCONTINUED + " = ?, "
+            + SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID + " = ? "
+            + "WHERE " + SqlNames.COMPUTER_COL_COMPUTER_ID + "= ?";
 
 
-    public static final String WHERE_NAME_FILTER = " WHERE " + TABLE_NAME + "." + COL_COMPUTER_NAME + " LIKE ?";
+    public static final String WHERE_NAME_FILTER = " WHERE " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME + " LIKE ?";
 
     public static final String SELECT_FILTER_NAME = SELECT + " " + WHERE_NAME_FILTER;
 
     public static final String COUNT_FILTER_NAME = COUNT + WHERE_NAME_FILTER;
 
-    public static final String SELECT_LAST_COMPUTER_INSERTED = SELECT + " ORDER BY " + TABLE_NAME + "." + COL_COMPUTER_ID + " DESC LIMIT 1";
+    public static final String SELECT_LAST_COMPUTER_INSERTED = SELECT + " ORDER BY " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + " DESC LIMIT 1";
 
     public static final String LIMIT_PAGE = " LIMIT ? OFFSET ? ";
 
@@ -116,7 +108,7 @@ public class ComputerDAO {
             e.printStackTrace();
             CACHE_COMPANY.clear();
             connector.rollback(connection);
-            throw new DAOSelectException(TABLE_NAME, SELECT);
+            throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT);
         }
     }
 
@@ -177,7 +169,7 @@ public class ComputerDAO {
             LOGGER.info("Erreur getFromFilter ComputerDAO : " + e.getMessage() + " query built : " + query.toString());
         }
 
-        throw new DAOSelectException(TABLE_NAME, "Computer Select From Filter Exception");
+        throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, "Computer Select From Filter Exception");
     }
 
     public Computer getById(int id) throws DAOSelectException {
@@ -205,7 +197,7 @@ public class ComputerDAO {
             e.printStackTrace();
             CACHE_COMPANY.clear();
             connector.rollback(connection);
-            throw new DAOSelectException(TABLE_NAME, SELECT + WHERE_FILTER_ID + " (id=" + id + ")");
+            throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT + WHERE_FILTER_ID + " (id=" + id + ")");
         }
     }
 
@@ -279,7 +271,7 @@ public class ComputerDAO {
             LOGGER.info("Error delete Computerdao " + id + " : " + e.getMessage());
             e.printStackTrace();
             connector.rollback(connection);
-            throw new DAODeleteException(TABLE_NAME, id);
+            throw new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME, id);
         }
 
     }
@@ -333,7 +325,7 @@ public class ComputerDAO {
         }
 
         CACHE_COMPANY.clear();
-        throw new DAOSelectException(TABLE_NAME, SELECT_LAST_COMPUTER_INSERTED);
+        throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT_LAST_COMPUTER_INSERTED);
     }
 
 
@@ -373,7 +365,7 @@ public class ComputerDAO {
         }
 
         CACHE_COMPANY.clear();
-        throw new DAOSelectException(TABLE_NAME, SELECT + LIMIT_PAGE);
+        throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT + LIMIT_PAGE);
     }
 
     public Integer getCount(String searchByName) throws DAOCountException {

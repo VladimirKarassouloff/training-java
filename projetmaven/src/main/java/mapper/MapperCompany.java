@@ -1,7 +1,7 @@
 package mapper;
 
 import model.Company;
-import persistence.CompanyDAO;
+import utils.SqlNames;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -53,8 +53,8 @@ public class MapperCompany {
     public static Company mapResultSetToObjectAux(ResultSet rs) {
         int companyId;
         try {
-            companyId = rs.getInt(CompanyDAO.COL_COMPANY_ID);
-            String companyName = rs.getString(CompanyDAO.COL_COMPANY_NAME);
+            companyId = rs.getInt(SqlNames.COMPANY_COL_COMPANY_ID);
+            String companyName = rs.getString(SqlNames.COMPANY_COL_COMPANY_NAME);
             return new Company(companyId, companyName);
         } catch (SQLException e) {
             e.printStackTrace();

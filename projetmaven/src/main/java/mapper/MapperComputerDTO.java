@@ -1,8 +1,7 @@
 package mapper;
 
 import dto.ComputerDTO;
-import persistence.ComputerDAO;
-import utils.Format;
+import utils.SqlNames;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -58,12 +57,12 @@ public class MapperComputerDTO {
      */
     public static ComputerDTO mapResultSetToObjectAux(ResultSet rs) {
         try {
-            int computerId = rs.getInt(ComputerDAO.COL_COMPUTER_ID);
-            int companyId = rs.getInt(ComputerDAO.COL_COMPUTER_COMPANY_ID);
-            String computerName = rs.getString(ComputerDAO.COL_COMPUTER_NAME);
-            Date introduced = rs.getDate(ComputerDAO.COL_COMPUTER_INTRODUCED);
-            Date discontinued = rs.getDate(ComputerDAO.COL_COMPUTERDISCONTINUED);
-            String companyName = rs.getString(ComputerDAO.COL_JOINED_COMPANY_NAME);
+            int computerId = rs.getInt(SqlNames.COMPUTER_COL_COMPUTER_ID);
+            int companyId = rs.getInt(SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID);
+            String computerName = rs.getString(SqlNames.COMPUTER_COL_COMPUTER_NAME);
+            Date introduced = rs.getDate(SqlNames.COMPUTER_COL_COMPUTER_INTRODUCED);
+            Date discontinued = rs.getDate(SqlNames.COMPUTER_COL_COMPUTERDISCONTINUED);
+            String companyName = rs.getString(SqlNames.COMPUTER_COL_JOINED_COMPANY_NAME);
             return new ComputerDTO(computerName, computerId, MapperDate.formatDate(introduced), MapperDate.formatDate(discontinued), companyName, companyId);
         } catch (Exception e) {
             e.printStackTrace();

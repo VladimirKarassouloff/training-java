@@ -5,6 +5,7 @@ import exception.MapperException;
 import model.Company;
 import model.Computer;
 import persistence.ComputerDAO;
+import utils.SqlNames;
 import utils.Format;
 
 import java.sql.ResultSet;
@@ -89,12 +90,12 @@ public class MapperComputer {
      */
     public static Computer mapResultSetToObjectAux(ResultSet rs) {
         try {
-            int computerId = rs.getInt(ComputerDAO.COL_COMPUTER_ID);
-            int companyId = rs.getInt(ComputerDAO.COL_COMPUTER_COMPANY_ID);
-            String computerName = rs.getString(ComputerDAO.COL_COMPUTER_NAME);
-            Date introduced = rs.getDate(ComputerDAO.COL_COMPUTER_INTRODUCED);
-            Date discontinued = rs.getDate(ComputerDAO.COL_COMPUTERDISCONTINUED);
-            String companyName = rs.getString(ComputerDAO.COL_JOINED_COMPANY_NAME);
+            int computerId = rs.getInt(SqlNames.COMPUTER_COL_COMPUTER_ID);
+            int companyId = rs.getInt(SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID);
+            String computerName = rs.getString(SqlNames.COMPUTER_COL_COMPUTER_NAME);
+            Date introduced = rs.getDate(SqlNames.COMPUTER_COL_COMPUTER_INTRODUCED);
+            Date discontinued = rs.getDate(SqlNames.COMPUTER_COL_COMPUTERDISCONTINUED);
+            String companyName = rs.getString(SqlNames.COMPUTER_COL_JOINED_COMPANY_NAME);
             Company company;
             if (companyId == 0) {
                 company = null;

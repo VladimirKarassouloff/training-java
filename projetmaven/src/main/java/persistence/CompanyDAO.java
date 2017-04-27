@@ -7,6 +7,7 @@ import mapper.MapperCompany;
 import model.Company;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.SqlNames;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,22 +19,20 @@ public class CompanyDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDAO.class);
 
-    public static final String TABLE_NAME = "company";
-    public static final String COL_COMPANY_ID = "id";
-    public static final String COL_COMPANY_NAME = "name";
+
 
 
     /////////////////////////////////////////////////////////
     /////Query parts
 
-    public static final String SELECT = "SELECT * FROM " + CompanyDAO.TABLE_NAME;
+    public static final String SELECT = "SELECT * FROM " + SqlNames.COMPANY_TABLE_NAME;
 
-    public static final String COUNT = "SELECT Count(*) FROM " + CompanyDAO.TABLE_NAME;
+    public static final String COUNT = "SELECT Count(*) FROM " + SqlNames.COMPANY_TABLE_NAME;
 
-    public static final String WHERE_FILTER_ID = " WHERE " + CompanyDAO.COL_COMPANY_ID + "= ?";
+    public static final String WHERE_FILTER_ID = " WHERE " + SqlNames.COMPANY_COL_COMPANY_ID + "= ?";
 
-    public static final String UPDATE = "UPDATE " + TABLE_NAME + " SET " + CompanyDAO.COL_COMPANY_NAME + "= ?  WHERE "
-            + CompanyDAO.COL_COMPANY_ID + "= ? ";
+    public static final String UPDATE = "UPDATE " + SqlNames.COMPANY_TABLE_NAME + " SET " + SqlNames.COMPANY_COL_COMPANY_NAME + "= ?  WHERE "
+            + SqlNames.COMPANY_COL_COMPANY_ID + "= ? ";
 
     ///////////////////
     //////////////////////////////////////////////////////////
