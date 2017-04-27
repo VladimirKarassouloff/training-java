@@ -2,6 +2,7 @@ package test;
 
 import model.FilterSelect;
 import persistence.ComputerDAO;
+import persistence.operator.Equal;
 import persistence.operator.LikeBoth;
 import utils.SqlNames;
 
