@@ -2,6 +2,7 @@ package applicationcli.pages;
 
 import applicationcli.Application;
 import applicationcli.FormulaireCli;
+import exception.FormException;
 import model.Computer;
 import services.ComputerServices;
 
@@ -130,11 +131,17 @@ public class ListComputerPage extends Pageable<Computer> {
     @Override
     public void onFirstGroundEvent() {
         if (isCreatingComputer) {
-            ComputerServices.getInstance().addComputer(this.computerCreation);
-            isCreatingComputer = false;
-            this.countItemTotal++;
-            this.orderFetchNewDataForPage();
-            computerCreation = null;
+
+            try {
+                ComputerServices.getInstance().addComputer(this.computerCreation);
+                isCreatingComputer = false;
+                this.countItemTotal++;
+                this.orderFetchNewDataForPage();
+                computerCreation = null;
+            } catch (FormException e) {
+                System.out.println("Error while adding computer");
+            }
+
         }
     }
 

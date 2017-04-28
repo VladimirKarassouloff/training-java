@@ -2,6 +2,7 @@ package applicationcli.pages;
 
 import applicationcli.Application;
 import applicationcli.FormulaireCli;
+import exception.FormException;
 import mapper.MapperDate;
 import model.Computer;
 import services.ComputerServices;
@@ -62,9 +63,9 @@ public class DetailComputer extends Page {
     public void onFirstGroundEvent() {
         if (isEditingCompanyId) {
             isEditingCompanyId = false;
-            if (ComputerServices.getInstance().updateComputer(computer)) {
+            try {
                 System.out.println("Succes de la modification");
-            } else {
+            } catch (Exception e) {
                 System.out.println("Erreur durant la modification");
             }
         }

@@ -1,6 +1,7 @@
 package services;
 
 import dto.ComputerDTO;
+import exception.FormException;
 import model.Computer;
 import model.FilterSelect;
 
@@ -98,17 +99,19 @@ interface IComputerServices {
      * Add Computer to the DB.
      *
      * @param computer added
+     * @throws FormException if computer is not valid
      * @return int for the id generated of the new computer, or -1 if insert failed
      */
-    int addComputer(Computer computer);
+    int addComputer(Computer computer) throws FormException;
 
     /**
      * Update computer from DB.
      *
      * @param computer updated
+     * @throws FormException if computer is not valid
      * @return success query
      */
-    boolean updateComputer(Computer computer);
+    boolean updateComputer(Computer computer) throws FormException;
 
     /**
      * Delete computer of the DB having the id equals of the computer id param.

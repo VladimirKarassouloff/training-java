@@ -1,5 +1,6 @@
 package applicationcli;
 
+import exception.FormException;
 import mapper.MapperDate;
 import model.Company;
 import model.Computer;
@@ -47,8 +48,9 @@ public class FormulaireCli {
 
     /**
      * Ask user an Integer as input contained in a range.
+     *
      * @param startRange start range (inclusive)
-     * @param endRange end range (inclusive)
+     * @param endRange   end range (inclusive)
      * @return integer
      */
     public static Integer reclaimIntInputBetweenRange(int startRange, int endRange) {
@@ -74,8 +76,9 @@ public class FormulaireCli {
 
     /**
      * Ask user an Integer as input contained in a range, or 'null'.
+     *
      * @param startRange start range (inclusive)
-     * @param endRange end range (inclusive)
+     * @param endRange   end range (inclusive)
      * @return integer nullable
      */
     public static Integer reclaimIntOrNullInputBetweenRange(int startRange, int endRange) {
@@ -97,6 +100,7 @@ public class FormulaireCli {
 
     /**
      * Ask user an Integer as input or 'null'.
+     *
      * @return integer
      */
     public static Integer reclaimIntOrNullInput() {
@@ -119,6 +123,7 @@ public class FormulaireCli {
 
     /**
      * Basic form for creating a computer without company.
+     *
      * @return computer
      */
     public static Computer precreateComputer() {
@@ -144,38 +149,54 @@ public class FormulaireCli {
 
     /**
      * Basic form to update the introduced date of a computer.
+     *
      * @param computer to update
      */
     public static void updateComputerIntroduced(Computer computer) {
         System.out.println("Entrez la nouvelle date");
         Date newDate = FormulaireCli.reclaimDateOrNullInput();
         computer.setIntroduced(newDate);
-        ComputerServices.getInstance().updateComputer(computer);
+        try {
+            ComputerServices.getInstance().updateComputer(computer);
+        } catch (Exception e) {
+            System.out.println("Error while updating computer");
+        }
     }
 
     /**
      * Basic form to update the discontinued date of a computer.
+     *
      * @param computer to update
      */
     public static void updateComputerDiscontinuedDate(Computer computer) {
         System.out.println("Entrez la nouvelle date");
         Date newDate = FormulaireCli.reclaimDateOrNullInput();
         computer.setDiscontinued(newDate);
-        ComputerServices.getInstance().updateComputer(computer);
+        try {
+            ComputerServices.getInstance().updateComputer(computer);
+        } catch (Exception e) {
+            System.out.println("Error while updating computer");
+        }
     }
 
     /**
      * Basic form to update the name of a computer.
+     *
      * @param computer to update
      */
     public static void updateComputerName(Computer computer) {
         System.out.println("Entrez le nouveau nom");
         computer.setName(FormulaireCli.input.nextLine());
-        ComputerServices.getInstance().updateComputer(computer);
+        try {
+            ComputerServices.getInstance().updateComputer(computer);
+        } catch (FormException e) {
+            System.out.println("Error while updating computer");
+        }
     }
 
     /**
      * Basic form to update the introduced date of a company.
+     *
      * @param company to update
      */
     public static void updateCompanyName(Company company) {

@@ -19,6 +19,7 @@ public final class Connector {
     private static Connector connector = new Connector();
 
     private DataSource datasource;
+
     public DataSource getDataSource() {
         return datasource;
     }
@@ -56,6 +57,7 @@ public final class Connector {
 
     /**
      * Try rollbacking.
+     *
      * @param connection you are trying to rollack
      */
     public void rollback(Connection connection) {
@@ -67,6 +69,23 @@ public final class Connector {
             connection.rollback();
         } catch (SQLException e1) {
             e1.printStackTrace();
+        }
+    }
+
+    /**
+     * Close the connection.
+     *
+     * @param connection you are trying to close
+     */
+    public void close(Connection connection) {
+        if (connection == null) {
+            return;
+        }
+
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

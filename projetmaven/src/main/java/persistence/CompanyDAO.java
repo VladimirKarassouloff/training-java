@@ -7,6 +7,7 @@ import mapper.MapperCompany;
 import model.Company;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import services.TransactionHolder;
 import utils.SqlNames;
 
 import java.sql.Connection;
@@ -61,16 +62,14 @@ public class CompanyDAO implements ICompanyDAO {
         List<Company> result = null;
 
         try {
-            connection = connector.getDataSource().getConnection();
+            connection = TransactionHolder.get();
             rs = connection.prepareStatement(SELECT).executeQuery();
-            connection.commit();
             LOGGER.info("Succes getAll CompanyDAO");
             result = MapperCompany.mapResultSetToObjects(rs);
             return result;
         } catch (SQLException e) {
             e.printStackTrace();
             LOGGER.info("Error getAll CompanyDAO : " + e.getMessage());
-            connector.rollback(connection);
             throw new DAOSelectException("Company", SELECT);
         }
     }
@@ -83,21 +82,17 @@ public class CompanyDAO implements ICompanyDAO {
         Company result = null;
 
         try {
-            connection = connector.getDataSource().getConnection();
+            connection = TransactionHolder.get();
             preparedStatement = connection.prepareStatement(SELECT + WHERE_FILTER_ID);
             preparedStatement.setInt(1, id);
             rs = preparedStatement.executeQuery();
             result = MapperCompany.mapResultSetToObject(rs);
-            connection.commit();
-
             preparedStatement.close();
-            connection.close();
             LOGGER.info("Error getById CompanyDAO => null value => id = " + id);
             return result;
         } catch (SQLException e) {
             e.printStackTrace();
             LOGGER.info("Error getById CompanyDAO : " + e.getMessage() + " => id = " + id);
-            connector.rollback(connection);
         }
 
         return null;
@@ -109,20 +104,16 @@ public class CompanyDAO implements ICompanyDAO {
         PreparedStatement preparedStatement = null;
 
         try {
-            connection = connector.getDataSource().getConnection();
+            connection = TransactionHolder.get();
             preparedStatement = connection.prepareStatement(UPDATE);
             preparedStatement.setString(1, company.getName());
             preparedStatement.setInt(2, company.getId());
-            connection.commit();
             int resExec = preparedStatement.executeUpdate();
-
             preparedStatement.close();
-            connection.close();
             LOGGER.info("Succes Update CompanyDAO " + company);
             return resExec != 0;
         } catch (SQLException e) {
             LOGGER.info("Error Update CompanyDAO : " + e.getMessage() + " " + company);
-            connector.rollback(connection);
             throw new DAOUpdateException(company);
         }
     }
@@ -134,20 +125,17 @@ public class CompanyDAO implements ICompanyDAO {
         Integer count = null;
 
         try {
-            connection = connector.getDataSource().getConnection();
+            connection = TransactionHolder.get();
             rs = connection.prepareStatement(COUNT).executeQuery();
-            connection.commit();
             if (rs.next()) {
                 count = rs.getInt(1);
             }
 
             rs.close();
-            connection.close();
             LOGGER.info("Succes getCount CompanyDAO ");
             return count;
         } catch (Exception e) {
             LOGGER.info("Error getCount CompanyDAO : " + e.getMessage());
-            connector.rollback(connection);
             throw new DAOCountException("Company");
         }
     }
@@ -159,18 +147,14 @@ public class CompanyDAO implements ICompanyDAO {
         List<Company> res = null;
 
         try {
-            connection = connector.getDataSource().getConnection();
+            connection = TransactionHolder.get();
             rs = connection.prepareStatement(SELECT + " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults)).executeQuery();
-            connection.commit();
             res = MapperCompany.mapResultSetToObjects(rs);
-
-            connection.close();
             LOGGER.info("Succes getPagination CompanyDAO ");
             return res;
         } catch (SQLException e) {
             e.printStackTrace();
             LOGGER.info("Error getPagination CompanyDAO : " + e.getMessage());
-            connector.rollback(connection);
             throw new DAOSelectException("Company", SELECT + " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults));
         }
     }

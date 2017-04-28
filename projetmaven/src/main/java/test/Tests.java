@@ -1,10 +1,6 @@
 package test;
 
-import model.FilterSelect;
 import persistence.ComputerDAO;
-import persistence.operator.Equal;
-import persistence.operator.LikeBoth;
-import utils.SqlNames;
 
 public class Tests {
 
@@ -17,6 +13,7 @@ public class Tests {
         try {
 
             ComputerDAO computerDao = ComputerDAO.getInstance();
+            testThrow();
      /*       System.out.println();
             System.out.println();
             System.out.println();
@@ -39,7 +36,8 @@ public class Tests {
             System.out.println();
             System.out.println();
 */
-            FilterSelect fs3 = new FilterSelect.Builder()
+
+            /*FilterSelect fs3 = new FilterSelect.Builder()
                     .withSearch(SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME, new LikeBoth("Apple Lisa"))
                     .withSearch("company.name", new LikeBoth("Apple"))
                     .withOrder("company.name", false)
@@ -49,6 +47,7 @@ public class Tests {
             System.out.println(computerDao.getFromFilter(fs3).size());
             System.out.println();
             System.out.println();
+            */
             //Connector c = Connector.getInstance();
             //System.out.println(c);
             /*
@@ -100,6 +99,22 @@ public class Tests {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * azeaze.
+     * @throws Exception aze.
+     */
+    public static void testThrow() throws Exception {
+        try {
+            System.out.println("Test1");
+            throw new Exception();
+        } catch (Exception e) {
+            System.out.println("Test2");
+            return;
+        } finally {
+            System.out.println("Test3");
+        }
     }
 
 }
