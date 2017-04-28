@@ -151,11 +151,7 @@ public class ComputerDAO implements IComputerDAO {
 
             // Looking for order
             if (fs.getOrderOnColumn() != null) {
-<<<<<<< 1b602bd3a14e6d49e9dbbcaf8df023982a3e4de3
                 query.append(" ORDER BY " + fs.getOrderOnColumn() + " " + (fs.isAsc() ? " ASC " : " DESC "));
-=======
-                query.append("ORDER BY " + fs.getOrderOnColumn() + " " + (fs.isAsc() ? " ASC " : " DESC "));
->>>>>>> [Conf] fix pom [Ref]
             }
 
             // Looking for pagination
@@ -280,8 +276,8 @@ public class ComputerDAO implements IComputerDAO {
             connection = connector.getDataSource().getConnection();
             statement = connection.prepareStatement(DELETE);
             statement.setInt(1, id);
-            connection.commit();
             int resultExec = statement.executeUpdate();
+            connection.commit();
 
             statement.close();
             connection.close();
