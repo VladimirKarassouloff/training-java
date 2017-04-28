@@ -41,7 +41,7 @@ public class SeleniumComputerTest {
     /// Web Elements for adding / editing computer
     private WebElement nameWE, introducedWE, discontinuedWE, companyWE, submitWE, bodyWE;
     private Select companySelect;
-    /////////////////////////////
+    ////////////////////////////////
 
     /////////////////////////////////
 
