@@ -41,7 +41,7 @@ public final class Connector {
         config.setUsername(Connector.USER);
         config.setPassword(Connector.PASS);
 
-        config.setMaximumPoolSize(20);
+        config.setMaximumPoolSize(40);
         config.setAutoCommit(false);
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");

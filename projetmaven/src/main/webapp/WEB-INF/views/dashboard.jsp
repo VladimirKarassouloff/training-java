@@ -20,7 +20,6 @@
 </header>
 <section id="main">
 
-
     <div class="container">
         <h1 id="homeTitle">${totalCount} Computers found TTEST</h1>
         <div id="actions" class="form-horizontal">
@@ -28,9 +27,9 @@
                 <form id="searchForm" action="#" method="GET" class="form-inline">
                     <input value="${search}" type="search" id="searchbox" name="search"
                            class="form-control" placeholder="Search name"/>
-                    <input type="hidden" value="${lengthPage}" name="lengthPage" />
+                    <input type="hidden" value="${lengthPage}" name="lengthPage"/>
                     <input type="submit" id="searchsubmit" value="Filter by name"
-                        class="btn btn-primary"/>
+                           class="btn btn-primary"/>
                 </form>
             </div>
             <div class="pull-right">
@@ -60,13 +59,23 @@
                     </span>
                 </th>
                 <th>
-                    azeazeaze
+                    <mystuff:link-orderby linkGenerated="index" innerhtml="Computer name"
+                                          ascGetParameter="asc" orderGetParameter="colOrder" valueOrder="0"/>
                 </th>
-                <th>Introduced date</th>
-                <!-- Table header for Discontinued Date -->
-                <th>Discontinued date</th>
-                <!-- Table header for Company -->
-                <th>Company</th>
+                <th>
+                    <mystuff:link-orderby linkGenerated="index" innerhtml="	Introduced date"
+                                          ascGetParameter="asc" orderGetParameter="colOrder" valueOrder="1"/>
+                </th>
+                <th>
+                    <mystuff:link-orderby linkGenerated="index" innerhtml="Discontinued date"
+                                          ascGetParameter="asc" orderGetParameter="colOrder" valueOrder="2"/>
+
+                </th>
+
+                <th>
+                    <mystuff:link-orderby linkGenerated="index" innerhtml="Company"
+                                          ascGetParameter="asc" orderGetParameter="colOrder" valueOrder="3"/>
+                </th>
             </tr>
             </thead>
             <!-- Browse attribute computers -->
@@ -92,7 +101,8 @@
         <mystuff:pagination-link totalCount="${totalCount}" itemPerPage="${lengthPage}" currentPage="${currentPage}"
                                  linkGenerated="index" paramNameUrlCurrent="currentPage"/>
 
-        <mystuff:pagination-length linkGenerated="index" paramNameLengthList="lengthPage" displayLength="${[20,30,50,100]}"/>
+        <mystuff:pagination-length linkGenerated="index" paramNameLengthList="lengthPage"
+                                   displayLength="${[20,30,50,100]}"/>
 
     </div>
 </footer>

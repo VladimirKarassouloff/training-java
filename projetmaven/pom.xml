@@ -167,7 +167,7 @@
 					</execution>
 				</executions>
 			</plugin>
-<!--
+
 			<plugin>
 				<artifactId>exec-maven-plugin</artifactId>
 				<groupId>org.codehaus.mojo</groupId>
@@ -184,7 +184,7 @@
 					</execution>
 				</executions>
 			</plugin>
--->
+
 			<!-- War deployment -->
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>

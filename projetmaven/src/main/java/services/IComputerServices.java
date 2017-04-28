@@ -66,10 +66,10 @@ interface IComputerServices {
     /**
      * Get Total count of the computers in DB having the name like searchByName.
      *
-     * @param searchByName get computers having name like %searchByName%
+     * @param fs filters
      * @return number of computers matching
      */
-    int getCountComputer(String searchByName);
+    int getCountComputer(FilterSelect fs);
 
     /**
      * Get Total count of the computers in DB.

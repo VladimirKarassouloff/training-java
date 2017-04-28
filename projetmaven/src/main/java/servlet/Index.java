@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,7 +54,7 @@ public class Index extends HttpServlet {
         // Asc or desc ?
         String ascStr = request.getParameter("asc");
         // On order on which column ?
-        String colOrder = request.getParameter("colOrder");
+        String colOrderStr = request.getParameter("colOrder");
 
 
         // Get the computer displayed
@@ -66,7 +65,7 @@ public class Index extends HttpServlet {
         int lengthPageDisplay;
         int pageDisplay;
         boolean asc;
-        int colOrdered;
+        String colNameOrdered = null;
 
         // Parsing Page display asked by user
         try {
@@ -89,12 +88,22 @@ public class Index extends HttpServlet {
             asc = DEFAULT_ORDER_ASC;
         }
 
-        // Parse what column we're ordering
-        if (colOrder != null) {
-            System.out.println("TODOOOOO");
-            System.out.println("TODOOOOO");
-            System.out.println("TODOOOOO");
-            System.out.println("TODOOOOO");
+        // Parse what column we are ordering
+        switch (colOrderStr == null ? "" : colOrderStr) {
+            case "0":
+                colNameOrdered = SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME;
+                break;
+            case "1":
+                colNameOrdered = SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_INTRODUCED;
+                break;
+            case "2":
+                colNameOrdered = SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTERDISCONTINUED;
+                break;
+            case "3":
+                colNameOrdered = SqlNames.COMPANY_TABLE_NAME + "." + SqlNames.COMPANY_COL_COMPANY_NAME;
+                break;
+            default:
+                colNameOrdered = SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID;
         }
 
         ////////////////////////
@@ -107,8 +116,15 @@ public class Index extends HttpServlet {
             lengthPageDisplay = MAX_COMPUTER_DISPLAYED;
         }
 
+        // Filter for counting and selecting
+        FilterSelect.Builder builder = new FilterSelect.Builder();
+        if (search != null) {
+            builder.withSearch(SqlNames.COMPANY_TABLE_NAME + "." + SqlNames.COMPANY_COL_COMPANY_NAME, new LikeBoth(search))
+                    .withSearch(SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME, new LikeBoth(search));
+        }
+
         // Get the total count filtered by name
-        int totalCount = services.getCountComputer(request.getParameter("search"));
+        int totalCount = services.getCountComputer(builder.build());
 
         // Check user is at a valid page
         double calc = ((double) totalCount / (double) lengthPageDisplay);
@@ -119,16 +135,11 @@ public class Index extends HttpServlet {
         }
 
         // Get the page asked
-        computer = services.getPagedComputerDTO(new FilterSelect.Builder()
-                .withPage(pageDisplay)
+        computer = services.getPagedComputerDTO(builder.withPage(pageDisplay)
                 .withLengthPage(lengthPageDisplay)
-                .withSearch(SqlNames.COMPUTER_COL_JOINED_COMPANY_NAME, new LikeBoth(search))
-                .withSearch(SqlNames.COMPUTER_COL_COMPUTER_NAME, new LikeBoth(search))
-                .withOrder(colOrder, asc)
+                .withOrder(colNameOrdered, asc)
                 .build()
         );
-        //computer = services.getPagedComputerDTO(pageDisplay, lengthPageDisplay, search);
-        computer = new ArrayList<>();
 
         // Set all params
         request.setAttribute("computers", computer);

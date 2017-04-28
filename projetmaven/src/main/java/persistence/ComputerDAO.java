@@ -30,13 +30,21 @@ public class ComputerDAO implements IComputerDAO {
 
     //////////////////////////////////////////////////////////////////////
     /////Query parts
-    public static final String SELECT = "SELECT " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + ", " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME + ", " + SqlNames.COMPUTER_COL_COMPUTER_INTRODUCED + ", " + SqlNames.COMPUTER_COL_COMPUTERDISCONTINUED +
-            ", " + SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID + ", " + SqlNames.COMPANY_TABLE_NAME + "." + SqlNames.COMPANY_COL_COMPANY_NAME + " as " + SqlNames.COMPUTER_COL_JOINED_COMPANY_NAME + " FROM " + SqlNames.COMPUTER_TABLE_NAME +
-            " LEFT JOIN " + SqlNames.COMPANY_TABLE_NAME + " ON " + SqlNames.COMPANY_TABLE_NAME + "." + SqlNames.COMPANY_COL_COMPANY_ID +
-            "=" + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID;
+    public static final String SELECT = "SELECT " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + ", "
+            + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME + ", "
+            + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_INTRODUCED + ", "
+            + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTERDISCONTINUED + ", "
+            + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID + ", "
+            + SqlNames.COMPANY_TABLE_NAME + "." + SqlNames.COMPANY_COL_COMPANY_NAME + " as " + SqlNames.COMPUTER_COL_JOINED_COMPANY_NAME
+            + " FROM " + SqlNames.COMPUTER_TABLE_NAME + " LEFT JOIN " + SqlNames.COMPANY_TABLE_NAME
+            + " ON " + SqlNames.COMPANY_TABLE_NAME + "." + SqlNames.COMPANY_COL_COMPANY_ID
+            + "=" + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID;
 
 
-    public static final String COUNT = "SELECT Count(*) FROM " + SqlNames.COMPUTER_TABLE_NAME;
+    public static final String COUNT = "SELECT Count(*) FROM " + SqlNames.COMPUTER_TABLE_NAME
+            + " LEFT JOIN " + SqlNames.COMPANY_TABLE_NAME
+            + " ON " + SqlNames.COMPANY_TABLE_NAME + "." + SqlNames.COMPANY_COL_COMPANY_ID
+            + "=" + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID;
 
     public static final String WHERE_FILTER_ID = " WHERE " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + "=?";
 
@@ -143,7 +151,7 @@ public class ComputerDAO implements IComputerDAO {
 
             // Looking for order
             if (fs.getOrderOnColumn() != null) {
-                query.append("ORDER BY " + fs.getOrderOnColumn() + " " + (fs.isAsc() ? " ASC " : " DESC "));
+                query.append(" ORDER BY " + fs.getOrderOnColumn() + " " + (fs.isAsc() ? " ASC " : " DESC "));
             }
 
             // Looking for pagination
@@ -160,7 +168,7 @@ public class ComputerDAO implements IComputerDAO {
                 preparedStatement.setString(paramCount++, op.getValue());
             }
 
-            System.out.println(rs);
+            System.out.println(preparedStatement);
             rs = preparedStatement.executeQuery();
             connection.commit();
             result = MapperComputer.mapResultSetToObjects(rs);
@@ -220,10 +228,11 @@ public class ComputerDAO implements IComputerDAO {
             statement.setDate(2, (computer.getIntroduced() != null ? new java.sql.Date(computer.getIntroduced().getTime()) : null));
             statement.setDate(3, (computer.getDiscontinued() != null ? new java.sql.Date(computer.getDiscontinued().getTime()) : null));
             statement.setString(4, computer.getCompany() != null ? String.valueOf(computer.getCompany().getId()) : null);
-            connection.commit();
+
 
             if (statement.executeUpdate() != 0) {
                 generatedKeys = statement.getGeneratedKeys();
+                connection.commit();
                 if (generatedKeys.next()) {
                     computer.setId((int) generatedKeys.getLong(1));
                     statement.close();
@@ -296,9 +305,8 @@ public class ComputerDAO implements IComputerDAO {
             statement.setDate(3, (computer.getDiscontinued() != null ? new java.sql.Date(computer.getDiscontinued().getTime()) : null));
             statement.setString(4, (computer.getCompany() == null ? null : String.valueOf(computer.getCompany().getId())));
             statement.setInt(5, computer.getId());
-            connection.commit();
             int resultExec = statement.executeUpdate();
-
+            connection.commit();
             statement.close();
             connection.close();
             LOGGER.info("Succes Update Computerdao : " + computer);
@@ -377,18 +385,44 @@ public class ComputerDAO implements IComputerDAO {
     }
 
     @Override
-    public Integer getCount(String searchByName) throws DAOCountException {
+    public int getCount(FilterSelect fs) throws DAOCountException {
         Connection connection = null;
-        PreparedStatement pr = null;
+        PreparedStatement preparedStatement = null;
         ResultSet rs = null;
         Integer count = null;
+        StringBuilder query = new StringBuilder();
+        query.append(COUNT);
 
         try {
             connection = connector.getDataSource().getConnection();
-            pr = connection.prepareStatement(COUNT_FILTER_NAME);
-            pr.setString(1, "%" + (searchByName != null ? searchByName : "") + "%");
-            rs = pr.executeQuery();
+
+            // If we have at least one column filtered
+            Iterator<String> it = fs.getFilteredColumns().iterator();
+            if (it.hasNext()) {
+                query.append(" WHERE  ");
+                while (it.hasNext()) {
+                    String col = it.next();
+                    query.append(col + " " + fs.getFilterValue(col).getOperator() + " ? ");
+                    if (it.hasNext()) {
+                        query.append(" OR  ");
+                    }
+                }
+            }
+
+            // Preparing query and binding arguments
+            preparedStatement = connection.prepareStatement(query.toString());
+            int paramCount = 1;
+
+            // Binding for where
+            for (Filter op : fs.getFilterValues()) {
+                preparedStatement.setString(paramCount++, op.getValue());
+            }
+
+            System.out.println("Count : ");
+            System.out.println(preparedStatement);
+            rs = preparedStatement.executeQuery();
             connection.commit();
+
             if (rs.next()) {
                 count = rs.getInt(1);
             }
@@ -397,10 +431,12 @@ public class ComputerDAO implements IComputerDAO {
             connection.close();
             LOGGER.info("Success Count Computerdao ");
             return count;
+
         } catch (SQLException e) {
             connector.rollback(connection);
-            LOGGER.info("Error Count Computerdao : " + e.getMessage());
+            LOGGER.info("Erreur count getFromFilter ComputerDAO : " + e.getMessage() + " query built : " + query.toString());
         }
+
         throw new DAOCountException("Computer");
     }
 

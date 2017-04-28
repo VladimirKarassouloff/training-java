@@ -98,9 +98,9 @@ public class ComputerServices implements IComputerServices {
     }
 
     @Override
-    public int getCountComputer(String searchByName) {
+    public int getCountComputer(FilterSelect filter) {
         try {
-            return computerDao.getCount(searchByName);
+            return computerDao.getCount(filter);
         } catch (DAOCountException e) {
             e.printStackTrace();
             return 0;
@@ -110,7 +110,7 @@ public class ComputerServices implements IComputerServices {
     @Override
     public int getCountComputer() {
         try {
-            return computerDao.getCount(null);
+            return computerDao.getCount(new FilterSelect());
         } catch (DAOCountException e) {
             e.printStackTrace();
             return 0;

@@ -82,11 +82,11 @@ interface IComputerDAO {
 
     /***
      * Get computer count.
-     * @param searchByName nullable parameter to research computer by name
+     * @param fs all filter for counting
      * @throws DAOCountException if error happens
      * @return count of computer considering filters
      */
-    Integer getCount(String searchByName) throws DAOCountException;
+    int getCount(FilterSelect fs) throws DAOCountException;
 
 
     /**
