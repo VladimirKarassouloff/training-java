@@ -22,14 +22,26 @@ public class TransactionHolder {
      * @throws SQLException if fails to create save
      */
     public static void set(Connection connection) {
-        if (connection != null) {
-            /*try {
+
+        // Close connection if not already done
+        if (get() != null) {
+            try {
+                if (get().isClosed()) {
+                    get().close();
+                }
+            } catch (SQLException e) {
+                LOGGER.info("Error while closing connection : " + e.getMessage());
+            }
+        }
+
+        /*if (connection != null) {
+            try {
                 connection.setSavepoint();
             } catch (SQLException e) {
                 LOGGER.info("Error creating save point");
                 throw new RuntimeException("Failed to create save point");
-            }*/
-        }
+            }
+        }*/
         threadLocal.set(connection);
     }
 
@@ -42,5 +54,11 @@ public class TransactionHolder {
         return threadLocal.get();
     }
 
+    /**
+     * Close the current connection.
+     */
+    public static void close() {
+        set(null);
+    }
 
 }

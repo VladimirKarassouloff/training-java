@@ -20,7 +20,6 @@ import java.sql.Savepoint;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by vkara on 30/04/2017.
@@ -64,7 +63,7 @@ public class CompanyDelete {
             computerDao.insert(newComputer1);
             computerDao.insert(newComputer2);
             TransactionHolder.get().commit();
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         } catch (Exception e) {
             throw new RuntimeException("Cannot insert data for test");
         }
@@ -72,31 +71,43 @@ public class CompanyDelete {
     }
 
     @Test
+    public void mdr2() throws Exception {
+        TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
+        Savepoint sp = TransactionHolder.get().setSavepoint();
+        TransactionHolder.get().setAutoCommit(false);
+        TransactionHolder.get().createStatement().execute("INSERT INTO " + SqlNames.COMPANY_TABLE_NAME + "(" + SqlNames.COMPANY_COL_COMPANY_NAME + ") VALUES ('gros lol')" );
+        TransactionHolder.get().rollback(sp);
+        TransactionHolder.close();
+    }
+
+    @Test
     public void mdr() {
         Savepoint sp = null;
-        try{
+        Computer testTransaction = new Computer.Builder()
+                .withName("mdr computer de nouvelle comapny")
+                .withCompany(newCompany)
+                .build();
+
+        try {
 
             TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
             TransactionHolder.get().setAutoCommit(false);
-           // sp = TransactionHolder.get().setSavepoint();
-            System.out.println("id before " + newComputer1.getId());
-            computerDao.insert(newComputer1);
-            System.out.println("id after " + newComputer1.getId());
-            System.out.println(newComputer1);
-            //TransactionHolder.get().commit();
+            sp = TransactionHolder.get().setSavepoint();
+            computerDao.insert(testTransaction);
+            System.out.println(testTransaction);
+            //TransactionHolder.get().rollback();
+            TransactionHolder.get().rollback(sp);
+            TransactionHolder.get().commit();
+            TransactionHolder.get().close();
+
             //Connector.getInstance().rollback(TransactionHolder.get());
 
             //TransactionHolder.get().commit();
         } catch (Exception e) {
-            ;
+            throw new RuntimeException("Qwerty");
         }
-        try {
-            TransactionHolder.get().rollback();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        assertEquals(null, computerServices.getComputer(newComputer1.getId()));
+        TransactionHolder.close();
+        assertEquals(null, computerServices.getComputer(testTransaction.getId()));
         Connector.getInstance().close(TransactionHolder.get());
 
     }
@@ -124,7 +135,7 @@ public class CompanyDelete {
         // Setup mock
         ComputerDAO mockedDao = mock(ComputerDAO.class);
         try {
-            Mockito.doThrow(new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME,"Test")).when(mockedDao).deleteComputerBelongingToCompany(newCompany.getId());
+            Mockito.doThrow(new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME, "Test")).when(mockedDao).deleteComputerBelongingToCompany(newCompany.getId());
             companyServices.setComputerDao(mockedDao);
             companyServices.delete(newCompany.getId());
         } catch (DAODeleteException e) {
@@ -156,7 +167,7 @@ public class CompanyDelete {
 
         try {
             TransactionHolder.get().commit();
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         } catch (SQLException e) {
             e.printStackTrace();
             System.err.println("Couldn't commit delete for clean up");
