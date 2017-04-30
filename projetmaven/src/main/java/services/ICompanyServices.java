@@ -46,4 +46,10 @@ interface ICompanyServices {
      * @return boolean for success
      */
     boolean updateCompany(Company company);
+
+    /**
+     * Delete a companny and all her belongings computers.
+     * @param id of the company
+     */
+    void delete(int id);
 }

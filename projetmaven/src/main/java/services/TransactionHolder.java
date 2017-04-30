@@ -23,12 +23,12 @@ public class TransactionHolder {
      */
     public static void set(Connection connection) {
         if (connection != null) {
-            try {
+            /*try {
                 connection.setSavepoint();
             } catch (SQLException e) {
                 LOGGER.info("Error creating save point");
                 throw new RuntimeException("Failed to create save point");
-            }
+            }*/
         }
         threadLocal.set(connection);
     }

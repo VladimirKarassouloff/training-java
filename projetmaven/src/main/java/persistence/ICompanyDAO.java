@@ -1,8 +1,6 @@
 package persistence;
 
-import exception.DAOCountException;
-import exception.DAOSelectException;
-import exception.DAOUpdateException;
+import exception.*;
 import model.Company;
 
 import java.util.List;
@@ -56,5 +54,22 @@ interface ICompanyDAO {
      */
     List<Company> getPagination(int page, int numberOfResults) throws DAOSelectException;
 
+
+    /**
+     * Insert new record in DB.
+     *
+     * @param company contains attributes for representation in DB
+     * @throws DAOInsertException if error happens
+     */
+    void insert(Company company) throws DAOInsertException;
+
+    /**
+     * Delete company.
+     *
+     * @param id of the company deleted
+     * @return success
+     * @throws DAODeleteException if error happens
+     */
+    boolean delete(int id) throws DAODeleteException;
 
 }

@@ -1,10 +1,9 @@
 package services;
 
-import exception.DAOCountException;
-import exception.DAOSelectException;
-import exception.DAOUpdateException;
+import exception.*;
 import model.Company;
 import persistence.CompanyDAO;
+import persistence.ComputerDAO;
 import persistence.Connector;
 import validator.CompanyValidator;
 
@@ -18,23 +17,30 @@ public class CompanyServices implements ICompanyServices {
     private static CompanyServices service = new CompanyServices();
 
     private CompanyDAO companyDao;
-
+    private ComputerDAO computerDao;
     /**
      * Get singleton.
      */
     private CompanyServices() {
         companyDao = CompanyDAO.getInstance();
+        computerDao = ComputerDAO.getInstance();
     }
 
     public static CompanyServices getInstance() {
         return service;
     }
 
+    public void setComputerDao(ComputerDAO computerDao) {
+        this.computerDao = computerDao;
+    }
+
     @Override
     public List<Company> getCompanies() {
         try {
             TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            return companyDao.getAll();
+            List<Company> results = companyDao.getAll();
+            TransactionHolder.get().commit();
+            return results;
         } catch (SQLException | DAOSelectException e) {
             e.printStackTrace();
             Connector.getInstance().rollback(TransactionHolder.get());
@@ -49,9 +55,12 @@ public class CompanyServices implements ICompanyServices {
     public List<Company> getPagedCompany(int page, int numberItem) {
         try {
             TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            return companyDao.getPagination(page, numberItem);
+            List<Company> results = companyDao.getPagination(page, numberItem);
+            TransactionHolder.get().commit();
+            return results;
         } catch (SQLException | DAOSelectException e) {
             e.printStackTrace();
+            Connector.getInstance().rollback(TransactionHolder.get());
             return new ArrayList<>();
         } finally {
             Connector.getInstance().close(TransactionHolder.get());
@@ -63,9 +72,12 @@ public class CompanyServices implements ICompanyServices {
     public int getCountCompany() {
         try {
             TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            return companyDao.getCount();
+            int result = companyDao.getCount();
+            TransactionHolder.get().commit();
+            return result;
         } catch (SQLException | DAOCountException e) {
             e.printStackTrace();
+            Connector.getInstance().rollback(TransactionHolder.get());
             return 0;
         } finally {
             Connector.getInstance().close(TransactionHolder.get());
@@ -81,9 +93,12 @@ public class CompanyServices implements ICompanyServices {
 
         try {
             TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            return companyDao.getById(id);
+            Company result = companyDao.getById(id);
+            TransactionHolder.get().commit();
+            return result;
         } catch (SQLException | DAOSelectException e) {
             e.printStackTrace();
+            Connector.getInstance().rollback(TransactionHolder.get());
             return null;
         } finally {
             Connector.getInstance().close(TransactionHolder.get());
@@ -98,14 +113,34 @@ public class CompanyServices implements ICompanyServices {
         }
         try {
             TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            return companyDao.update(company);
+            boolean result = companyDao.update(company);
+            TransactionHolder.get().commit();
+            return result;
         } catch (SQLException | DAOUpdateException e) {
             e.printStackTrace();
+            Connector.getInstance().rollback(TransactionHolder.get());
             return false;
         } finally {
             Connector.getInstance().close(TransactionHolder.get());
             TransactionHolder.set(null);
         }
     }
+
+    public void delete(int id) {
+        try {
+            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
+            companyDao.delete(id);
+            computerDao.deleteComputerBelongingToCompany(id);
+            TransactionHolder.get().commit();
+        } catch (SQLException | DAODeleteException e) {
+            e.printStackTrace();
+            Connector.getInstance().rollback(TransactionHolder.get());
+        } finally {
+            Connector.getInstance().close(TransactionHolder.get());
+            TransactionHolder.set(null);
+        }
+    }
+
+
 
 }

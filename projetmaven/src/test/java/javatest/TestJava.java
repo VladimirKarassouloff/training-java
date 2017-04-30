@@ -1,4 +1,4 @@
-package test;
+package javatest;
 
 /**
  * Created by vkarassouloff on 21/04/17.

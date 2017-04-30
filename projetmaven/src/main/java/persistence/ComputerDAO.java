@@ -1,10 +1,6 @@
 package persistence;
 
-import exception.DAOInsertException;
-import exception.DAODeleteException;
-import exception.DAOUpdateException;
-import exception.DAOSelectException;
-import exception.DAOCountException;
+import exception.*;
 import mapper.MapperComputer;
 import model.Company;
 import model.Computer;
@@ -15,11 +11,7 @@ import persistence.operator.Filter;
 import services.TransactionHolder;
 import utils.SqlNames;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -50,6 +42,9 @@ public class ComputerDAO implements IComputerDAO {
     public static final String WHERE_FILTER_ID = " WHERE " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + "=?";
 
     public static final String DELETE = "DELETE FROM " + SqlNames.COMPUTER_TABLE_NAME + " WHERE " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + "=?";
+
+    public static final String DELETE_COMPUTER_OF_COMPANY = "DELETE FROM " + SqlNames.COMPUTER_TABLE_NAME + " WHERE " +
+            SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID + "= ?";
 
 
     public static final String INSERT = "INSERT INTO " + SqlNames.COMPUTER_TABLE_NAME + "(" + SqlNames.COMPUTER_COL_COMPUTER_NAME + ","
@@ -409,5 +404,25 @@ public class ComputerDAO implements IComputerDAO {
         throw new DAOCountException("Computer");
     }
 
+
+    @Override
+    public void deleteComputerBelongingToCompany(int idCompany) throws DAODeleteException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = TransactionHolder.get();
+            statement = connection.prepareStatement(DELETE_COMPUTER_OF_COMPANY);
+            statement.setInt(1, idCompany);
+            int resultExec = statement.executeUpdate();
+            statement.close();
+            LOGGER.info("Success deleting computers belonging to company " + idCompany + " computerdao");
+
+        } catch (SQLException e) {
+            LOGGER.info("Error deleting computers of company " + idCompany + " : " + e.getMessage());
+            e.printStackTrace();
+            throw new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME, DELETE_COMPUTER_OF_COMPANY + " (idCompany = " + idCompany + ")");
+        }
+    }
 
 }

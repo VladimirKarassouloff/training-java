@@ -11,7 +11,7 @@ public final class Connector {
 
     // Config
     public static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    public static final String DB_URL = "jdbc:mysql://localhost/computer-database-db?useSSL=false";
+    public static final String DB_URL = "jdbc:mysql://localhost/computer-database-db?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     private static final String USER = "admincdb";
     private static final String PASS = "qwerty1234";
 

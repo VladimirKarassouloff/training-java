@@ -1,8 +1,6 @@
 package persistence;
 
-import exception.DAOCountException;
-import exception.DAOSelectException;
-import exception.DAOUpdateException;
+import exception.*;
 import mapper.MapperCompany;
 import model.Company;
 import org.slf4j.Logger;
@@ -10,10 +8,7 @@ import org.slf4j.LoggerFactory;
 import services.TransactionHolder;
 import utils.SqlNames;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
 public class CompanyDAO implements ICompanyDAO {
@@ -34,6 +29,11 @@ public class CompanyDAO implements ICompanyDAO {
 
     public static final String UPDATE = "UPDATE " + SqlNames.COMPANY_TABLE_NAME + " SET " + SqlNames.COMPANY_COL_COMPANY_NAME + "= ?  WHERE "
             + SqlNames.COMPANY_COL_COMPANY_ID + "= ? ";
+
+    public static final String INSERT = "INSERT INTO " + SqlNames.COMPANY_TABLE_NAME + "(" + SqlNames.COMPANY_COL_COMPANY_NAME + ") "
+            + "VALUES (?)";
+
+    public static final String DELETE = "DELETE FROM " + SqlNames.COMPANY_TABLE_NAME + " WHERE " + SqlNames.COMPANY_TABLE_NAME+ "." + SqlNames.COMPANY_COL_COMPANY_ID + "=?";
 
     ///////////////////
     //////////////////////////////////////////////////////////
@@ -159,4 +159,62 @@ public class CompanyDAO implements ICompanyDAO {
         }
     }
 
+
+    @Override
+    public void insert(Company company) throws DAOInsertException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet generatedKeys = null;
+
+        try {
+            connection = TransactionHolder.get();
+            statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, company.getName());
+
+
+            if (statement.executeUpdate() != 0) {
+                generatedKeys = statement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    company.setId((int) generatedKeys.getLong(1));
+                    statement.close();
+                    LOGGER.info("Success insert companydao : " + company);
+                } else {
+                    // No id returned
+                    LOGGER.info("Erreur insert companydao : " + company);
+                    statement.close();
+                    throw new DAOInsertException(company);
+                }
+
+            } else {
+                // No row affected
+                LOGGER.info("Erreur insert 2 companydao : " + company);
+                statement.close();
+                throw new DAOInsertException(company);
+            }
+        } catch (SQLException e2) {
+            LOGGER.info("Erreur 4 insert SQL companydao : " + company + " => " + e2.getMessage());
+            throw new DAOInsertException(company);
+        }
+
+    }
+
+    @Override
+    public boolean delete(int id) throws DAODeleteException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = TransactionHolder.get();
+            statement = connection.prepareStatement(DELETE);
+            statement.setInt(1, id);
+            int resultExec = statement.executeUpdate();
+            statement.close();
+            LOGGER.info("Succes delete " + id + " CompanyDao");
+            return resultExec != 0;
+        } catch (SQLException e) {
+            LOGGER.info("Error delete CompanyDao " + id + " : " + e.getMessage());
+            e.printStackTrace();
+            throw new DAODeleteException(SqlNames.COMPANY_TABLE_NAME, id);
+        }
+    }
 }

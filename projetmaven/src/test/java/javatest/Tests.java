@@ -1,4 +1,4 @@
-package test;
+package javatest;
 
 import persistence.ComputerDAO;
 

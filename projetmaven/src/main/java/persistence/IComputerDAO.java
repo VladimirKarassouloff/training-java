@@ -36,7 +36,7 @@ interface IComputerDAO {
      * Insert new record in DB.
      *
      * @param computer contains attributes for representation in DB
-     * @return id of new row, -1 if failed
+     * @return id of new row
      * @throws DAOInsertException if error happens
      */
     int insert(Computer computer) throws DAOInsertException;
@@ -97,5 +97,10 @@ interface IComputerDAO {
      */
     List<Computer> getFromFilter(FilterSelect fs) throws DAOSelectException;
 
+    /**
+     * Delete computers belonging to a company.
+     * @param idCompany of the computer deleted
+     */
+    void deleteComputerBelongingToCompany(int idCompany) throws DAODeleteException;
 
 }

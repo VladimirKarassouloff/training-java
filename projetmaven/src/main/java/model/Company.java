@@ -23,6 +23,15 @@ public class Company {
         this.name = name;
     }
 
+    /**
+     * Constructor.
+     * @param name of the company
+     */
+    public Company(String name) {
+        super();
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Company) {
