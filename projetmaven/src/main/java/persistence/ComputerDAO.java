@@ -314,42 +314,6 @@ public class ComputerDAO implements IComputerDAO {
         throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT_LAST_COMPUTER_INSERTED);
     }
 
-    @Override
-    public List<Computer> getPagination(int page, int numberOfResults, String filterName) throws DAOSelectException {
-        CACHE_COMPANY.clear();
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        List<Computer> res = null;
-
-        try {
-            connection = TransactionHolder.get();
-
-            if (filterName == null) {
-                ps = connection.prepareStatement(SELECT + LIMIT_PAGE);
-                ps.setInt(1, numberOfResults);
-                ps.setInt(2, page * numberOfResults);
-            } else {
-                ps = connection.prepareStatement(SELECT_FILTER_NAME + LIMIT_PAGE);
-                ps.setString(1, "%" + filterName + "%");
-                ps.setInt(2, numberOfResults);
-                ps.setInt(3, page * numberOfResults);
-            }
-            rs = ps.executeQuery();
-            res = MapperComputer.mapResultSetToObjects(rs);
-
-            ps.close();
-            LOGGER.info("Succes pagination Computerdao");
-            CACHE_COMPANY.clear();
-            return res;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            LOGGER.info("Error Pagination Computerdao : " + e.getMessage());
-        }
-
-        CACHE_COMPANY.clear();
-        throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT + LIMIT_PAGE);
-    }
 
     @Override
     public int getCount(FilterSelect fs) throws DAOCountException {

@@ -3,7 +3,9 @@ package services;
 import dto.ComputerDTO;
 import exception.FormException;
 import model.Computer;
+import model.ComputerPage;
 import persistence.filter.FilterSelect;
+import persistence.filter.FilterSelectComputer;
 
 import java.util.List;
 
@@ -19,43 +21,14 @@ interface IComputerServices {
      */
     List<Computer> getComputers();
 
-    /**
-     * Get Page of computers.
-     *
-     * @param page       returned
-     * @param numberItem per page
-     * @param filterName filter results per computer name
-     * @return computers
-     */
-    List<ComputerDTO> getPagedComputerDTO(int page, int numberItem, String filterName);
 
     /**
      * Get Page of computers.
      *
-     * @param page       returned
-     * @param numberItem per page
-     * @param filterName filter results per computer name
+     * @param filter constraints
      * @return computers
      */
-    List<Computer> getPagedComputer(int page, int numberItem, String filterName);
-
-    /**
-     * Get Page of computers.
-     *
-     * @param page       returned
-     * @param numberItem per page
-     * @return computers
-     */
-    List<Computer> getPagedComputer(int page, int numberItem);
-
-    /**
-     * Get Page of computersDTO.
-     *
-     * @param page       returned
-     * @param numberItem item per pages
-     * @return computersdto
-     */
-    List<ComputerDTO> getPagedComputerDTO(int page, int numberItem);
+    List<Computer> getPagedComputer(FilterSelect filter);
 
     /**
      * Get computerdto matching filter.
@@ -144,5 +117,10 @@ interface IComputerServices {
      */
     Computer getLastComputerInserted();
 
-
+    /**
+     * Get set of result, with total count, and the 'real' page displayed in case of wrong requirement
+     * @param filter constraints
+     * @return db-results
+     */
+    ComputerPage getPage(FilterSelectComputer filter);
 }

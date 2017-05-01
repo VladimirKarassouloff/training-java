@@ -4,6 +4,7 @@ import applicationcli.Application;
 import applicationcli.FormulaireCli;
 import exception.FormException;
 import model.Computer;
+import persistence.filter.FilterSelectComputer;
 import services.ComputerServices;
 
 import java.util.List;
@@ -102,7 +103,10 @@ public class ListComputerPage extends Pageable<Computer> {
 
     @Override
     protected void orderFetchNewDataForPage() {
-        this.list = ComputerServices.getInstance().getPagedComputer(currentPage, numberItemPage);
+        this.list = ComputerServices.getInstance().getPagedComputer(new FilterSelectComputer.Builder()
+                .withPage(currentPage)
+                .withLengthPage(numberItemPage)
+                .build());
     }
 
     @Override

@@ -3,7 +3,6 @@ package servlet;
 import dto.ComputerDTO;
 import services.CompanyServices;
 import services.ComputerServices;
-import sun.security.pkcs.ParsingException;
 import utils.UtilsServletError;
 
 import javax.servlet.ServletException;
@@ -65,7 +64,7 @@ public class Computer extends HttpServlet {
                     request.getRequestDispatcher(UtilsServletError.ERROR_404).forward(request, response);
                     return;
                 }
-            } catch (ParsingException e) {
+            } catch (NumberFormatException e) {
                 // If id cannot be parsed
                 request.setAttribute(UtilsServletError.NAME_ATTRIBUTE_ERROR, "Invalid id");
                 request.getRequestDispatcher(UtilsServletError.ERROR_403).forward(request, response);

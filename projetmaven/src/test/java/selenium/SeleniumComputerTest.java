@@ -11,8 +11,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
+import persistence.filter.FilterSelectComputer;
+import persistence.operator.Equal;
 import services.ComputerServices;
-import utils.Format;
+import utils.SqlNames;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -89,8 +91,12 @@ public class SeleniumComputerTest {
         System.out.println("Count is ok");
 
         // Test if all values inserted are correct
-        //Computer computerInserted = ComputerServices.getLastComputerInserted();
-        Computer computerInserted = ComputerServices.getInstance().getPagedComputer(0, 1, testValues.getNameComputer()).get(0);
+        Computer computerInserted = ComputerServices.getInstance().getPagedComputer(new FilterSelectComputer.Builder()
+                .withPage(0)
+                .withLengthPage(1)
+                .withSearch(SqlNames.COMPUTER_COL_COMPUTER_NAME, new Equal(testValues.getNameComputer()))
+                .build()
+        ).get(0);
         System.out.println("Comparing now value of form vs inserted");
         assertEquals(testValues.nameComputer.equals(computerInserted.getName()), true);
         assertEquals(MapperDate.dateFromString(testValues.dateIntro).getTime(), computerInserted.getIntroduced().getTime());

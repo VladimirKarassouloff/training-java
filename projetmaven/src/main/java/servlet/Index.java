@@ -3,6 +3,7 @@ package servlet;
 import bean.BeanParamUtils;
 import dto.ComputerDTO;
 import model.Computer;
+import model.ComputerPage;
 import persistence.filter.FilterSelect;
 import persistence.filter.FilterSelectComputer;
 import persistence.operator.LikeBoth;
@@ -46,8 +47,7 @@ public class Index extends HttpServlet {
      * @throws IOException      ?
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Get params
-
+        /////// Get all params
         // Search by computer or company name
         String search = request.getParameter("search");
         // Page number being displayed
@@ -59,17 +59,13 @@ public class Index extends HttpServlet {
         // On order on which column ?
         String colOrderStr = request.getParameter("colOrder");
 
-
-        // Computers displayed
-        List<ComputerDTO> computer = null;
-
-        ////////////////////////Parse
         // Params needing parse
         int lengthPageDisplay;
         int pageDisplay;
         int numColOrder;
         boolean asc;
 
+        //////////////////////// Parsing
         // Parsing Page display asked by user
         try {
             pageDisplay = Integer.parseInt(pageStr);
@@ -98,7 +94,6 @@ public class Index extends HttpServlet {
             numColOrder = DEFAULT_COL_ORDERED;
         }
 
-
         ////////////////////////
 
 
@@ -110,34 +105,22 @@ public class Index extends HttpServlet {
         }
 
         // Filter for counting and selecting
-        FilterSelect.Builder builder = new FilterSelectComputer.Builder();
+        FilterSelectComputer.Builder builder = new FilterSelectComputer.Builder();
         if (search != null) {
             builder.withSearch(SqlNames.COMPANY_TABLE_NAME + "." + SqlNames.COMPANY_COL_COMPANY_NAME, new LikeBoth(search))
                     .withSearch(SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME, new LikeBoth(search));
         }
 
-        // Get the total count filtered by name
-        int totalCount = services.getCountComputer(builder.build());
-
-        // Check user is at a valid page
-        double calc = ((double) totalCount / (double) lengthPageDisplay);
-        if (pageDisplay < 0) {
-            pageDisplay = 0;
-        } else if ((double) pageDisplay >= calc) {
-            pageDisplay = (calc % 1 == 0) ? (int) calc - 1 : (int) calc;
-        }
-
-        // Get the page asked
-        computer = services.getPagedComputerDTO(builder.withPage(pageDisplay)
+        // Get the datas for the page
+        ComputerPage cp = services.getPage((FilterSelectComputer)builder.withPage(pageDisplay)
                 .withLengthPage(lengthPageDisplay)
                 .withOrder(numColOrder, asc)
-                .build()
-        );
+                .build());
 
-        // Set all params
-        request.setAttribute("computers", computer);
-        request.setAttribute("totalCount", totalCount);
-        request.setAttribute("currentPage", pageDisplay);
+        // Set all attributes
+        request.setAttribute("computers", cp.getResults());
+        request.setAttribute("totalCount", cp.getTotalCount());
+        request.setAttribute("currentPage", cp.getDisplayedPage());
         request.setAttribute("lengthPage", lengthPageDisplay);
         request.setAttribute("search", (search == null ? "" : search));
         getServletContext().getRequestDispatcher(INDEX).forward(request, response);

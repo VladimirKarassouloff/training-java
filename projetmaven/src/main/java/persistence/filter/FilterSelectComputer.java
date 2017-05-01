@@ -31,6 +31,7 @@ public class FilterSelectComputer extends FilterSelect {
         protected FilterSelect initFilter() {
             return new FilterSelectComputer();
         }
+
     }
 
 }

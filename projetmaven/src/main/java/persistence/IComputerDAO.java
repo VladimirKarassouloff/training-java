@@ -69,16 +69,6 @@ interface IComputerDAO {
      */
     Computer getLastComputerInserted() throws DAOSelectException;
 
-    /**
-     * Get Paged result.
-     *
-     * @param page            requested
-     * @param numberOfResults per page
-     * @param filterName      filter results by name
-     * @return resultset of the page asked
-     * @throws DAOSelectException if error happens
-     */
-    List<Computer> getPagination(int page, int numberOfResults, String filterName) throws DAOSelectException;
 
     /***
      * Get computer count.

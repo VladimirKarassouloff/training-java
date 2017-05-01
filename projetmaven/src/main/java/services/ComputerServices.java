@@ -11,6 +11,7 @@ import exception.InvalidComputerException;
 import exception.MapperException;
 import mapper.MapperComputer;
 import model.Computer;
+import model.ComputerPage;
 import persistence.filter.FilterSelect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class ComputerServices implements IComputerServices {
     private ComputerDAO computerDao;
 
     /**
-     * Get singleton.
+     * Construct singleton.
      */
     private ComputerServices() {
         computerDao = ComputerDAO.getInstance();
@@ -64,24 +65,6 @@ public class ComputerServices implements IComputerServices {
     }
 
     @Override
-    public List<ComputerDTO> getPagedComputerDTO(int page, int numberItem, String filterName) {
-        try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            List<ComputerDTO> result = MapperComputer.toDTOs(computerDao.getPagination(page, numberItem, ("".equals(filterName) ? null : filterName)));
-            TransactionHolder.get().commit();
-            return result;
-        } catch (SQLException | DAOSelectException e) {
-            e.printStackTrace();
-            Connector.getInstance().rollback(TransactionHolder.get());
-            LOGGER.info("Error getting paged computers dto");
-            return new ArrayList<>();
-        } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
-        }
-    }
-
-    @Override
     public List<ComputerDTO> getPagedComputerDTO(FilterSelect filter) {
         try {
             TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
@@ -100,10 +83,10 @@ public class ComputerServices implements IComputerServices {
     }
 
     @Override
-    public List<Computer> getPagedComputer(int page, int numberItem, String filterName) {
+    public List<Computer> getPagedComputer(FilterSelect filter) {
         try {
             TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            List<Computer> result = computerDao.getPagination(page, numberItem, filterName);
+            List<Computer> result = computerDao.getFromFilter(filter);
             TransactionHolder.get().commit();
             return result;
         } catch (SQLException | DAOSelectException e) {
@@ -117,27 +100,10 @@ public class ComputerServices implements IComputerServices {
         }
     }
 
-    @Override
-    public List<Computer> getPagedComputer(int page, int numberItem) {
-        try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            List<Computer> result = computerDao.getPagination(page, numberItem, null);
-            TransactionHolder.get().commit();
-            return result;
-        } catch (SQLException | DAOSelectException e) {
-            e.printStackTrace();
-            Connector.getInstance().rollback(TransactionHolder.get());
-            LOGGER.info("Error getPagedComputer");
-            return new ArrayList<>();
-        } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
-        }
-    }
 
     @Override
-    public List<ComputerDTO> getPagedComputerDTO(int page, int numberItem) {
-        return null;
+    public int getCountComputer() {
+        return this.getCountComputer(new FilterSelectComputer());
     }
 
     @Override
@@ -158,23 +124,6 @@ public class ComputerServices implements IComputerServices {
         }
     }
 
-    @Override
-    public int getCountComputer() {
-        try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            int result = computerDao.getCount(new FilterSelectComputer());
-            TransactionHolder.get().commit();
-            return result;
-        } catch (SQLException | DAOCountException e) {
-            e.printStackTrace();
-            Connector.getInstance().rollback(TransactionHolder.get());
-            LOGGER.info("Error getting count computers");
-            return 0;
-        } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
-        }
-    }
 
     @Override
     public Computer getComputer(int id) {
@@ -363,4 +312,26 @@ public class ComputerServices implements IComputerServices {
         }
     }
 
+
+    @Override
+    public ComputerPage getPage(FilterSelectComputer filter) {
+        ComputerPage cp = new ComputerPage.Builder()
+                .withCount(getCountComputer(filter))
+                .withLengthPage(filter.getNumberOfResult())
+                .withDisplayedPage(filter.getPage())
+                .build();
+
+        // Check user is at a valid page
+        double calc = ((double) cp.getTotalCount() / (double) cp.getLengthPage());
+        if (filter.getPage() < 0) {
+            cp.setDisplayedPage(0);
+        } else if ((double) filter.getPage() >= calc) {
+            cp.setDisplayedPage((calc % 1 == 0) ? (int) calc - 1 : (int) calc);
+        }
+        filter.setPage(cp.getDisplayedPage());
+
+        // Get the page asked
+        cp.setResults(getPagedComputerDTO(filter));
+        return cp;
+    }
 }
