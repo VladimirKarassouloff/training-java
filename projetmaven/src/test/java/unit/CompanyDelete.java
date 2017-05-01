@@ -96,7 +96,7 @@ public class CompanyDelete {
         try {
             // Setup mock
             ComputerDAO mockedDao = mock(ComputerDAO.class);
-            Mockito.doThrow(new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME, "Test")).when(mockedDao).deleteComputerBelongingToCompany(newCompany.getId());
+            Mockito.doThrow(new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME, "MOCKED OBJECT THROW EXCEPTION")).when(mockedDao).deleteComputerBelongingToCompany(newCompany.getId());
             companyServices.setComputerDao(mockedDao);
             // Test it
             companyServices.delete(newCompany.getId());

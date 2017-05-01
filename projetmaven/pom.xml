@@ -248,7 +248,7 @@
 				<executions>
 					<execution>
 						<id>Run URL in system browser.</id>
-						<phase>deploy</phase>
+						<phase>package</phase>
 						<configuration>
 							<target>
 								<exec executable="start" vmlauncher="false">

@@ -9,13 +9,6 @@ import java.sql.SQLException;
 
 public final class Connector {
 
-    // Config
-    public static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    public static final String DB_URL = "jdbc:mysql://localhost/computer-database-db?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-    private static final String USER = "admincdb";
-    private static final String PASS = "qwerty1234";
-
-
     private static Connector connector = new Connector();
 
     private DataSource datasource;
@@ -28,26 +21,7 @@ public final class Connector {
      * Constructor preparing Hikari.
      */
     private Connector() {
-
-        try {
-            Class.forName(Connector.JDBC_DRIVER);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Impossible de charger jdbc driver");
-        }
-
-        HikariConfig config = new HikariConfig();
-
-        config.setJdbcUrl(Connector.DB_URL);
-        config.setUsername(Connector.USER);
-        config.setPassword(Connector.PASS);
-
-        config.setMaximumPoolSize(40);
-        config.setAutoCommit(false);
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-
+        HikariConfig config = new HikariConfig("src/main/resources/hikari.properties");
         datasource = new HikariDataSource(config);
     }
 

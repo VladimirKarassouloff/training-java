@@ -53,8 +53,10 @@ public class MapperComputer {
     public static Computer mapResultSetToObject(ResultSet rs) {
 
         try {
-            rs.next();
-            Computer c = mapResultSetToObjectAux(rs);
+            Computer c = null;
+            if(rs.next()) {
+                c = mapResultSetToObjectAux(rs);
+            }
             rs.close();
             return c;
         } catch (SQLException e) {
