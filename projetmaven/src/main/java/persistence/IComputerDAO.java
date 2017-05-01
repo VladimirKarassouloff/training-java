@@ -6,7 +6,7 @@ import exception.DAOInsertException;
 import exception.DAOSelectException;
 import exception.DAOUpdateException;
 import model.Computer;
-import model.FilterSelect;
+import persistence.filter.FilterSelect;
 
 import java.util.List;
 

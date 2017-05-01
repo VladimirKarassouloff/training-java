@@ -10,6 +10,7 @@ import java.sql.SQLException;
 public final class Connector {
 
     private static Connector connector = new Connector();
+    public static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 
     private DataSource datasource;
 
@@ -21,7 +22,13 @@ public final class Connector {
      * Constructor preparing Hikari.
      */
     private Connector() {
-        HikariConfig config = new HikariConfig("src/main/resources/hikari.properties");
+        try {
+            Class.forName(Connector.JDBC_DRIVER);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Impossible de charger jdbc driver");
+        }
+        HikariConfig config = new HikariConfig("/hikari.properties");
         datasource = new HikariDataSource(config);
     }
 

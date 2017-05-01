@@ -4,7 +4,7 @@ import exception.*;
 import mapper.MapperComputer;
 import model.Company;
 import model.Computer;
-import model.FilterSelect;
+import persistence.filter.FilterSelect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import persistence.operator.Filter;

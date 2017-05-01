@@ -11,11 +11,12 @@ import exception.InvalidComputerException;
 import exception.MapperException;
 import mapper.MapperComputer;
 import model.Computer;
-import model.FilterSelect;
+import persistence.filter.FilterSelect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import persistence.ComputerDAO;
 import persistence.Connector;
+import persistence.filter.FilterSelectComputer;
 import validator.ComputerValidator;
 
 import java.sql.SQLException;
@@ -161,7 +162,7 @@ public class ComputerServices implements IComputerServices {
     public int getCountComputer() {
         try {
             TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            int result = computerDao.getCount(new FilterSelect());
+            int result = computerDao.getCount(new FilterSelectComputer());
             TransactionHolder.get().commit();
             return result;
         } catch (SQLException | DAOCountException e) {

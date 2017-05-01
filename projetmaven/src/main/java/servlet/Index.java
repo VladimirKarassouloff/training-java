@@ -3,7 +3,8 @@ package servlet;
 import bean.BeanParamUtils;
 import dto.ComputerDTO;
 import model.Computer;
-import model.FilterSelect;
+import persistence.filter.FilterSelect;
+import persistence.filter.FilterSelectComputer;
 import persistence.operator.LikeBoth;
 import services.ComputerServices;
 import utils.SqlNames;
@@ -25,14 +26,14 @@ public class Index extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private static final String PAGE_SUCCESS_FORM = "/index";
+    public static final String INDEX = "/WEB-INF/views/dashboard.jsp";
 
     // Fallback values
     private static final boolean DEFAULT_ORDER_ASC = false;
     private static final int DEFAULT_LENGTH = 20;
     private static final int MAX_COMPUTER_DISPLAYED = 100;
+    private static final int DEFAULT_COL_ORDERED = 0;
 
-
-    public static String index = "/WEB-INF/views/dashboard.jsp";
 
     private static ComputerServices services = ComputerServices.getInstance();
 
@@ -46,6 +47,8 @@ public class Index extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get params
+
+        // Search by computer or company name
         String search = request.getParameter("search");
         // Page number being displayed
         String pageStr = request.getParameter("currentPage");
@@ -57,15 +60,15 @@ public class Index extends HttpServlet {
         String colOrderStr = request.getParameter("colOrder");
 
 
-        // Get the computer displayed
+        // Computers displayed
         List<ComputerDTO> computer = null;
 
         ////////////////////////Parse
         // Params needing parse
         int lengthPageDisplay;
         int pageDisplay;
+        int numColOrder;
         boolean asc;
-        String colNameOrdered = null;
 
         // Parsing Page display asked by user
         try {
@@ -88,23 +91,13 @@ public class Index extends HttpServlet {
             asc = DEFAULT_ORDER_ASC;
         }
 
-        // Parse what column we are ordering
-        switch (colOrderStr == null ? "" : colOrderStr) {
-            case "0":
-                colNameOrdered = SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME;
-                break;
-            case "1":
-                colNameOrdered = SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_INTRODUCED;
-                break;
-            case "2":
-                colNameOrdered = SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTERDISCONTINUED;
-                break;
-            case "3":
-                colNameOrdered = SqlNames.COMPANY_TABLE_NAME + "." + SqlNames.COMPANY_COL_COMPANY_NAME;
-                break;
-            default:
-                colNameOrdered = SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID;
+        // Parsing which column is ordered
+        try {
+            numColOrder = Integer.parseInt(colOrderStr);
+        } catch (Exception e) {
+            numColOrder = DEFAULT_COL_ORDERED;
         }
+
 
         ////////////////////////
 
@@ -117,7 +110,7 @@ public class Index extends HttpServlet {
         }
 
         // Filter for counting and selecting
-        FilterSelect.Builder builder = new FilterSelect.Builder();
+        FilterSelect.Builder builder = new FilterSelectComputer.Builder();
         if (search != null) {
             builder.withSearch(SqlNames.COMPANY_TABLE_NAME + "." + SqlNames.COMPANY_COL_COMPANY_NAME, new LikeBoth(search))
                     .withSearch(SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME, new LikeBoth(search));
@@ -137,7 +130,7 @@ public class Index extends HttpServlet {
         // Get the page asked
         computer = services.getPagedComputerDTO(builder.withPage(pageDisplay)
                 .withLengthPage(lengthPageDisplay)
-                .withOrder(colNameOrdered, asc)
+                .withOrder(numColOrder, asc)
                 .build()
         );
 
@@ -147,7 +140,7 @@ public class Index extends HttpServlet {
         request.setAttribute("currentPage", pageDisplay);
         request.setAttribute("lengthPage", lengthPageDisplay);
         request.setAttribute("search", (search == null ? "" : search));
-        getServletContext().getRequestDispatcher(index).forward(request, response);
+        getServletContext().getRequestDispatcher(INDEX).forward(request, response);
     }
 
 

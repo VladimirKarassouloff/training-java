@@ -1,4 +1,4 @@
-package model;
+package persistence.filter;
 
 import persistence.operator.Filter;
 
@@ -9,21 +9,21 @@ import java.util.Set;
 /**
  * Created by vkarassouloff on 27/04/17.
  */
-public class FilterSelect {
+public abstract class FilterSelect {
 
     public static final int DEFAULT_NUMBER_OF_RESULT = 8;
 
     // Pagination
-    private boolean paginated;
-    private int page;
-    private int numberOfResult;
+    protected boolean paginated;
+    protected int page;
+    protected int numberOfResult;
 
     // Research filter
-    private HashMap<String, Filter> filters;
+    protected HashMap<String, Filter> filters;
 
     // Order filter
-    private String orderOnColumn;
-    private boolean asc;
+    protected String orderOnColumn;
+    protected boolean asc;
 
     /**
      * Constructor.
@@ -34,11 +34,18 @@ public class FilterSelect {
         this.filters = new HashMap<>();
     }
 
-    // Methods
+    /**
+     * Get which column are being filtered.
+     * @return names of the column being filtered
+     */
     public Set<String> getFilteredColumns() {
         return filters.keySet();
     }
 
+    /**
+     * Get all values.
+     * @return values
+     */
     public Collection<Filter> getFilterValues() {
         return filters.values();
     }
@@ -51,6 +58,9 @@ public class FilterSelect {
     public Filter getFilterValue(String col) {
         return filters.get(col);
     }
+
+    public abstract String colNumToName(int num);
+
 
     // Getters & Setters
 
@@ -102,16 +112,21 @@ public class FilterSelect {
         this.paginated = paginated;
     }
 
-    public static class Builder {
+    public abstract static class Builder {
 
-        private FilterSelect filter;
+        protected FilterSelect filter;
 
         /**
          * Builder for FilterSelect.
          */
         public Builder() {
-            filter = new FilterSelect();
+            filter = initFilter();
         }
+
+        /**
+         * Create instance of the filter being built.
+         */
+        protected abstract FilterSelect initFilter();
 
         /**
          * Builder for FilterSelect.
@@ -146,12 +161,12 @@ public class FilterSelect {
 
         /**
          * Builder for FilterSelect.
-         * @param s column filtered
+         * @param numCol num of the column filtered
          * @param asc if filtering asc or desc
          * @return builder
          */
-        public Builder withOrder(String s, boolean asc) {
-            filter.orderOnColumn = s;
+        public Builder withOrder(int numCol, boolean asc) {
+            filter.orderOnColumn = filter.colNumToName(numCol);
             filter.asc = asc;
             return this;
         }
