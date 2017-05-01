@@ -12,69 +12,88 @@
 		<deployment-url>http://localhost:8080</deployment-url>
 		<deployment-path>mydeploy</deployment-path>
 		<open-browser-at>${deployment-url}/${deployment-path}</open-browser-at>
+
+		<version.hikari>2.6.1</version.hikari>
+		<version.mysql>6.0.6</version.mysql>
+		<version.slf4j>1.7.25</version.slf4j>
+		<version.logback>LATEST</version.logback>
+		<version.servlet-api>3.1.0</version.servlet-api>
+		<version.jstl>1.2</version.jstl>
+		<version.selenium>3.3.1</version.selenium>
+		<version.mockito>1.9.5</version.mockito>
+		<version.junit>4.12</version.junit>
+
 	</properties>
 
 
 
 	<dependencies>
 
+		<!-- -->
+		<!-- DB Connection -->
+		<!-- -->
 		<!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
-			<version>2.6.1</version>
+			<version>${version.hikari}</version>
 		</dependency>
-
 
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-            <version>6.0.6</version>
+            <version>${version.mysql}</version>
             <scope>runtime</scope>
 		</dependency>
 
+
+		<!-- -->
+		<!-- Logging -->
+		<!-- -->
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.25</version>
+			<version>${version.slf4j}</version>
 			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>LATEST</version>
+			<version>${version.logback}</version>
 			<scope>runtime</scope>
 		</dependency>
 
+
 		<!-- -->
-		<!-- Provided -->
+		<!-- j2ee -->
 		<!-- -->
 
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
+            <version>${version.servlet-api}</version>
         </dependency>
 
 		<!-- https://mvnrepository.com/artifact/jstl/jstl -->
 		<dependency>
             <groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
-			<version>1.2</version>
+			<version>${version.jstl}</version>
 		</dependency>
 
+
 		<!-- -->
-		<!-- Test -->
+		<!-- Tests -->
 		<!-- -->
 
 		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>3.3.1</version>
+			<version>${version.selenium}</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -82,7 +101,7 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
-			<version>1.9.5</version>
+			<version>${version.mockito}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -90,7 +109,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<version>${version.junit}</version>
 			<scope>test</scope>
 		</dependency>
 

@@ -75,7 +75,7 @@ public class CompanyDelete {
         TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
         Savepoint sp = TransactionHolder.get().setSavepoint();
         TransactionHolder.get().setAutoCommit(false);
-        TransactionHolder.get().createStatement().execute("INSERT INTO " + SqlNames.COMPANY_TABLE_NAME + "(" + SqlNames.COMPANY_COL_COMPANY_NAME + ") VALUES ('gros lol')" );
+        TransactionHolder.get().createStatement().execute("INSERT INTO " + SqlNames.COMPANY_TABLE_NAME + "(" + SqlNames.COMPANY_COL_COMPANY_NAME + ") VALUES ('gros loazel')" );
         TransactionHolder.get().rollback(sp);
         TransactionHolder.close();
     }
