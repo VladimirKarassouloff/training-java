@@ -101,11 +101,8 @@ public class MapperComputer {
             Company company;
             if (companyId == 0) {
                 company = null;
-            } else if (ComputerDAO.CACHE_COMPANY.get(companyId) != null) {
-                company = ComputerDAO.CACHE_COMPANY.get(companyId);
             } else {
                 company = new Company(companyId, companyName);
-                ComputerDAO.CACHE_COMPANY.put(companyId, company);
             }
             return new Computer(computerId, company, computerName, introduced, discontinued);
         } catch (Exception e) {

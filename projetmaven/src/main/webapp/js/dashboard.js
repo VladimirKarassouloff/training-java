@@ -10,7 +10,6 @@ $(function() {
 
     // Click on a checkbox
     $(".cb").click(function() {
-        debugger;
         if ($(".cb").length == $(".cb:checked").length) {
             $("#selectall").prop("checked", true);
         } else {
@@ -92,5 +91,4 @@ $(document).keydown(function(e) {
     }
 });
 
-console.log("Ok");
 

@@ -13,13 +13,13 @@
 <%@ attribute name="paramNameUrlCurrent" required="true" type="java.lang.String" description="Name of get parameter" %>
 
 
-
 <!--if currentpage is 10 and 'numberPageLeftRight'=3 => 7-8-9-currentpage-11-12-13 -->
-<%@ attribute name="numberPageLeftRight" required="false" type="java.lang.Integer" description="Number of page generated on left and right" %>
+<%@ attribute name="numberPageLeftRight" required="false" type="java.lang.Integer"
+              description="Number of page generated on left and right" %>
 
 <!-- Default value for numberPageLeftRight -->
 <c:if test="${ empty numberPageLeftRight }">
-    <c:set var="numberPageLeftRight" value="2"/>
+    <c:set var="numberPageLeftRight" value="3"/>
 </c:if>
 
 
@@ -32,9 +32,6 @@
 <c:if test="${ empty currentPage }">
     <c:set var="currentPage" value="0"/>
 </c:if>
-
-
-
 
 
 <!-- Getting the total number of pages -->
@@ -70,20 +67,34 @@ ${paramUtils.copyGetParameterFromRequest(pageContext.request)}
 <!-------------------------------------------------------------------------------------------------------->
 <!--------------------------------HTML GENERATION FOR PAGINATION------------------------------------------>
 <!-------------------------------------------------------------------------------------------------------->
-
 <ul class="pagination">
     <!-- Generation of [1] [...] [currentpage-1] [currentpage] etc-->
     <c:choose>
-        <c:when test="${beginLoop >= 2}">
+        <c:when test="${beginLoop > numberPageLeftRight}">
             ${paramUtils.overrideParam(paramNameUrlCurrent, 0)}
             <li><a href="${pageContext.request.contextPath}/${linkGenerated}${paramUtils.buildUrl()}">1</a></li>
             <li class="disabled"><a href="#">...</a></li>
         </c:when>
-        <c:when test="${beginLoop == 1}">
-            ${paramUtils.overrideParam(paramNameUrlCurrent, 0)}
-            <li><a href="${pageContext.request.contextPath}/${linkGenerated}${paramUtils.buildUrl()}">1</a></li>
-        </c:when>
+        <c:otherwise>
+            <c:set var="beginLoop" value="0"/>
+        </c:otherwise>
     </c:choose>
+
+    <!-- Now we check if we can avoid putting [CurrentPage] [...] [Endpage] by generating  [CurrentPage] [CurrentPage+1] [Endpage]-->
+    <c:if test="${not(endLoop < pageCount - numberPageLeftRight)}">
+        <c:set var="endLoop" value="${pageCount}"/>
+    </c:if>
+
+    <c:if test="${currentPage < numberPageLeftRight + 2.0}">
+        <c:set var="endLoop" value="${Math.min(pageCount, endLoop +  (numberPageLeftRight-currentPage)+2.0)}"/>
+    </c:if>
+
+
+
+    <c:if test="${currentPage > pageCount - numberPageLeftRight - 2.0}">
+        <c:set var="beginLoop" value="${Math.max(0.0, beginLoop - (currentPage + numberPageLeftRight - pageCount) - 2.0)}"/>
+    </c:if>
+
 
     <!-- Generation of pages on left and right of the current one -->
     <c:forEach begin="${beginLoop}" end="${endLoop}" varStatus="loop">
@@ -96,27 +107,12 @@ ${paramUtils.copyGetParameterFromRequest(pageContext.request)}
     <!-- Generation of [currentpage] [currentpage+1] [...] [LASTPAGE] etc-->
     <!-- parsing of pagecount+1 from double to integer -->
     <fmt:parseNumber var="i" integerOnly="true" type="number" value="${pageCount+1}"/>
-    <c:choose>
-        <c:when test="${endLoop <= pageCount - 2}">
-            ${paramUtils.overrideParam(paramNameUrlCurrent, pageCount)}
-            <li class="disabled"><a href="#">...</a></li>
-            <li><a href="${pageContext.request.contextPath}/${linkGenerated}${paramUtils.buildUrl()}"><c:out
-                    value="${i}"/></a></li>
-        </c:when>
-        <c:when test="${endLoop <= pageCount - 1}">
-            ${paramUtils.overrideParam(paramNameUrlCurrent, pageCount)}
-            <li>
-                <a href="${pageContext.request.contextPath}/${linkGenerated}${paramUtils.buildUrl()}">
-                    <c:out value="${i}"/>
-                </a>
-            </li>
-        </c:when>
-    </c:choose>
+    <c:if test="${endLoop < pageCount - numberPageLeftRight}">
+        ${paramUtils.overrideParam(paramNameUrlCurrent, pageCount)}
+        <li class="disabled"><a href="#">...</a></li>
+        <li><a href="${pageContext.request.contextPath}/${linkGenerated}${paramUtils.buildUrl()}"><c:out
+                value="${i}"/></a></li>
+    </c:if>
 </ul>
-
-
-
-
-
 
 

@@ -89,13 +89,10 @@ public class ComputerDAO implements IComputerDAO {
     }
 
 
-    // When selecting multiple computer, if they belong to the same company, we make them point on the same Company object
-    // Each company is build at most one time
-    public static final HashMap<Integer, Company> CACHE_COMPANY = new HashMap<>();
+
 
     @Override
     public List<Computer> getAll() throws DAOSelectException {
-        CACHE_COMPANY.clear();
         Connection connection = null;
         ResultSet rs = null;
         List<Computer> result = null;
@@ -106,19 +103,16 @@ public class ComputerDAO implements IComputerDAO {
             result = MapperComputer.mapResultSetToObjects(rs);
 
             LOGGER.info("Succes getAll computerdao");
-            CACHE_COMPANY.clear();
             return result;
         } catch (SQLException e) {
             LOGGER.info("Erreur getAll computerdao : " + e.getMessage());
             e.printStackTrace();
-            CACHE_COMPANY.clear();
             throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT);
         }
     }
 
     @Override
     public List<Computer> getFromFilter(FilterSelect fs) throws DAOSelectException {
-        CACHE_COMPANY.clear();
         List<Computer> result = null;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -176,7 +170,6 @@ public class ComputerDAO implements IComputerDAO {
 
     @Override
     public Computer getById(int id) throws DAOSelectException {
-        CACHE_COMPANY.clear();
         Connection connection = null;
         ResultSet rs = null;
         PreparedStatement preparedStatement = null;
@@ -191,19 +184,16 @@ public class ComputerDAO implements IComputerDAO {
 
             preparedStatement.close();
             LOGGER.info("Succes getbyid computerdao");
-            CACHE_COMPANY.clear();
             return result;
         } catch (Exception e) {
             LOGGER.info("Erreur sql get by id : " + e.getMessage());
             e.printStackTrace();
-            CACHE_COMPANY.clear();
             throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT + WHERE_FILTER_ID + " (id=" + id + ")");
         }
     }
 
     @Override
     public int insert(Computer computer) throws DAOInsertException {
-        CACHE_COMPANY.clear();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet generatedKeys = null;
@@ -223,7 +213,6 @@ public class ComputerDAO implements IComputerDAO {
                     computer.setId((int) generatedKeys.getLong(1));
                     statement.close();
                     LOGGER.info("Success insert computerdao : " + computer);
-                    CACHE_COMPANY.clear();
                     return computer.getId();
                 } else {
                     // No id returned
@@ -245,7 +234,6 @@ public class ComputerDAO implements IComputerDAO {
             LOGGER.info("Erreur 3 insert computerdao : " + computer + " => " + e.getMessage());
         }
 
-        CACHE_COMPANY.clear();
         throw new DAOInsertException(computer);
     }
 
@@ -294,7 +282,6 @@ public class ComputerDAO implements IComputerDAO {
 
     @Override
     public Computer getLastComputerInserted() throws DAOSelectException {
-        CACHE_COMPANY.clear();
         Connection connection = null;
         ResultSet rs = null;
         Computer result = null;
@@ -303,14 +290,12 @@ public class ComputerDAO implements IComputerDAO {
             rs = connection.prepareStatement(SELECT_LAST_COMPUTER_INSERTED).executeQuery();
             result = MapperComputer.mapResultSetToObject(rs);
             LOGGER.info("Succes getLastComputerInserted Computerdao");
-            CACHE_COMPANY.clear();
             return result;
         } catch (SQLException e) {
             e.printStackTrace();
             LOGGER.info("Error Get last computer inserted Computerdao : " + e.getMessage());
         }
 
-        CACHE_COMPANY.clear();
         throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT_LAST_COMPUTER_INSERTED);
     }
 
