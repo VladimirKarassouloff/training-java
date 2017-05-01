@@ -15,6 +15,8 @@ import services.ComputerServices;
 import services.TransactionHolder;
 import utils.SqlNames;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 
@@ -70,47 +72,6 @@ public class CompanyDelete {
 
     }
 
-    @Test
-    public void mdr2() throws Exception {
-        TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-        Savepoint sp = TransactionHolder.get().setSavepoint();
-        TransactionHolder.get().setAutoCommit(false);
-        TransactionHolder.get().createStatement().execute("INSERT INTO " + SqlNames.COMPANY_TABLE_NAME + "(" + SqlNames.COMPANY_COL_COMPANY_NAME + ") VALUES ('gros loazel')" );
-        TransactionHolder.get().rollback(sp);
-        TransactionHolder.close();
-    }
-
-    @Test
-    public void mdr() {
-        Savepoint sp = null;
-        Computer testTransaction = new Computer.Builder()
-                .withName("mdr computer de nouvelle comapny")
-                .withCompany(newCompany)
-                .build();
-
-        try {
-
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            TransactionHolder.get().setAutoCommit(false);
-            sp = TransactionHolder.get().setSavepoint();
-            computerDao.insert(testTransaction);
-            System.out.println(testTransaction);
-            //TransactionHolder.get().rollback();
-            TransactionHolder.get().rollback(sp);
-            TransactionHolder.get().commit();
-            TransactionHolder.get().close();
-
-            //Connector.getInstance().rollback(TransactionHolder.get());
-
-            //TransactionHolder.get().commit();
-        } catch (Exception e) {
-            throw new RuntimeException("Qwerty");
-        }
-        TransactionHolder.close();
-        assertEquals(null, computerServices.getComputer(testTransaction.getId()));
-        Connector.getInstance().close(TransactionHolder.get());
-
-    }
 
     @Test
     public void testDeleteCompany() {
@@ -132,11 +93,12 @@ public class CompanyDelete {
         assertEquals(true, computerServices.getComputer(newComputer1.getId()) != null);
         assertEquals(true, computerServices.getComputer(newComputer2.getId()) != null);
 
-        // Setup mock
-        ComputerDAO mockedDao = mock(ComputerDAO.class);
         try {
+            // Setup mock
+            ComputerDAO mockedDao = mock(ComputerDAO.class);
             Mockito.doThrow(new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME, "Test")).when(mockedDao).deleteComputerBelongingToCompany(newCompany.getId());
             companyServices.setComputerDao(mockedDao);
+            // Test it
             companyServices.delete(newCompany.getId());
         } catch (DAODeleteException e) {
             e.printStackTrace();
