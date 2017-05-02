@@ -12,13 +12,14 @@ public class MapperCompany {
 
     /**
      * Map resultset to company.
+     *
      * @param rs resultset
      * @return company
      */
     public static Company mapResultSetToObject(ResultSet rs) {
         try {
             Company com = null;
-            if(rs.next()) {
+            if (rs.next()) {
                 com = mapResultSetToObjectAux(rs);
             }
             rs.close();
@@ -31,6 +32,7 @@ public class MapperCompany {
 
     /**
      * Map Resultset to companies.
+     *
      * @param rs resultset
      * @return list of companies
      */
@@ -49,6 +51,7 @@ public class MapperCompany {
 
     /**
      * Map result set to company without closing the resultset.
+     *
      * @param rs resultset
      * @return company
      */

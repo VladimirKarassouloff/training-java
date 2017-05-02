@@ -1,27 +1,25 @@
 package persistence;
 
-import exception.*;
+import exception.DAOCountException;
+import exception.DAODeleteException;
+import exception.DAOInsertException;
+import exception.DAOSelectException;
+import exception.DAOUpdateException;
 import mapper.MapperComputer;
-import model.Company;
 import model.Computer;
-import persistence.filter.FilterSelect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import persistence.filter.FilterSelect;
 import persistence.operator.Filter;
 import services.TransactionHolder;
 import utils.SqlNames;
 
-<<<<<<< Updated upstream
-import java.sql.*;
-=======
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collections;
->>>>>>> Stashed changes
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 

@@ -91,6 +91,7 @@ interface IComputerDAO {
     /**
      * Delete computers belonging to a company.
      * @param idCompany of the computer deleted
+     * @throws DAODeleteException if error happens
      */
     void deleteComputerBelongingToCompany(int idCompany) throws DAODeleteException;
 

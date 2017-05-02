@@ -59,6 +59,11 @@ public abstract class FilterSelect {
         return filters.get(col);
     }
 
+    /**
+     * Translate a num to a table name.
+     * @param num to translate
+     * @return name of the column
+     */
     public abstract String colNumToName(int num);
 
 
@@ -125,6 +130,7 @@ public abstract class FilterSelect {
 
         /**
          * Create instance of the filter being built.
+         * @return FilterSelect
          */
         protected abstract FilterSelect initFilter();
 

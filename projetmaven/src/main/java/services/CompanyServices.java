@@ -1,6 +1,9 @@
 package services;
 
-import exception.*;
+import exception.DAOCountException;
+import exception.DAODeleteException;
+import exception.DAOSelectException;
+import exception.DAOUpdateException;
 import model.Company;
 import persistence.CompanyDAO;
 import persistence.ComputerDAO;
@@ -126,6 +129,7 @@ public class CompanyServices implements ICompanyServices {
         }
     }
 
+    @Override
     public void delete(int id) {
         try {
             TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());

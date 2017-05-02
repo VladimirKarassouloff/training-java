@@ -2,10 +2,8 @@ package applicationcli.pages;
 
 import applicationcli.Application;
 import applicationcli.FormulaireCli;
-import exception.FormException;
 import mapper.MapperDate;
 import model.Computer;
-import services.ComputerServices;
 
 public class DetailComputer extends Page {
 

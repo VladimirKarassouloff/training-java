@@ -1,6 +1,10 @@
 package persistence;
 
-import exception.*;
+import exception.DAOCountException;
+import exception.DAODeleteException;
+import exception.DAOInsertException;
+import exception.DAOSelectException;
+import exception.DAOUpdateException;
 import model.Company;
 
 import java.util.List;

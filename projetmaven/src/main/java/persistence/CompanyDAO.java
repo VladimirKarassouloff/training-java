@@ -1,6 +1,10 @@
 package persistence;
 
-import exception.*;
+import exception.DAOCountException;
+import exception.DAODeleteException;
+import exception.DAOInsertException;
+import exception.DAOSelectException;
+import exception.DAOUpdateException;
 import mapper.MapperCompany;
 import model.Company;
 import org.slf4j.Logger;
@@ -8,14 +12,16 @@ import org.slf4j.LoggerFactory;
 import services.TransactionHolder;
 import utils.SqlNames;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 public class CompanyDAO implements ICompanyDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDAO.class);
-
-
 
 
     /////////////////////////////////////////////////////////
@@ -33,11 +39,10 @@ public class CompanyDAO implements ICompanyDAO {
     public static final String INSERT = "INSERT INTO " + SqlNames.COMPANY_TABLE_NAME + "(" + SqlNames.COMPANY_COL_COMPANY_NAME + ") "
             + "VALUES (?)";
 
-    public static final String DELETE = "DELETE FROM " + SqlNames.COMPANY_TABLE_NAME + " WHERE " + SqlNames.COMPANY_TABLE_NAME+ "." + SqlNames.COMPANY_COL_COMPANY_ID + "=?";
+    public static final String DELETE = "DELETE FROM " + SqlNames.COMPANY_TABLE_NAME + " WHERE " + SqlNames.COMPANY_TABLE_NAME + "." + SqlNames.COMPANY_COL_COMPANY_ID + "=?";
 
     ///////////////////
     //////////////////////////////////////////////////////////
-
 
 
     public static CompanyDAO dao = new CompanyDAO();

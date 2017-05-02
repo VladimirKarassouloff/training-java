@@ -119,7 +119,7 @@ interface IComputerServices {
     Computer getLastComputerInserted();
 
     /**
-     * Get set of result, with total count, and the 'real' page displayed in case of wrong requirement
+     * Get set of result, with total count, and the 'real' page displayed in case of wrong requirement.
      * @param filter constraints
      * @return db-results
      */

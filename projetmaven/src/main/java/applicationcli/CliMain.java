@@ -1,7 +1,5 @@
 package applicationcli;
 
-import persistence.Connector;
-
 public class CliMain {
 
     /**

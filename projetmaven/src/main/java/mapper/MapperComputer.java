@@ -4,9 +4,8 @@ import dto.ComputerDTO;
 import exception.MapperException;
 import model.Company;
 import model.Computer;
-import persistence.ComputerDAO;
-import utils.SqlNames;
 import utils.Format;
+import utils.SqlNames;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -54,7 +53,7 @@ public class MapperComputer {
 
         try {
             Computer c = null;
-            if(rs.next()) {
+            if (rs.next()) {
                 c = mapResultSetToObjectAux(rs);
             }
             rs.close();

@@ -1,10 +1,7 @@
 package servlet;
 
 import bean.BeanParamUtils;
-import dto.ComputerDTO;
-import model.Computer;
 import model.ComputerPage;
-import persistence.filter.FilterSelect;
 import persistence.filter.FilterSelectComputer;
 import persistence.operator.LikeBoth;
 import services.ComputerServices;
@@ -113,7 +110,7 @@ public class Index extends HttpServlet {
         }
 
         // Get the datas for the page
-        ComputerPage cp = services.getPage((FilterSelectComputer)builder.withPage(pageDisplay)
+        ComputerPage cp = services.getPage((FilterSelectComputer) builder.withPage(pageDisplay)
                 .withLengthPage(lengthPageDisplay)
                 .withOrder(numColOrder, asc)
                 .build());
