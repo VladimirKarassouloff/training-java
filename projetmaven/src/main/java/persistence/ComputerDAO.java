@@ -96,8 +96,6 @@ public class ComputerDAO implements IComputerDAO {
     }
 
 
-
-
     @Override
     public List<Computer> getAll() throws DAOSelectException {
         Connection connection = null;
@@ -263,7 +261,7 @@ public class ComputerDAO implements IComputerDAO {
         Iterator<Integer> it = ids.iterator();
         while (it.hasNext()) {
             Integer idToDelete = it.next();
-            queryDelete.append(SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + "=" + idToDelete);
+            queryDelete.append(" " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + "=" + idToDelete);
             if (it.hasNext()) {
                 queryDelete.append(" OR ");
             }
@@ -275,10 +273,6 @@ public class ComputerDAO implements IComputerDAO {
         try {
             connection = TransactionHolder.get();
             statement = connection.prepareStatement(queryDelete.toString());
-            int bindingParamNum = 1;
-            for (Integer idToBind : ids) {
-                statement.setInt(bindingParamNum++, idToBind);
-            }
             int resultExec = statement.executeUpdate();
             statement.close();
             LOGGER.info("Computerdao : Succes delete " + ids);

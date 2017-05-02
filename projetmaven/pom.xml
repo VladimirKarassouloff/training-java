@@ -10,7 +10,7 @@
 
 	<properties>
 		<deployment-url>http://localhost:8080</deployment-url>
-		<deployment-path>myd</deployment-path>
+		<deployment-path>mydeployyy</deployment-path>
 		<open-browser-at>${deployment-url}/${deployment-path}</open-browser-at>
 
 		<version.hikari>2.6.1</version.hikari>
@@ -186,7 +186,7 @@
 					</execution>
 				</executions>
 			</plugin>
-<!--
+			<!--
 			<plugin>
 				<artifactId>exec-maven-plugin</artifactId>
 				<groupId>org.codehaus.mojo</groupId>
@@ -203,7 +203,7 @@
 					</execution>
 				</executions>
 			</plugin>
--->
+			-->
 			<!-- War deployment -->
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
@@ -242,7 +242,9 @@
 			</plugin>
 
 			<!-- Open browser after deploying the war-->
+			<!--
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.7</version>
 				<executions>
@@ -262,6 +264,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			-->
 
 
 		</plugins>

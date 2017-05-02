@@ -220,7 +220,7 @@ public class ComputerServices implements IComputerServices {
             return result;
         } catch (SQLException | DAODeleteException e) {
             e.printStackTrace();
-            LOGGER.info("Computer is not delete computer");
+            LOGGER.info("Computer are not deleted (" + ids + ")");
             Connector.getInstance().rollback(TransactionHolder.get());
         } finally {
             Connector.getInstance().close(TransactionHolder.get());

@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -120,8 +121,8 @@ public class CompanyDelete {
         }
 
         try {
-            System.out.println("Suppression des elements de test newComputer1 : " + computerDao.deleteById(newComputer1.getId()) + ", " +
-                    "newComputer2 : " + computerDao.deleteById(newComputer2.getId()) + ", " +
+            System.out.println("Suppression des elements de test newComputer1 & newComputer2 : " +
+                    computerDao.deleteById(Arrays.asList(newComputer1.getId(),newComputer2.getId())) + ", " +
                     "newCompany : " + companyDao.delete(newCompany.getId()));
         } catch (DAODeleteException e) {
             System.err.println("Error happened during cleanup");
