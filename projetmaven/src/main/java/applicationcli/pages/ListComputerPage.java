@@ -7,6 +7,7 @@ import model.Computer;
 import persistence.filter.FilterSelectComputer;
 import services.ComputerServices;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,7 @@ public class ListComputerPage extends Pageable<Computer> {
             Computer comp = ComputerServices.getInstance().getComputer(idDelete);
             if (comp == null) {
                 throw new Exception("Id invalide");
-            } else if (ComputerServices.getInstance().deleteComputer(comp)) {
+            } else if (ComputerServices.getInstance().deleteComputer(Arrays.asList(comp.getId()))) {
                 countItemTotal--;
                 if (!checkPageIsCorrect()) {
                     orderFetchNewDataForPage();

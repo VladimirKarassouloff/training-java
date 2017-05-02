@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -132,15 +133,14 @@ public class Index extends HttpServlet {
         String deleteUnparsed = req.getParameter("selection");
         if (deleteUnparsed != null) {
             String[] deleteThoseIds = deleteUnparsed.split(",");
+            List<Integer> idsParsed = new ArrayList<>();
             for (String idToDelete : deleteThoseIds) {
-                try {
-                    int id = Integer.parseInt(idToDelete);
-                    services.deleteComputer(new Computer.Builder().withId(id).build());
-                } catch (Exception e) {
-                    System.err.println("Failed To Parse Id To Delete");
-                }
+                idsParsed.add(Integer.parseInt(idToDelete));
             }
+
+            services.deleteComputer(idsParsed);
         }
+
         BeanParamUtils bpu = new BeanParamUtils(req);
         bpu.forget("selection");
         resp.sendRedirect(req.getContextPath() + PAGE_SUCCESS_FORM + bpu.buildUrl());

@@ -45,11 +45,11 @@ interface IComputerDAO {
     /**
      * Delete computer.
      *
-     * @param id of the computer deleted
+     * @param ids of the computer deleted
      * @return success
      * @throws DAODeleteException if error happens
      */
-    boolean deleteById(int id) throws DAODeleteException;
+    boolean deleteById(List<Integer> ids) throws DAODeleteException;
 
     /**
      * Updated computer.
@@ -81,6 +81,7 @@ interface IComputerDAO {
 
     /**
      * Get Computer matching filter.
+     *
      * @param fs filter
      * @return computers
      * @throws DAOSelectException if an error occurs with DB

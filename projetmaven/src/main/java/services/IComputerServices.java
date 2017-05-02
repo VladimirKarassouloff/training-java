@@ -89,10 +89,11 @@ interface IComputerServices {
     /**
      * Delete computer of the DB having the id equals of the computer id param.
      *
-     * @param comp deleted
+     * @param ids deleted
      * @return success query
      */
-    boolean deleteComputer(Computer comp);
+    boolean deleteComputer(List<Integer> ids);
+
 
     /**
      * Try updating a computer.

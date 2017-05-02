@@ -11,7 +11,16 @@ import persistence.operator.Filter;
 import services.TransactionHolder;
 import utils.SqlNames;
 
+<<<<<<< Updated upstream
 import java.sql.*;
+=======
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Collections;
+>>>>>>> Stashed changes
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -41,7 +50,7 @@ public class ComputerDAO implements IComputerDAO {
 
     public static final String WHERE_FILTER_ID = " WHERE " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + "=?";
 
-    public static final String DELETE = "DELETE FROM " + SqlNames.COMPUTER_TABLE_NAME + " WHERE " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + "=?";
+    public static final String DELETE = "DELETE FROM " + SqlNames.COMPUTER_TABLE_NAME + " WHERE ";
 
     public static final String DELETE_COMPUTER_OF_COMPANY = "DELETE FROM " + SqlNames.COMPUTER_TABLE_NAME + " WHERE " +
             SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID + "= ?";
@@ -238,22 +247,48 @@ public class ComputerDAO implements IComputerDAO {
     }
 
     @Override
-    public boolean deleteById(int id) throws DAODeleteException {
+    public boolean deleteById(List<Integer> ids) throws DAODeleteException {
+        if (ids == null) {
+            LOGGER.info("Computerdao : Error delete nothing to delete");
+            return false;
+        }
+
+        // Remove null values
+        ids.removeAll(Collections.singleton(null));
+        if (ids.isEmpty()) {
+            LOGGER.info("Computerdao : Error delete nothing to delete after deleting null ids");
+            return false;
+        }
+
+        // Build query
+        StringBuilder queryDelete = new StringBuilder(DELETE);
+        Iterator<Integer> it = ids.iterator();
+        while (it.hasNext()) {
+            Integer idToDelete = it.next();
+            queryDelete.append(SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + "=" + idToDelete);
+            if (it.hasNext()) {
+                queryDelete.append(" OR ");
+            }
+        }
+
+        // Exec query
         Connection connection = null;
         PreparedStatement statement = null;
-
         try {
             connection = TransactionHolder.get();
-            statement = connection.prepareStatement(DELETE);
-            statement.setInt(1, id);
+            statement = connection.prepareStatement(queryDelete.toString());
+            int bindingParamNum = 1;
+            for (Integer idToBind : ids) {
+                statement.setInt(bindingParamNum++, idToBind);
+            }
             int resultExec = statement.executeUpdate();
             statement.close();
-            LOGGER.info("Succes delete " + id + " computerdao");
+            LOGGER.info("Computerdao : Succes delete " + ids);
             return resultExec != 0;
         } catch (SQLException e) {
-            LOGGER.info("Error delete Computerdao " + id + " : " + e.getMessage());
+            LOGGER.info("Computerdao : Error delete " + ids + " : " + e.getMessage());
             e.printStackTrace();
-            throw new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME, id);
+            throw new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME, ids);
         }
     }
 

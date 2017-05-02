@@ -192,7 +192,6 @@ public class ComputerServices implements IComputerServices {
         } catch (InvalidComputerException e) {
             e.printStackTrace();
             LOGGER.info("Computer is not valid (" + computer + ")");
-            Connector.getInstance().rollback(TransactionHolder.get());
             throw new FormException(e.getMessage());
         }
 
@@ -213,10 +212,10 @@ public class ComputerServices implements IComputerServices {
     }
 
     @Override
-    public boolean deleteComputer(Computer comp) {
+    public boolean deleteComputer(List<Integer> ids) {
         try {
             TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            boolean result = computerDao.deleteById(comp.getId());
+            boolean result = computerDao.deleteById(ids);
             TransactionHolder.get().commit();
             return result;
         } catch (SQLException | DAODeleteException e) {
@@ -229,6 +228,7 @@ public class ComputerServices implements IComputerServices {
         }
         return false;
     }
+
 
     @Override
     public void formUpdateComputer(ComputerDTO form) throws FormException {
