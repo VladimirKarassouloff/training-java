@@ -19,7 +19,7 @@
 
 <!-- Default value for numberPageLeftRight -->
 <c:if test="${ empty numberPageLeftRight }">
-    <c:set var="numberPageLeftRight" value="3"/>
+    <c:set var="numberPageLeftRight" value="2"/>
 </c:if>
 
 
