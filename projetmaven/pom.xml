@@ -9,6 +9,7 @@
 	<description>computer-database</description>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<deployment-url>http://localhost:8080</deployment-url>
 		<deployment-path>mydeployyy</deployment-path>
 		<open-browser-at>${deployment-url}/${deployment-path}</open-browser-at>
@@ -156,6 +157,7 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
+					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
 
