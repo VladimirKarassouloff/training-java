@@ -36,7 +36,7 @@
 
 <!-- Getting the total number of pages -->
 <c:set var="pageCount" value="${Math.max(0.0, Math.ceil(totalCount / itemPerPage) - 1)}"/>
-  
+   
 
 <!-- Left Page Generation -->
 <c:choose>
