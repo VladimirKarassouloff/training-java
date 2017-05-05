@@ -168,7 +168,7 @@
 
         <resources>
             <resource>
-                <directory>${project.basedir}/src/main/resources</directory>
+                <directory>${project.basedir}/src/main/resources/${envName}</directory>
                 <excludes>
                     <exclude>**/*.java</exclude>
                 </excludes>
