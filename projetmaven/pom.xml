@@ -1,76 +1,116 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>projet-maven</groupId>
-	<artifactId>projet-maven</artifactId>
-	<version>0.2.0</version>
-	<packaging>war</packaging>
-	<name>projet-mvn</name>
-	<description>computer-database</description>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>projet-maven</groupId>
+    <artifactId>projet-maven</artifactId>
+    <version>0.2.0</version>
+    <packaging>war</packaging>
+    <name>projet-mvn</name>
+    <description>computer-database</description>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<deployment-url>http://localhost:8080</deployment-url>
-		<deployment-path>mydeployyy</deployment-path>
-		<open-browser-at>${deployment-url}/${deployment-path}</open-browser-at>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <deployment-url>http://localhost:8080</deployment-url>
+        <deployment-path>mydeployyy</deployment-path>
+        <open-browser-at>${deployment-url}/${deployment-path}</open-browser-at>
 
-		<version.hikari>2.6.1</version.hikari>
-		<version.mysql>6.0.6</version.mysql>
-		<version.slf4j>1.7.25</version.slf4j>
-		<version.logback>LATEST</version.logback>
-		<version.servlet-api>3.1.0</version.servlet-api>
-		<version.jstl>1.2</version.jstl>
-		<version.selenium>3.3.1</version.selenium>
-		<version.mockito>1.9.5</version.mockito>
-		<version.junit>4.12</version.junit>
+        <version.hikari>2.6.1</version.hikari>
+        <version.mysql>6.0.6</version.mysql>
+        <version.slf4j>1.7.25</version.slf4j>
+        <version.logback>LATEST</version.logback>
+        <version.servlet-api>3.1.0</version.servlet-api>
+        <version.jstl>1.2</version.jstl>
+        <version.selenium>3.3.1</version.selenium>
+        <version.mockito>1.9.5</version.mockito>
+        <version.junit>4.12</version.junit>
 
-	</properties>
+    </properties>
 
 
+    <profiles>
+        <profile>
+            <id>host</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>env</name>
+                    <value>host</value>
+                </property>
+            </activation>
+            <properties>
+                <envName>host</envName>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>test</value>
+                </property>
+            </activation>
+            <properties>
+                <envName>test</envName>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>prod</value>
+                </property>
+            </activation>
+            <properties>
+                <envName>prod</envName>
+            </properties>
+        </profile>
+    </profiles>
 
-	<dependencies>
 
-		<!-- -->
-		<!-- DB Connection -->
-		<!-- -->
-		<!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>${version.hikari}</version>
-		</dependency>
+    <dependencies>
 
-		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
+        <!-- -->
+        <!-- DB Connection -->
+        <!-- -->
+        <!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${version.hikari}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
             <version>${version.mysql}</version>
             <scope>runtime</scope>
-		</dependency>
+        </dependency>
 
 
-		<!-- -->
-		<!-- Logging -->
-		<!-- -->
-		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${version.slf4j}</version>
-			<scope>compile</scope>
-		</dependency>
+        <!-- -->
+        <!-- Logging -->
+        <!-- -->
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${version.slf4j}</version>
+            <scope>compile</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${version.logback}</version>
-			<scope>runtime</scope>
-		</dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${version.logback}</version>
+            <scope>runtime</scope>
+        </dependency>
 
 
-		<!-- -->
-		<!-- j2ee -->
-		<!-- -->
+        <!-- -->
+        <!-- j2ee -->
+        <!-- -->
 
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -78,198 +118,199 @@
             <version>${version.servlet-api}</version>
         </dependency>
 
-		<!-- https://mvnrepository.com/artifact/jstl/jstl -->
-		<dependency>
+        <!-- https://mvnrepository.com/artifact/jstl/jstl -->
+        <dependency>
             <groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>${version.jstl}</version>
-		</dependency>
+            <artifactId>jstl</artifactId>
+            <version>${version.jstl}</version>
+        </dependency>
 
 
-		<!-- -->
-		<!-- Tests -->
-		<!-- -->
+        <!-- -->
+        <!-- Tests -->
+        <!-- -->
 
-		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
-		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-java</artifactId>
-			<version>${version.selenium}</version>
-			<scope>compile</scope>
-		</dependency>
+        <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${version.selenium}</version>
+            <scope>compile</scope>
+        </dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>${version.mockito}</version>
-			<scope>test</scope>
-		</dependency>
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>${version.mockito}</version>
+            <scope>test</scope>
+        </dependency>
 
-		<!-- https://mvnrepository.com/artifact/junit/junit -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${version.junit}</version>
-			<scope>test</scope>
-		</dependency>
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 
-	<build>
-
-
-
-		<directory>${project.basedir}/target</directory>
-		<outputDirectory>${project.build.directory}/classes</outputDirectory>
-		<finalName>${project.artifactId}-${project.version}</finalName>
-		<testOutputDirectory>${project.build.directory}/test-classes</testOutputDirectory>
-		<sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
-		<testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
-
-		<resources>
-			<resource>
-				<directory>${project.basedir}/src/main/resources</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-			<resource>
-				<directory>src/main/webapp</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
-
-		<testResources>
-			<testResource>
-				<directory>${project.basedir}/src/test/resources</directory>
-			</testResource>
-		</testResources>
+    <build>
 
 
-		<plugins>
+        <directory>${project.basedir}/target</directory>
+        <outputDirectory>${project.build.directory}/classes</outputDirectory>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <testOutputDirectory>${project.build.directory}/test-classes</testOutputDirectory>
+        <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
 
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/webapp</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
+        </resources>
 
-			<!-- Build war -->
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>3.0.0</version>
-				<configuration>
-					<warSourceDirectory>${project.basedir}/src/main/webapp</warSourceDirectory>
-				</configuration>
-			</plugin>
-
-			<!-- Checkstyle -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<configuration>
-					<configLocation>${project.basedir}/src/test/resources/checkstyle/checkstyle.xml</configLocation>
-					<suppressionsLocation>${project.basedir}/src/test/resources/checkstyle/suppressions.xml</suppressionsLocation>
-					<consoleOutput>true</consoleOutput>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>verify</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<!--
-			<plugin>
-				<artifactId>exec-maven-plugin</artifactId>
-				<groupId>org.codehaus.mojo</groupId>
-				<executions>
-					<execution>
-						<id>Launch catalina</id>
-						<phase>clean</phase>
-						<configuration>
-							<executable>${basedir}/scripts/run-catalina.sh</executable>
-						</configuration>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			-->
-			<!-- War deployment -->
-			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat7-maven-plugin</artifactId>
-				<version>2.2</version>
-				<configuration>
-					<url>${deployment-url}/manager/text</url>
-					<server>TomcatServer</server>
-					<path>/${deployment-path}</path>
-					<username>root</username>
-					<password>root</password>
-					<contextReloadable>true</contextReloadable>
-					<update>true</update>
-				</configuration>
-				<executions>
-					<execution>
-						<id>tomcat-deploy</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>deploy</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- Exclude selenium test because it needs the app to be deployed-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.17</version>
-				<configuration>
-					<excludes>
-						<exclude>**/selenium/*.java</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-
-			<!-- Open browser after deploying the war-->
-			<!--
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<executions>
-					<execution>
-						<id>Run URL in system browser.</id>
-						<phase>package</phase>
-						<configuration>
-							<target>
-								<exec executable="start" vmlauncher="false">
-									<arg line="${open-browser-at}"/>
-								</exec>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			-->
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+            </testResource>
+        </testResources>
 
 
-		</plugins>
-	</build>
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- Build war -->
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <warSourceDirectory>${project.basedir}/src/main/webapp</warSourceDirectory>
+                    <outputDirectory>${project.build.directory}/war</outputDirectory>
+                </configuration>
+            </plugin>
+
+            <!-- Checkstyle -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <configLocation>${project.basedir}/src/test/resources/checkstyle/checkstyle.xml</configLocation>
+                    <suppressionsLocation>${project.basedir}/src/test/resources/checkstyle/suppressions.xml
+                    </suppressionsLocation>
+                    <consoleOutput>true</consoleOutput>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
+            <plugin>
+                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <executions>
+                    <execution>
+                        <id>Launch catalina</id>
+                        <phase>clean</phase>
+                        <configuration>
+                            <executable>${basedir}/scripts/run-catalina.sh</executable>
+                        </configuration>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
+            <!-- War deployment -->
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <url>${deployment-url}/manager/text</url>
+                    <server>TomcatServer</server>
+                    <path>/${deployment-path}</path>
+                    <username>root</username>
+                    <password>root</password>
+                    <contextReloadable>true</contextReloadable>
+                    <update>true</update>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>tomcat-deploy</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Exclude selenium test because it needs the app to be deployed-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.17</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/selenium/*.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <!-- Open browser after deploying the war-->
+            <!--
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>Run URL in system browser.</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <exec executable="start" vmlauncher="false">
+                                    <arg line="${open-browser-at}"/>
+                                </exec>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
+
+
+        </plugins>
+    </build>
 
 </project>
