@@ -27,7 +27,7 @@ import static org.mockito.Mockito.mock;
 /**
  * Created by vkara on 30/04/2017.
  */
-public class CompanyDelete {
+public class CompanyDeleteTest {
     private CompanyServices companyServices;
     private ComputerServices computerServices;
 
