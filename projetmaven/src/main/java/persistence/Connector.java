@@ -2,18 +2,19 @@ package persistence;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
 
 public final class Connector {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Connector.class);
+
 
     private static Connector connector = new Connector();
     public static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
@@ -40,7 +41,7 @@ public final class Connector {
         try {
             config.setJdbcUrl(InitialContext.doLookup("java:comp/env/jdbc_cdb"));
         } catch (NamingException e) {
-            e.printStackTrace();
+            LOGGER.info("Connector : jdbc url not overriden");
         }
 
 
