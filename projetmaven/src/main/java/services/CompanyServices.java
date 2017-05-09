@@ -133,8 +133,8 @@ public class CompanyServices implements ICompanyServices {
     public void delete(int id) {
         try {
             TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            companyDao.delete(id);
             computerDao.deleteComputerBelongingToCompany(id);
+            companyDao.delete(id);
             TransactionHolder.get().commit();
         } catch (SQLException | DAODeleteException e) {
             e.printStackTrace();
