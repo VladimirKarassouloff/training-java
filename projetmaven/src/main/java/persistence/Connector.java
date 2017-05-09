@@ -3,9 +3,15 @@ package persistence;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public final class Connector {
 
@@ -29,6 +35,15 @@ public final class Connector {
             throw new RuntimeException("Impossible de charger jdbc driver");
         }
         HikariConfig config = new HikariConfig("/hikari.properties");
+
+        // External configuration
+        try {
+            config.setJdbcUrl(InitialContext.doLookup("java:comp/env/jdbc_cdb"));
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
+
+
         datasource = new HikariDataSource(config);
     }
 
