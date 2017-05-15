@@ -12,15 +12,13 @@ import exception.MapperException;
 import mapper.MapperComputer;
 import model.Computer;
 import model.ComputerPage;
-import persistence.filter.FilterSelect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import persistence.ComputerDAO;
-import persistence.Connector;
+import persistence.filter.FilterSelect;
 import persistence.filter.FilterSelectComputer;
 import validator.ComputerValidator;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,51 +47,33 @@ public class ComputerServices implements IComputerServices {
     @Override
     public List<Computer> getComputers() {
         try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            List<Computer> result = computerDao.getAll();
-            TransactionHolder.get().commit();
-            return result;
-        } catch (SQLException | DAOSelectException e) {
+            return computerDao.getAll();
+        } catch (DAOSelectException e) {
             e.printStackTrace();
-            Connector.getInstance().rollback(TransactionHolder.get());
-            LOGGER.info("Error getting all computers");
+            LOGGER.info("ComputerServices : Error getting all computers");
             return new ArrayList<>();
-        } finally {
-            TransactionHolder.close();
         }
     }
 
     @Override
     public List<ComputerDTO> getPagedComputerDTO(FilterSelect filter) {
         try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            List<ComputerDTO> result = MapperComputer.toDTOs(computerDao.getFromFilter(filter));
-            TransactionHolder.get().commit();
-            return result;
-        } catch (SQLException | DAOSelectException e) {
+            return MapperComputer.toDTOs(computerDao.getFromFilter(filter));
+        } catch (DAOSelectException e) {
             e.printStackTrace();
-            Connector.getInstance().rollback(TransactionHolder.get());
-            LOGGER.info("Error getting paged computer");
+            LOGGER.info("ComputerServices : Error getting paged computer");
             return new ArrayList<>();
-        } finally {
-            TransactionHolder.close();
         }
     }
 
     @Override
     public List<Computer> getPagedComputer(FilterSelect filter) {
         try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            List<Computer> result = computerDao.getFromFilter(filter);
-            TransactionHolder.get().commit();
-            return result;
-        } catch (SQLException | DAOSelectException e) {
+            return computerDao.getFromFilter(filter);
+        } catch (DAOSelectException e) {
             e.printStackTrace();
-            Connector.getInstance().rollback(TransactionHolder.get());
-            LOGGER.info("Error get paged computer");
+            LOGGER.info("ComputerServices : Error get paged computer");
             return new ArrayList<>();
-        } finally {
-            TransactionHolder.close();
         }
     }
 
@@ -106,17 +86,11 @@ public class ComputerServices implements IComputerServices {
     @Override
     public int getCountComputer(FilterSelect filter) {
         try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            int result = computerDao.getCount(filter);
-            TransactionHolder.get().commit();
-            return result;
-        } catch (SQLException | DAOCountException e) {
+            return computerDao.getCount(filter);
+        } catch (DAOCountException e) {
             e.printStackTrace();
-            Connector.getInstance().rollback(TransactionHolder.get());
-            LOGGER.info("Error getting count computers");
+            LOGGER.info("ComputerServices : Error getting count computers");
             return 0;
-        } finally {
-            TransactionHolder.close();
         }
     }
 
@@ -124,33 +98,22 @@ public class ComputerServices implements IComputerServices {
     @Override
     public Computer getComputer(int id) {
         try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            Computer result = computerDao.getById(id);
-            TransactionHolder.get().commit();
-            return result;
-        } catch (SQLException | DAOSelectException e) {
+            return computerDao.getById(id);
+        } catch (DAOSelectException e) {
             e.printStackTrace();
-            Connector.getInstance().rollback(TransactionHolder.get());
-            LOGGER.info("Error getting all computers");
+            LOGGER.info("ComputerServices : Error getting all computers");
             return null;
-        } finally {
-            TransactionHolder.close();
         }
     }
 
     @Override
     public ComputerDTO getComputerDTO(int id) {
         try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            ComputerDTO result = MapperComputer.toDTO(computerDao.getById(id));
-            TransactionHolder.get().commit();
-            return result;
-        } catch (SQLException | DAOSelectException e) {
+            return MapperComputer.toDTO(computerDao.getById(id));
+        } catch (DAOSelectException e) {
             e.printStackTrace();
-            Connector.getInstance().rollback(TransactionHolder.get());
+            LOGGER.info("ComputerServices : Error getting all computers");
             return null;
-        } finally {
-            TransactionHolder.close();
         }
     }
 
@@ -165,15 +128,10 @@ public class ComputerServices implements IComputerServices {
         }
 
         try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            int result = computerDao.insert(computer);
-            TransactionHolder.get().commit();
-            return result;
-        } catch (SQLException | DAOInsertException e) {
-            Connector.getInstance().rollback(TransactionHolder.get());
+            return computerDao.insert(computer);
+        } catch (DAOInsertException e) {
             e.printStackTrace();
-        } finally {
-            TransactionHolder.close();
+            LOGGER.info("ComputerServices : Error while inserting computer : (" + computer + ")");
         }
         return -1;
     }
@@ -189,16 +147,10 @@ public class ComputerServices implements IComputerServices {
         }
 
         try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            boolean result = computerDao.update(computer);
-            TransactionHolder.get().commit();
-            return result;
-        } catch (SQLException | DAOUpdateException e) {
+            return computerDao.update(computer);
+        } catch (DAOUpdateException e) {
             e.printStackTrace();
-            LOGGER.info("Error while trying to update computer [" + computer + "]");
-            Connector.getInstance().rollback(TransactionHolder.get());
-        } finally {
-            TransactionHolder.close();
+            LOGGER.info("ComputerServices : Error while trying to update computer [" + computer + "]");
         }
         return false;
     }
@@ -206,16 +158,10 @@ public class ComputerServices implements IComputerServices {
     @Override
     public boolean deleteComputer(List<Integer> ids) {
         try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            boolean result = computerDao.deleteById(ids);
-            TransactionHolder.get().commit();
-            return result;
-        } catch (SQLException | DAODeleteException e) {
+            return computerDao.deleteById(ids);
+        } catch (DAODeleteException e) {
             e.printStackTrace();
-            LOGGER.info("Computer are not deleted (" + ids + ")");
-            Connector.getInstance().rollback(TransactionHolder.get());
-        } finally {
-            TransactionHolder.close();
+            LOGGER.info("ComputerServices : Computer are not deleted (" + ids + ")");
         }
         return false;
     }
@@ -228,7 +174,7 @@ public class ComputerServices implements IComputerServices {
             computer = MapperComputer.mapDTOToObject(form);
         } catch (MapperException e) {
             e.printStackTrace();
-            LOGGER.info("Mapping error " + e.getMessage());
+            LOGGER.info("ComputerServices : Mapping error " + e.getMessage());
             throw new RuntimeException("Impossible de mapper [" + form + "] en computer");
         }
 
@@ -249,7 +195,7 @@ public class ComputerServices implements IComputerServices {
             computer = MapperComputer.mapDTOToObject(form);
         } catch (MapperException e) {
             e.printStackTrace();
-            LOGGER.info("Cannot map computer to DTO " + e.getMessage());
+            LOGGER.info("ComputerServices : Cannot map computer to DTO " + e.getMessage());
             throw new RuntimeException("Cannot map computer to DTO");
         }
 
@@ -264,16 +210,11 @@ public class ComputerServices implements IComputerServices {
     @Override
     public Computer getLastComputerInserted() {
         try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            Computer result = computerDao.getLastComputerInserted();
-            TransactionHolder.get().commit();
-            return result;
-        } catch (SQLException | DAOSelectException e) {
+            return computerDao.getLastComputerInserted();
+        } catch (DAOSelectException e) {
             e.printStackTrace();
-            LOGGER.info("Error while getting the last computer");
+            LOGGER.info("ComputerServices : Error while getting the last computer");
             return null;
-        } finally {
-            TransactionHolder.close();
         }
     }
 

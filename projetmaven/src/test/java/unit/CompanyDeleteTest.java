@@ -12,13 +12,9 @@ import persistence.ComputerDAO;
 import persistence.Connector;
 import services.CompanyServices;
 import services.ComputerServices;
-import services.TransactionHolder;
 import utils.SqlNames;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Savepoint;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
@@ -30,6 +26,7 @@ import static org.mockito.Mockito.mock;
 public class CompanyDeleteTest {
     private CompanyServices companyServices;
     private ComputerServices computerServices;
+    private Connector connector;
 
     private CompanyDAO companyDao;
     private ComputerDAO computerDao;
@@ -41,6 +38,7 @@ public class CompanyDeleteTest {
     public void setUp() throws Exception {
         companyServices = CompanyServices.getInstance();
         computerServices = ComputerServices.getInstance();
+        connector = Connector.getInstance();
 
         companyDao = CompanyDAO.getInstance();
         computerDao = ComputerDAO.getInstance();
@@ -55,18 +53,12 @@ public class CompanyDeleteTest {
                 .withCompany(newCompany)
                 .build();
 
-        try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-        } catch (SQLException e) {
-            throw new RuntimeException("Cannot get connection to DB");
-        }
+
 
         try {
             companyDao.insert(newCompany);
             computerDao.insert(newComputer1);
             computerDao.insert(newComputer2);
-            TransactionHolder.get().commit();
-            TransactionHolder.close();
         } catch (Exception e) {
             throw new RuntimeException("Cannot insert data for test");
         }
@@ -113,12 +105,6 @@ public class CompanyDeleteTest {
 
     @After
     public void tearDown() throws Exception {
-        // Cleanning up created entities
-        try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-        } catch (SQLException e) {
-            throw new RuntimeException("Cannot get connection to DB");
-        }
 
         try {
             System.out.println("Suppression des elements de test newComputer1 & newComputer2 : " +
@@ -128,13 +114,6 @@ public class CompanyDeleteTest {
             System.err.println("Error happened during cleanup");
         }
 
-        try {
-            TransactionHolder.get().commit();
-            TransactionHolder.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.err.println("Couldn't commit delete for clean up");
-        }
     }
 
 

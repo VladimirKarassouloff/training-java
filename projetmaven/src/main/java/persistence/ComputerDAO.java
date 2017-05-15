@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import persistence.filter.FilterSelect;
 import persistence.operator.Filter;
-import services.TransactionHolder;
 import utils.SqlNames;
 
 import java.sql.Connection;
@@ -80,13 +79,13 @@ public class ComputerDAO implements IComputerDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAO.class);
 
     private static ComputerDAO dao = new ComputerDAO();
-
+    private static Connector connector;
 
     /**
      * Constructor.
      */
     private ComputerDAO() {
-
+        connector = Connector.getInstance();
     }
 
     public static ComputerDAO getInstance() {
@@ -101,7 +100,7 @@ public class ComputerDAO implements IComputerDAO {
         List<Computer> result = null;
 
         try {
-            connection = TransactionHolder.get();
+            connection = connector.getConnection();
             rs = connection.prepareStatement(SELECT).executeQuery();
             result = MapperComputer.mapResultSetToObjects(rs);
 
@@ -111,6 +110,8 @@ public class ComputerDAO implements IComputerDAO {
             LOGGER.info("Erreur getAll computerdao : " + e.getMessage());
             e.printStackTrace();
             throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT);
+        } finally {
+            connector.closeIfNotTransactionnal();
         }
     }
 
@@ -124,7 +125,7 @@ public class ComputerDAO implements IComputerDAO {
         query.append(SELECT);
 
         try {
-            connection = TransactionHolder.get();
+            connection = connector.getConnection();
 
             // If we have at least one column filtered
             Iterator<String> it = fs.getFilteredColumns().iterator();
@@ -166,6 +167,8 @@ public class ComputerDAO implements IComputerDAO {
             return result;
         } catch (SQLException e) {
             LOGGER.info("Erreur getFromFilter ComputerDAO : " + e.getMessage() + " query built : " + query.toString());
+        } finally {
+            connector.closeIfNotTransactionnal();
         }
 
         throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, "Computer Select From Filter Exception");
@@ -179,7 +182,7 @@ public class ComputerDAO implements IComputerDAO {
         Computer result = null;
 
         try {
-            connection = TransactionHolder.get();
+            connection = connector.getConnection();
             preparedStatement = connection.prepareStatement(SELECT + WHERE_FILTER_ID);
             preparedStatement.setInt(1, id);
             rs = preparedStatement.executeQuery();
@@ -192,6 +195,8 @@ public class ComputerDAO implements IComputerDAO {
             LOGGER.info("Erreur sql get by id : " + e.getMessage());
             e.printStackTrace();
             throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT + WHERE_FILTER_ID + " (id=" + id + ")");
+        } finally {
+            connector.closeIfNotTransactionnal();
         }
     }
 
@@ -202,7 +207,7 @@ public class ComputerDAO implements IComputerDAO {
         ResultSet generatedKeys = null;
 
         try {
-            connection = TransactionHolder.get();
+            connection = connector.getConnection();
             statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, computer.getName());
             statement.setDate(2, (computer.getIntroduced() != null ? new java.sql.Date(computer.getIntroduced().getTime()) : null));
@@ -235,6 +240,8 @@ public class ComputerDAO implements IComputerDAO {
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info("Erreur 3 insert computerdao : " + computer + " => " + e.getMessage());
+        } finally {
+            connector.closeIfNotTransactionnal();
         }
 
         throw new DAOInsertException(computer);
@@ -269,7 +276,7 @@ public class ComputerDAO implements IComputerDAO {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = TransactionHolder.get();
+            connection = connector.getConnection();
             statement = connection.prepareStatement(queryDelete.toString());
             int resultExec = statement.executeUpdate();
             statement.close();
@@ -279,6 +286,8 @@ public class ComputerDAO implements IComputerDAO {
             LOGGER.info("Computerdao : Error delete " + ids + " : " + e.getMessage());
             e.printStackTrace();
             throw new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME, ids);
+        } finally {
+            connector.closeIfNotTransactionnal();
         }
     }
 
@@ -288,7 +297,7 @@ public class ComputerDAO implements IComputerDAO {
         PreparedStatement statement = null;
 
         try {
-            connection = TransactionHolder.get();
+            connection = connector.getConnection();
             statement = connection.prepareStatement(UPDATE);
             statement.setString(1, computer.getName());
             statement.setDate(2, (computer.getIntroduced() != null ? new java.sql.Date(computer.getIntroduced().getTime()) : null));
@@ -301,6 +310,8 @@ public class ComputerDAO implements IComputerDAO {
             return resultExec != 0;
         } catch (SQLException e) {
             LOGGER.info("Error Update Computerdao : " + computer + " => " + e.getMessage());
+        } finally {
+            connector.closeIfNotTransactionnal();
         }
         throw new DAOUpdateException(computer);
     }
@@ -311,7 +322,7 @@ public class ComputerDAO implements IComputerDAO {
         ResultSet rs = null;
         Computer result = null;
         try {
-            connection = TransactionHolder.get();
+            connection = connector.getConnection();
             rs = connection.prepareStatement(SELECT_LAST_COMPUTER_INSERTED).executeQuery();
             result = MapperComputer.mapResultSetToObject(rs);
             LOGGER.info("Succes getLastComputerInserted Computerdao");
@@ -319,6 +330,8 @@ public class ComputerDAO implements IComputerDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             LOGGER.info("Error Get last computer inserted Computerdao : " + e.getMessage());
+        } finally {
+            connector.closeIfNotTransactionnal();
         }
 
         throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT_LAST_COMPUTER_INSERTED);
@@ -335,7 +348,7 @@ public class ComputerDAO implements IComputerDAO {
         query.append(COUNT);
 
         try {
-            connection = TransactionHolder.get();
+            connection = connector.getConnection();
 
             // If we have at least one column filtered
             Iterator<String> it = fs.getFilteredColumns().iterator();
@@ -373,6 +386,8 @@ public class ComputerDAO implements IComputerDAO {
 
         } catch (SQLException e) {
             LOGGER.info("Erreur count getFromFilter ComputerDAO : " + e.getMessage() + " query built : " + query.toString());
+        } finally {
+            connector.closeIfNotTransactionnal();
         }
 
         throw new DAOCountException("Computer");
@@ -385,7 +400,7 @@ public class ComputerDAO implements IComputerDAO {
         PreparedStatement statement = null;
 
         try {
-            connection = TransactionHolder.get();
+            connection = connector.getConnection();
             statement = connection.prepareStatement(DELETE_COMPUTER_OF_COMPANY);
             statement.setInt(1, idCompany);
             int resultExec = statement.executeUpdate();
@@ -396,6 +411,8 @@ public class ComputerDAO implements IComputerDAO {
             LOGGER.info("Error deleting computers of company " + idCompany + " : " + e.getMessage());
             e.printStackTrace();
             throw new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME, DELETE_COMPUTER_OF_COMPANY + " (idCompany = " + idCompany + ")");
+        } finally {
+            connector.closeIfNotTransactionnal();
         }
     }
 

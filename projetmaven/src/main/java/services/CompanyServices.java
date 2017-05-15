@@ -5,28 +5,33 @@ import exception.DAODeleteException;
 import exception.DAOSelectException;
 import exception.DAOUpdateException;
 import model.Company;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import persistence.CompanyDAO;
 import persistence.ComputerDAO;
 import persistence.Connector;
 import validator.CompanyValidator;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CompanyServices implements ICompanyServices {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(CompanyServices.class);
 
     private static CompanyServices service = new CompanyServices();
 
+    private Connector connector;
     private CompanyDAO companyDao;
     private ComputerDAO computerDao;
+
     /**
      * Get singleton.
      */
     private CompanyServices() {
         companyDao = CompanyDAO.getInstance();
         computerDao = ComputerDAO.getInstance();
+        connector = Connector.getInstance();
     }
 
     public static CompanyServices getInstance() {
@@ -40,48 +45,32 @@ public class CompanyServices implements ICompanyServices {
     @Override
     public List<Company> getCompanies() {
         try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            List<Company> results = companyDao.getAll();
-            TransactionHolder.get().commit();
-            return results;
-        } catch (SQLException | DAOSelectException e) {
+            return companyDao.getAll();
+        } catch (DAOSelectException e) {
             e.printStackTrace();
-            Connector.getInstance().rollback(TransactionHolder.get());
+            LOGGER.info("CompanyServices : error while getting companies");
             return new ArrayList<>();
-        } finally {
-            TransactionHolder.close();
         }
     }
 
     @Override
     public List<Company> getPagedCompany(int page, int numberItem) {
         try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            List<Company> results = companyDao.getPagination(page, numberItem);
-            TransactionHolder.get().commit();
-            return results;
-        } catch (SQLException | DAOSelectException e) {
+            return companyDao.getPagination(page, numberItem);
+        } catch (DAOSelectException e) {
             e.printStackTrace();
-            Connector.getInstance().rollback(TransactionHolder.get());
+            LOGGER.info("CompanyServices : error while getting paged companies");
             return new ArrayList<>();
-        } finally {
-            TransactionHolder.close();
         }
     }
 
     @Override
     public int getCountCompany() {
         try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            int result = companyDao.getCount();
-            TransactionHolder.get().commit();
-            return result;
-        } catch (SQLException | DAOCountException e) {
+            return companyDao.getCount();
+        } catch (DAOCountException e) {
             e.printStackTrace();
-            Connector.getInstance().rollback(TransactionHolder.get());
             return 0;
-        } finally {
-            TransactionHolder.close();
         }
     }
 
@@ -92,16 +81,11 @@ public class CompanyServices implements ICompanyServices {
         }
 
         try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            Company result = companyDao.getById(id);
-            TransactionHolder.get().commit();
-            return result;
-        } catch (SQLException | DAOSelectException e) {
+            return companyDao.getById(id);
+        } catch (DAOSelectException e) {
             e.printStackTrace();
-            Connector.getInstance().rollback(TransactionHolder.get());
+            LOGGER.info("CompanyServices : error while getting company with id " + id);
             return null;
-        } finally {
-            TransactionHolder.close();
         }
     }
 
@@ -110,35 +94,30 @@ public class CompanyServices implements ICompanyServices {
         if (!CompanyValidator.isValid(company)) {
             return false;
         }
+
         try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            boolean result = companyDao.update(company);
-            TransactionHolder.get().commit();
-            return result;
-        } catch (SQLException | DAOUpdateException e) {
+            return companyDao.update(company);
+        } catch (DAOUpdateException e) {
             e.printStackTrace();
-            Connector.getInstance().rollback(TransactionHolder.get());
+            LOGGER.info("CompanyServices : error while updating company (" + company + ")");
             return false;
-        } finally {
-            TransactionHolder.close();
         }
     }
 
     @Override
     public void delete(int id) {
         try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
+            connector.startTransaction();
             computerDao.deleteComputerBelongingToCompany(id);
             companyDao.delete(id);
-            TransactionHolder.get().commit();
-        } catch (SQLException | DAODeleteException e) {
+            connector.commit();
+            connector.closeConnection();
+        } catch (DAODeleteException e) {
             e.printStackTrace();
-            Connector.getInstance().rollback(TransactionHolder.get());
-        } finally {
-            TransactionHolder.close();
+            LOGGER.info("CompanyServices : error while deleting company with id : " + id);
+            connector.closeConnection();
         }
     }
-
 
 
 }
