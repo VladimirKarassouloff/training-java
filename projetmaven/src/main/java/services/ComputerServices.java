@@ -326,7 +326,7 @@ public class ComputerServices implements IComputerServices {
         if (filter.getPage() < 0) {
             cp.setDisplayedPage(0);
         } else if ((double) filter.getPage() >= calc) {
-            cp.setDisplayedPage((calc % 1 == 0) ? (int) calc - 1 : (int) calc);
+            cp.setDisplayedPage((calc % 1 == 0) ? (int) calc : (int) (calc - 1));
         }
         filter.setPage(cp.getDisplayedPage());
 

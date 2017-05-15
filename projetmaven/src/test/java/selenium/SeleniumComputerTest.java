@@ -94,7 +94,7 @@ public class SeleniumComputerTest {
         Computer computerInserted = ComputerServices.getInstance().getPagedComputer(new FilterSelectComputer.Builder()
                 .withPage(0)
                 .withLengthPage(1)
-                .withSearch(SqlNames.COMPUTER_COL_COMPUTER_NAME, new Equal(testValues.getNameComputer()))
+                .withSearch(SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME, new Equal(testValues.getNameComputer()))
                 .build()
         ).get(0);
         System.out.println("Comparing now value of form vs inserted");
