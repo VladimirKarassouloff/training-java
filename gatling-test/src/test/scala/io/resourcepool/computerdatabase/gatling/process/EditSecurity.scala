@@ -21,7 +21,7 @@ object EditSecurity {
         css("#results a", "href").saveAs("computerURL")
       )
   }.exitHereIfFailed
-    .pause(1)
+    .pause(3,10)
     .exec {
       http("EditSecurity: Select for edit")
         .get("${computerURL}")

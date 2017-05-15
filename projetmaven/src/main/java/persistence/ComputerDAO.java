@@ -80,7 +80,7 @@ public class ComputerDAO implements IComputerDAO {
     //////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    public static ComputerDAO dao = new ComputerDAO();
+    private static ComputerDAO dao = new ComputerDAO();
 
     private Connector connector;
 

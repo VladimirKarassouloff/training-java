@@ -22,7 +22,7 @@ class Authenticate(csvFile: String) {
         css(config.getString("application.urls.idElement.authenticate.csrf").get, "value").saveAs("csrf_token")
       )
   }.exitHereIfFailed
-    .pause(1)
+    .pause(3,10)
     .feed(feeder)
     // Login
     .exec {

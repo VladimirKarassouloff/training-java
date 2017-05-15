@@ -22,11 +22,11 @@ object DeleteSecurity {
         css(config.getString("application.urls.idElement.delete.csrf").get, "value").saveAs("csrf_token")
       )
   }.exitHereIfFailed
-    .pause(1)
+    .pause(3,10)
     .exec {
       http("DeleteSecurity: Delete post")
         .post(config.getString("application.urls.deletePost").get)
         .formParam(config.getString("application.urls.form.delete.selection").get, "${computerId}")
         .formParam(config.getString("application.urls.form.delete.csrf").get, "${csrf_token}")
-    }.pause(1)
+    }.pause(3,10)
 }

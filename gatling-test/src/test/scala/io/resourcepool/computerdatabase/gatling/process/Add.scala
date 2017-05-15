@@ -22,7 +22,7 @@ object Add {
     http("Add: Add page")
       .get(config.getString("application.urls.addPage")).check(status.is(200))
   }.exitHereIfFailed
-    .pause(1)
+    .pause(3,10)
     .feed(feederName)
     .feed(feederAdd)
     .exec {
@@ -32,5 +32,5 @@ object Add {
         .formParam(config.getString("application.urls.form.add.introduced").get, "${addComputerIntroduced}")
         .formParam(config.getString("application.urls.form.add.discontinued").get, "${addComputerDiscontinued}")
         .formParam(config.getString("application.urls.form.add.companyId").get, "${addComputerCompany}")
-    }.pause(1)
+    }.pause(3,10)
 }

@@ -21,7 +21,7 @@ object Edit {
         css("#results a", "href").saveAs("computerURL")
       )
   }.exitHereIfFailed
-    .pause(1)
+    .pause(3,10)
     .exec {
       http("Edit: Select for edit")
         .get(config.getString("application.baseUrl").get + "${computerURL}")

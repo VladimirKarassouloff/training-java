@@ -21,10 +21,10 @@ object Delete {
         css("#results input", "value").saveAs("computerId")
       )
   }.exitHereIfFailed
-    .pause(1)
+    .pause(3,10)
     .exec {
       http("Delete: Delete post")
         .post(config.getString("application.urls.deletePost").get)
         .formParam(config.getString("application.urls.form.delete.selection").get, "${computerId}")
-    }.pause(1)
+    }.pause(3,10)
 }

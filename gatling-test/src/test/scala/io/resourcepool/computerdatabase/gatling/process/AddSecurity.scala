@@ -24,7 +24,7 @@ object AddSecurity {
       .check(
         css(config.getString("application.urls.idElement.add.csrf").get, "value").saveAs("csrf_token"))
   }.exitHereIfFailed
-    .pause(1)
+    .pause(3,10)
     .feed(feederName)
     .feed(feederAdd)
     .exec {
@@ -35,5 +35,5 @@ object AddSecurity {
         .formParam(config.getString("application.urls.form.add.discontinued").get, "${addComputerDiscontinued}")
         .formParam(config.getString("application.urls.form.add.companyId").get, "${addComputerCompany}")
         .formParam(config.getString("application.urls.form.add.csrf").get, "${csrf_token}")
-    }.pause(1)
+    }.pause(3,10)
 }
