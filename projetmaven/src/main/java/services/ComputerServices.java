@@ -59,8 +59,7 @@ public class ComputerServices implements IComputerServices {
             LOGGER.info("Error getting all computers");
             return new ArrayList<>();
         } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         }
     }
 
@@ -77,8 +76,7 @@ public class ComputerServices implements IComputerServices {
             LOGGER.info("Error getting paged computer");
             return new ArrayList<>();
         } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         }
     }
 
@@ -95,8 +93,7 @@ public class ComputerServices implements IComputerServices {
             LOGGER.info("Error get paged computer");
             return new ArrayList<>();
         } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         }
     }
 
@@ -119,8 +116,7 @@ public class ComputerServices implements IComputerServices {
             LOGGER.info("Error getting count computers");
             return 0;
         } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         }
     }
 
@@ -138,8 +134,7 @@ public class ComputerServices implements IComputerServices {
             LOGGER.info("Error getting all computers");
             return null;
         } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         }
     }
 
@@ -155,8 +150,7 @@ public class ComputerServices implements IComputerServices {
             Connector.getInstance().rollback(TransactionHolder.get());
             return null;
         } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         }
     }
 
@@ -179,8 +173,7 @@ public class ComputerServices implements IComputerServices {
             Connector.getInstance().rollback(TransactionHolder.get());
             e.printStackTrace();
         } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         }
         return -1;
     }
@@ -205,8 +198,7 @@ public class ComputerServices implements IComputerServices {
             LOGGER.info("Error while trying to update computer [" + computer + "]");
             Connector.getInstance().rollback(TransactionHolder.get());
         } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         }
         return false;
     }
@@ -223,8 +215,7 @@ public class ComputerServices implements IComputerServices {
             LOGGER.info("Computer are not deleted (" + ids + ")");
             Connector.getInstance().rollback(TransactionHolder.get());
         } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         }
         return false;
     }
@@ -248,18 +239,7 @@ public class ComputerServices implements IComputerServices {
             throw new FormException("An error occured : " + e.getMessage());
         }
 
-        try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            updateComputer(computer);
-            TransactionHolder.get().commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            LOGGER.info("Error while trying to update computer");
-            Connector.getInstance().rollback(TransactionHolder.get());
-        } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
-        }
+        updateComputer(computer);
     }
 
     @Override
@@ -278,21 +258,7 @@ public class ComputerServices implements IComputerServices {
         } catch (InvalidComputerException e) {
             throw new FormException(e.getMessage());
         }
-
-        try {
-            TransactionHolder.set(Connector.getInstance().getDataSource().getConnection());
-            addComputer(computer);
-            TransactionHolder.get().commit();
-        } catch (SQLException e) {
-            LOGGER.info("Exception while trying to add computer " + e.getMessage());
-            Connector.getInstance().rollback(TransactionHolder.get());
-        } catch (FormException e) {
-            LOGGER.info("Form exception while trying to add computer " + e.getMessage());
-            throw new FormException(e.getMessage());
-        } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
-        }
+        addComputer(computer);
     }
 
     @Override
@@ -307,8 +273,7 @@ public class ComputerServices implements IComputerServices {
             LOGGER.info("Error while getting the last computer");
             return null;
         } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         }
     }
 

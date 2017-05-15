@@ -2,6 +2,7 @@ package services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import persistence.Connector;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -58,6 +59,7 @@ public class TransactionHolder {
      * Close the current connection.
      */
     public static void close() {
+        Connector.close(TransactionHolder.get());
         set(null);
     }
 

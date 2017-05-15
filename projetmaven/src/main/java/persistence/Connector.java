@@ -74,7 +74,7 @@ public final class Connector {
      *
      * @param connection you are trying to close
      */
-    public void close(Connection connection) {
+    public static void close(Connection connection) {
         if (connection == null) {
             return;
         }

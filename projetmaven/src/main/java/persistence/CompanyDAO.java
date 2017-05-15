@@ -21,7 +21,6 @@ import java.util.List;
 
 public class CompanyDAO implements ICompanyDAO {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDAO.class);
 
 
     /////////////////////////////////////////////////////////
@@ -44,10 +43,11 @@ public class CompanyDAO implements ICompanyDAO {
     ///////////////////
     //////////////////////////////////////////////////////////
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDAO.class);
 
-    public static CompanyDAO dao = new CompanyDAO();
+    private static CompanyDAO dao = new CompanyDAO();
 
-    public Connector connector;
+    private Connector connector;
 
     /**
      * Get singleton.

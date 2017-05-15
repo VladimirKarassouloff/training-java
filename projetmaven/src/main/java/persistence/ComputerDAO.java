@@ -25,9 +25,6 @@ import java.util.List;
 
 public class ComputerDAO implements IComputerDAO {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAO.class);
-
-
     //////////////////////////////////////////////////////////////////////
     /////Query parts
     public static final String SELECT = "SELECT " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + ", "
@@ -80,15 +77,16 @@ public class ComputerDAO implements IComputerDAO {
     //////////////////////////////////////////////////////////////////////////////////////////////
 
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAO.class);
+
     private static ComputerDAO dao = new ComputerDAO();
 
-    private Connector connector;
 
     /**
      * Constructor.
      */
     private ComputerDAO() {
-        connector = Connector.getInstance();
+
     }
 
     public static ComputerDAO getInstance() {

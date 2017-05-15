@@ -1,6 +1,7 @@
 package servlet;
 
 import dto.ComputerDTO;
+import exception.FormException;
 import services.CompanyServices;
 import services.ComputerServices;
 import utils.UtilsServletError;
@@ -134,7 +135,7 @@ public class Computer extends HttpServlet {
                 } else { // Edit a computer
                     serviceComputer.formUpdateComputer(form);
                 }
-            } catch (Exception e) {
+            } catch (FormException e) {
                 error = e.getMessage();
             }
         }

@@ -49,8 +49,7 @@ public class CompanyServices implements ICompanyServices {
             Connector.getInstance().rollback(TransactionHolder.get());
             return new ArrayList<>();
         } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         }
     }
 
@@ -66,8 +65,7 @@ public class CompanyServices implements ICompanyServices {
             Connector.getInstance().rollback(TransactionHolder.get());
             return new ArrayList<>();
         } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         }
     }
 
@@ -83,8 +81,7 @@ public class CompanyServices implements ICompanyServices {
             Connector.getInstance().rollback(TransactionHolder.get());
             return 0;
         } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         }
     }
 
@@ -104,8 +101,7 @@ public class CompanyServices implements ICompanyServices {
             Connector.getInstance().rollback(TransactionHolder.get());
             return null;
         } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         }
     }
 
@@ -124,8 +120,7 @@ public class CompanyServices implements ICompanyServices {
             Connector.getInstance().rollback(TransactionHolder.get());
             return false;
         } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         }
     }
 
@@ -140,8 +135,7 @@ public class CompanyServices implements ICompanyServices {
             e.printStackTrace();
             Connector.getInstance().rollback(TransactionHolder.get());
         } finally {
-            Connector.getInstance().close(TransactionHolder.get());
-            TransactionHolder.set(null);
+            TransactionHolder.close();
         }
     }
 
