@@ -1,8 +1,8 @@
 package unit;
 
-import model.Company;
+import cdb.model.Company;
 import org.junit.Test;
-import validator.CompanyValidator;
+import cdb.validator.CompanyValidator;
 
 import static org.junit.Assert.assertEquals;
 

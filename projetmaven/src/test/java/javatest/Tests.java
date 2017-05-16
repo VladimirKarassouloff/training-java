@@ -1,6 +1,6 @@
 package javatest;
 
-import persistence.ComputerDAO;
+import cdb.persistence.ComputerDAO;
 
 public class Tests {
 

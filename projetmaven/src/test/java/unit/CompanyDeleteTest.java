@@ -1,20 +1,19 @@
 package unit;
 
-import exception.DAODeleteException;
-import model.Company;
-import model.Computer;
+import cdb.exception.DAODeleteException;
+import cdb.model.Company;
+import cdb.model.Computer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import persistence.CompanyDAO;
-import persistence.ComputerDAO;
-import persistence.Connector;
-import services.CompanyServices;
-import services.ComputerServices;
-import utils.SqlNames;
+import cdb.persistence.CompanyDAO;
+import cdb.persistence.ComputerDAO;
+import cdb.persistence.Connector;
+import cdb.services.CompanyServices;
+import cdb.services.ComputerServices;
+import cdb.utils.SqlNames;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;

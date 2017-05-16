@@ -1,7 +1,7 @@
 package selenium;
 
-import mapper.MapperDate;
-import model.Computer;
+import cdb.mapper.MapperDate;
+import cdb.model.Computer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,10 +11,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
-import persistence.filter.FilterSelectComputer;
-import persistence.operator.Equal;
-import services.ComputerServices;
-import utils.SqlNames;
+import cdb.persistence.filter.FilterSelectComputer;
+import cdb.persistence.operator.Equal;
+import cdb.services.ComputerServices;
+import cdb.utils.SqlNames;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;

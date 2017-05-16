@@ -1,12 +1,12 @@
 package unit;
 
-import exception.InvalidComputerException;
-import mapper.MapperDate;
-import model.Company;
-import model.Computer;
+import cdb.exception.InvalidComputerException;
+import cdb.mapper.MapperDate;
+import cdb.model.Company;
+import cdb.model.Computer;
 import org.junit.Test;
-import utils.Format;
-import validator.ComputerValidator;
+import cdb.utils.Format;
+import cdb.validator.ComputerValidator;
 
 import static org.junit.Assert.assertEquals;
 

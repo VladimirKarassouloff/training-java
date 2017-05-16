@@ -16,11 +16,13 @@
         <shouldSkipTests>false</shouldSkipTests>
         <war-name>${project.artifactId}-${project.version}</war-name>
         <version.hikari>2.6.1</version.hikari>
-        <version.mysql>5.1.33</version.mysql>
+        <version.mysql>5.1.42</version.mysql>
         <version.slf4j>1.7.25</version.slf4j>
-        <version.logback>LATEST</version.logback>
+        <version.logback>1.0.7</version.logback>
         <version.servlet-api>3.1.0</version.servlet-api>
         <version.jstl>1.2</version.jstl>
+        <version.jspapi>2.2</version.jspapi>
+        <version.taglibs>1.1.2</version.taglibs>
         <version.selenium>3.3.1</version.selenium>
         <version.mockito>1.9.5</version.mockito>
         <version.junit>4.12</version.junit>
@@ -109,6 +111,11 @@
             <scope>runtime</scope>
         </dependency>
 
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${version.logback}</version>
+        </dependency>
 
         <!-- -->
         <!-- j2ee -->
@@ -116,15 +123,27 @@
 
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${version.servlet-api}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/jstl/jstl -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>${version.jstl}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${version.servlet-api}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>${version.jspapi}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>${version.taglibs}</version>
+            <scope>provided</scope>
         </dependency>
 
 
@@ -155,6 +174,7 @@
             <version>${version.junit}</version>
             <scope>test</scope>
         </dependency>
+
 
     </dependencies>
 

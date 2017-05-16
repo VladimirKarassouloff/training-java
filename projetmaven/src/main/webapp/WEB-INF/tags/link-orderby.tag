@@ -27,7 +27,7 @@
 <c:set var="invValueAsc" value="${!valueAsc}"/>
 
 <!-- Bean -->
-<jsp:useBean id="paramUtils" scope="page" class="bean.BeanParamUtils"/>
+<jsp:useBean id="paramUtils" scope="page" class="cdb.bean.BeanParamUtils"/>
 ${paramUtils.copyGetParameterFromRequest(pageContext.request)}
 ${paramUtils.overrideParam(ascGetParameter, invValueAsc)}
 ${paramUtils.overrideParam(orderGetParameter, valueOrder)}

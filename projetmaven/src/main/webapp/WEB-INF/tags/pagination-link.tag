@@ -60,7 +60,7 @@
 </c:choose>
 
 <!-- Bean -->
-<jsp:useBean id="paramUtils" scope="page" class="bean.BeanParamUtils"/>
+<jsp:useBean id="paramUtils" scope="page" class="cdb.bean.BeanParamUtils"/>
 ${paramUtils.copyGetParameterFromRequest(pageContext.request)}
 
 
@@ -106,7 +106,7 @@ ${paramUtils.copyGetParameterFromRequest(pageContext.request)}
 
     <!-- Generation of [currentpage] [currentpage+1] [...] [LASTPAGE] etc-->
     <!-- parsing of pagecount+1 from double to integer -->
-    <fmt:parseNumber var="i" integerOnly="true" type="number" value="${pageCount+1}"/>
+    <fmt:parseNumber var="i" integerOnly="true" type="number" value="${pageCount+1}" parseLocale="fr-FR"/>
     <c:if test="${endLoop < pageCount - numberPageLeftRight}">
         ${paramUtils.overrideParam(paramNameUrlCurrent, pageCount)}
         <li class="disabled"><a href="#">...</a></li>

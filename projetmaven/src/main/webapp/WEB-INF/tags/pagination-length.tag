@@ -7,7 +7,7 @@
 
 
 <!-- Bean -->
-<jsp:useBean id="paramUtils" scope="page" class="bean.BeanParamUtils"/>
+<jsp:useBean id="paramUtils" scope="page" class="cdb.bean.BeanParamUtils"/>
 ${paramUtils.copyGetParameterFromRequest(pageContext.request)}
 
 <!-------------------------------------------------------------------------------------------------------->
