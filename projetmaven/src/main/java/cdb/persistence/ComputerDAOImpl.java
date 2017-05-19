@@ -10,22 +10,18 @@ import cdb.model.Computer;
 import cdb.persistence.filter.FilterSelect;
 import cdb.persistence.operator.Filter;
 import cdb.utils.SqlNames;
-import cdb.utils.UtilsSql;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Collections;
+import java.sql.Types;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Repository()
@@ -85,320 +81,190 @@ public class ComputerDAOImpl implements IComputerDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAOImpl.class);
 
-    private DataSource dataSource;
+    private final MapperComputer mapper;
+    private final JdbcTemplate jdbcTemplate;
+
+
+    public static final int[] TYPES_INSERT = new int[]{Types.LONGVARCHAR, Types.DATE, Types.DATE, Types.INTEGER};
+    public static final int[] TYPES_UPDATE = new int[]{Types.LONGVARCHAR, Types.DATE, Types.DATE, Types.INTEGER};
+
 
     /**
      * Default constructor.
+     *
      * @param dataSource from cdb DB
+     * @param mapper     row mapper
      */
     @Autowired
-    public ComputerDAOImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public ComputerDAOImpl(DataSource dataSource, MapperComputer mapper) {
+        this.mapper = mapper;
+        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
 
     @Override
     public List<Computer> getAll() throws DAOSelectException {
-        Connection connection = null;
-        ResultSet rs = null;
-        List<Computer> result = null;
-
         try {
-            connection = DataSourceUtils.getConnection(dataSource);
-            rs = connection.prepareStatement(SELECT).executeQuery();
-            result = MapperComputer.mapResultSetToObjects(rs);
-            return result;
-        } catch (SQLException e) {
+            return jdbcTemplate.queryForList(SELECT, Computer.class);
+        } catch (DataAccessException e) {
             LOGGER.info("Erreur getAll computerdao : " + e.getMessage());
             throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT);
-        } finally {
-            UtilsSql.closeResultSetSafely(rs);
-            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
     @Override
     public List<Computer> getFromFilter(FilterSelect fs) throws DAOSelectException {
-        List<Computer> result = null;
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet rs = null;
-        StringBuilder query = new StringBuilder();
-        query.append(SELECT);
+        StringBuilder query = new StringBuilder(SELECT);
 
-        try {
-            connection = DataSourceUtils.getConnection(dataSource);
-
-            // If we have at least one column filtered
-            Iterator<String> it = fs.getFilteredColumns().iterator();
-            if (it.hasNext()) {
-                query.append(" WHERE ");
-                while (it.hasNext()) {
-                    String col = it.next();
-                    query.append(col + " " + fs.getFilterValue(col).getOperator() + " ? ");
-                    if (it.hasNext()) {
-                        query.append(" OR ");
-                    }
+        // If we have at least one column filtered
+        Iterator<String> it = fs.getFilteredColumns().iterator();
+        if (it.hasNext()) {
+            query.append(" WHERE ");
+            while (it.hasNext()) {
+                String col = it.next();
+                query.append(col).append(" ").append(fs.getFilterValue(col).getOperator()).append(" ? ");
+                if (it.hasNext()) {
+                    query.append(" OR ");
                 }
             }
-
-            // Looking for order
-            if (fs.getOrderOnColumn() != null) {
-                query.append(" ORDER BY " + fs.getOrderOnColumn() + " " + (fs.isAsc() ? " ASC " : " DESC "));
-            }
-
-            // Looking for pagination
-            if (fs.isPaginated()) {
-                query.append(" LIMIT " + (fs.getNumberOfResult()) + " OFFSET " + (fs.getPage() * fs.getNumberOfResult()) + " ");
-            }
-
-            // Preparing query and binding arguments
-            preparedStatement = connection.prepareStatement(query.toString());
-            int paramCount = 1;
-
-            // Binding for where
-            for (Filter op : fs.getFilterValues()) {
-                preparedStatement.setString(paramCount++, op.getValue());
-            }
-
-            rs = preparedStatement.executeQuery();
-            result = MapperComputer.mapResultSetToObjects(rs);
-            return result;
-        } catch (ArrayIndexOutOfBoundsException | SQLException e) {
-            LOGGER.info("Erreur getFromFilter ComputerDAOImpl : " + e.getMessage() + " query built : " + query.toString());
-        } finally {
-            UtilsSql.closeResultSetSafely(rs);
-            UtilsSql.closeStatementSafely(preparedStatement);
-            DataSourceUtils.releaseConnection(connection, dataSource);
         }
 
-        throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, "Computer Select From Filter Exception");
+        // Looking for order
+        if (fs.getOrderOnColumn() != null) {
+            query.append(" ORDER BY ").append(fs.getOrderOnColumn()).append(" ").append((fs.isAsc() ? " ASC " : " DESC "));
+        }
+
+        // Looking for pagination
+        if (fs.isPaginated()) {
+            query.append(" LIMIT ").append(fs.getNumberOfResult()).append(" OFFSET ").append((fs.getPage() * fs.getNumberOfResult())).append(" ");
+        }
+
+        try {
+            return jdbcTemplate.query(query.toString(), mapper, fs.getFilterValues().stream().map(Filter::getValue).collect(Collectors.toList()));
+        } catch (DataAccessException e) {
+            LOGGER.info("Erreur getFromFilter ComputerDAOImpl : " + e.getMessage() + " query built : " + query.toString());
+            throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, "Computer Select From Filter Exception");
+        }
     }
 
     @Override
     public Computer get(int id) throws DAOSelectException {
-        Connection connection = null;
-        ResultSet rs = null;
-        PreparedStatement preparedStatement = null;
-        Computer result = null;
 
         try {
-            connection = DataSourceUtils.getConnection(dataSource);
-            preparedStatement = connection.prepareStatement(SELECT + WHERE_FILTER_ID);
-            preparedStatement.setInt(1, id);
-            rs = preparedStatement.executeQuery();
-            result = MapperComputer.mapResultSetToObject(rs);
-            return result;
-        } catch (SQLException e) {
+            return jdbcTemplate.queryForObject(SELECT + WHERE_FILTER_ID, new Object[]{id}, mapper);
+        } catch (DataAccessException e) {
             LOGGER.info("Erreur sql get by id : " + e.getMessage());
             throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT + WHERE_FILTER_ID + " (id=" + id + ")");
-        } finally {
-            UtilsSql.closeResultSetSafely(rs);
-            UtilsSql.closeStatementSafely(preparedStatement);
-            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
     @Override
-    public int insert(Computer computer) throws DAOInsertException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet generatedKeys = null;
+    public void insert(Computer computer) throws DAOInsertException {
 
         try {
-            connection = DataSourceUtils.getConnection(dataSource);
-            statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, computer.getName());
-            statement.setDate(2, (computer.getIntroduced() != null ? new java.sql.Date(computer.getIntroduced().getTime()) : null));
-            statement.setDate(3, (computer.getDiscontinued() != null ? new java.sql.Date(computer.getDiscontinued().getTime()) : null));
-            statement.setString(4, computer.getCompany() != null ? String.valueOf(computer.getCompany().getId()) : null);
+            Object[] params = new Object[]{
+                    computer.getName(),
+                    (computer.getIntroduced() != null ? new java.sql.Date(computer.getIntroduced().getTime()) : null),
+                    (computer.getDiscontinued() != null ? new java.sql.Date(computer.getDiscontinued().getTime()) : null),
+                    (computer.getCompany() != null ? computer.getCompany().getId() : null)
+            };
 
-            if (statement.executeUpdate() != 0) {
-                generatedKeys = statement.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    computer.setId((int) generatedKeys.getLong(1));
-                    return computer.getId();
-                } else {
-                    LOGGER.info("Erreur insert computerdao : " + computer + " => no id returned");
-                    throw new SQLException();
-                }
-
-            } else {
-                LOGGER.info("Erreur insert 2 computerdao : " + computer + " => no row affected");
-                throw new SQLException();
-            }
-        } catch (SQLException e2) {
-            LOGGER.info("Erreur 3 insert SQL computerdao : " + computer + " => " + e2.getMessage());
-        } finally {
-            UtilsSql.closeResultSetSafely(generatedKeys);
-            UtilsSql.closeStatementSafely(statement);
-            DataSourceUtils.releaseConnection(connection, dataSource);
+            jdbcTemplate.update(INSERT, params, TYPES_INSERT);
+        } catch (DataAccessException e) {
+            LOGGER.info("ComputerDAO : Erreur insert SQL computerdao : " + computer + " => " + e.getMessage());
+            throw new DAOInsertException(computer);
         }
-
-        throw new DAOInsertException(computer);
     }
 
     @Override
-    public boolean delete(List<Integer> ids) throws DAODeleteException {
-        if (ids == null) {
+    public boolean delete(int... ids) throws DAODeleteException {
+        if (ids == null || ids.length == 0) {
             LOGGER.info("Computerdao : Error delete nothing to delete");
-            return false;
-        }
-
-        // Remove null values
-        ids.removeAll(Collections.singleton(null));
-        if (ids.isEmpty()) {
-            LOGGER.info("Computerdao : Error delete nothing to delete after deleting null ids");
             return false;
         }
 
         // Build query
         StringBuilder queryDelete = new StringBuilder(DELETE);
-        Iterator<Integer> it = ids.iterator();
-        while (it.hasNext()) {
-            Integer idToDelete = it.next();
-            queryDelete.append(" " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + "=" + idToDelete);
-            if (it.hasNext()) {
+        for (int i = 0; i < ids.length; i++) {
+            queryDelete.append(" " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + "=" + ids);
+            if (i < ids.length - 1) {
                 queryDelete.append(" OR ");
             }
         }
 
         // Exec query
-        Connection connection = null;
-        PreparedStatement statement = null;
         try {
-            connection = DataSourceUtils.getConnection(dataSource);
-            statement = connection.prepareStatement(queryDelete.toString());
-            int resultExec = statement.executeUpdate();
-            return resultExec != 0;
-        } catch (SQLException e) {
+            return jdbcTemplate.update(queryDelete.toString(), ids, Types.INTEGER) != 0;
+        } catch (DataAccessException e) {
             LOGGER.info("Computerdao : Error delete " + ids + " : " + e.getMessage());
             throw new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME, ids);
-        } finally {
-            UtilsSql.closeStatementSafely(statement);
-            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
     @Override
     public boolean update(Computer computer) throws DAOUpdateException {
-        Connection connection = null;
-        PreparedStatement statement = null;
 
         try {
-            connection = DataSourceUtils.getConnection(dataSource);
-            statement = connection.prepareStatement(UPDATE);
-            statement.setString(1, computer.getName());
-            statement.setDate(2, (computer.getIntroduced() != null ? new java.sql.Date(computer.getIntroduced().getTime()) : null));
-            statement.setDate(3, (computer.getDiscontinued() != null ? new java.sql.Date(computer.getDiscontinued().getTime()) : null));
-            statement.setString(4, (computer.getCompany() == null ? null : String.valueOf(computer.getCompany().getId())));
-            statement.setInt(5, computer.getId());
+            Object[] params = new Object[]{
+                    computer.getName(),
+                    (computer.getIntroduced() != null ? new java.sql.Date(computer.getIntroduced().getTime()) : null),
+                    (computer.getDiscontinued() != null ? new java.sql.Date(computer.getDiscontinued().getTime()) : null),
+                    (computer.getCompany() != null ? computer.getCompany().getId() : null),
+                    computer.getId()
+            };
 
-            int resultExec = statement.executeUpdate();
-            return resultExec != 0;
-        } catch (SQLException e) {
-            LOGGER.info("Error Update Computerdao : " + computer + " => " + e.getMessage());
-        } finally {
-            UtilsSql.closeStatementSafely(statement);
-            DataSourceUtils.releaseConnection(connection, dataSource);
+            return jdbcTemplate.update(UPDATE, params, TYPES_UPDATE) != 0;
+        } catch (DataAccessException e) {
+            LOGGER.info("ComputerDAO : Erreur insert SQL computerdao : " + computer + " => " + e.getMessage());
+            throw new DAOUpdateException(computer);
         }
-        throw new DAOUpdateException(computer);
     }
 
     @Override
     public Computer getLastComputerInserted() throws DAOSelectException {
-        Connection connection = null;
-        ResultSet rs = null;
-        PreparedStatement statement = null;
-        Computer result = null;
         try {
-            connection = DataSourceUtils.getConnection(dataSource);
-            statement = connection.prepareStatement(SELECT_LAST_COMPUTER_INSERTED);
-            rs = statement.executeQuery();
-            result = MapperComputer.mapResultSetToObject(rs);
-            return result;
-        } catch (SQLException e) {
+            return jdbcTemplate.queryForObject(SELECT_LAST_COMPUTER_INSERTED, mapper);
+        } catch (DataAccessException e) {
             LOGGER.info("Error Get last computer inserted Computerdao : " + e.getMessage());
-        } finally {
-            UtilsSql.closeResultSetSafely(rs);
-            UtilsSql.closeStatementSafely(statement);
-            DataSourceUtils.releaseConnection(connection, dataSource);
         }
-
         throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT_LAST_COMPUTER_INSERTED);
     }
 
 
     @Override
     public int getCount(FilterSelect fs) throws DAOCountException {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet rs = null;
-        int count = 0;
         StringBuilder query = new StringBuilder();
         query.append(COUNT);
 
         try {
-            connection = DataSourceUtils.getConnection(dataSource);
-
             // If we have at least one column filtered
             Iterator<String> it = fs.getFilteredColumns().iterator();
             if (it.hasNext()) {
                 query.append(" WHERE  ");
                 while (it.hasNext()) {
                     String col = it.next();
-                    query.append(col + " " + fs.getFilterValue(col).getOperator() + " ? ");
+                    query.append(col).append(" ").append(fs.getFilterValue(col).getOperator()).append(" ? ");
                     if (it.hasNext()) {
                         query.append(" OR  ");
                     }
                 }
             }
 
-            // Preparing query and binding arguments
-            preparedStatement = connection.prepareStatement(query.toString());
-            int paramCount = 1;
-
-            // Binding for where
-            for (Filter op : fs.getFilterValues()) {
-                preparedStatement.setString(paramCount++, op.getValue());
-            }
-
-            rs = preparedStatement.executeQuery();
-
-            if (rs.next()) {
-                count = rs.getInt(1);
-            }
-
-            return count;
-
-        } catch (SQLException e) {
+            return jdbcTemplate.update(query.toString(), fs.getFilterValues().stream().map(Filter::getValue).collect(Collectors.toList()));
+        } catch (DataAccessException e) {
             LOGGER.info("Erreur count getFromFilter ComputerDAOImpl : " + e.getMessage() + " query built : " + query.toString());
-        } finally {
-            UtilsSql.closeResultSetSafely(rs);
-            UtilsSql.closeStatementSafely(preparedStatement);
-            DataSourceUtils.releaseConnection(connection, dataSource);
+            throw new DAOCountException("Computer");
         }
-
-        throw new DAOCountException("Computer");
     }
 
 
     @Override
     public void deleteComputerBelongingToCompany(int idCompany) throws DAODeleteException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-
         try {
-            connection = DataSourceUtils.getConnection(dataSource);
-            statement = connection.prepareStatement(DELETE_COMPUTER_OF_COMPANY);
-            statement.setInt(1, idCompany);
-            statement.executeUpdate();
-        } catch (SQLException e) {
+            jdbcTemplate.update(DELETE_COMPUTER_OF_COMPANY, idCompany);
+        } catch (DataAccessException e) {
             LOGGER.info("Error deleting computers of company " + idCompany + " : " + e.getMessage());
             throw new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME, DELETE_COMPUTER_OF_COMPANY + " (idCompany = " + idCompany + ")");
-        } finally {
-            UtilsSql.closeStatementSafely(statement);
-            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 

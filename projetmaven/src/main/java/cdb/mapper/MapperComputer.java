@@ -8,6 +8,8 @@ import cdb.utils.Format;
 import cdb.utils.SqlNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +17,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MapperComputer {
+@Service
+public class MapperComputer implements RowMapper<Computer> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MapperComputer.class);
 
@@ -45,73 +48,23 @@ public class MapperComputer {
                 .build();
     }
 
+    @Override
+    public Computer mapRow(ResultSet resultSet, int i) throws SQLException {
+        int computerId = resultSet.getInt(SqlNames.COMPUTER_COL_COMPUTER_ID);
+        int companyId = resultSet.getInt(SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID);
+        String computerName = resultSet.getString(SqlNames.COMPUTER_COL_COMPUTER_NAME);
+        Date introduced = resultSet.getDate(SqlNames.COMPUTER_COL_COMPUTER_INTRODUCED);
+        Date discontinued = resultSet.getDate(SqlNames.COMPUTER_COL_COMPUTERDISCONTINUED);
+        String companyName = resultSet.getString(SqlNames.COMPUTER_COL_JOINED_COMPANY_NAME);
 
-    /**
-     * Map resultset to computer.
-     *
-     * @param rs resultset
-     * @return computer
-     */
-    public static Computer mapResultSetToObject(ResultSet rs) {
-
-        try {
-            Computer c = null;
-            if (rs.next()) {
-                c = mapResultSetToObjectAux(rs);
-            }
-            return c;
-        } catch (SQLException e) {
-            e.printStackTrace();
+        Company company;
+        if (companyId == 0) {
+            company = null;
+        } else {
+            company = new Company(companyId, companyName);
         }
-        return null;
+        return new Computer(computerId, company, computerName, introduced, discontinued);
     }
-
-    /**
-     * Map resultset to computers.
-     *
-     * @param rs resultset
-     * @return computers
-     */
-    public static List<Computer> mapResultSetToObjects(ResultSet rs) {
-        List<Computer> list = new ArrayList<Computer>();
-        try {
-            while (rs.next()) {
-                list.add(MapperComputer.mapResultSetToObjectAux(rs));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    /**
-     * Mapp Result set to computer without closing the resultset.
-     *
-     * @param rs result set
-     * @return computer
-     */
-    public static Computer mapResultSetToObjectAux(ResultSet rs) {
-        try {
-            int computerId = rs.getInt(SqlNames.COMPUTER_COL_COMPUTER_ID);
-            int companyId = rs.getInt(SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID);
-            String computerName = rs.getString(SqlNames.COMPUTER_COL_COMPUTER_NAME);
-            Date introduced = rs.getDate(SqlNames.COMPUTER_COL_COMPUTER_INTRODUCED);
-            Date discontinued = rs.getDate(SqlNames.COMPUTER_COL_COMPUTERDISCONTINUED);
-            String companyName = rs.getString(SqlNames.COMPUTER_COL_JOINED_COMPANY_NAME);
-
-            Company company;
-            if (companyId == 0) {
-                company = null;
-            } else {
-                company = new Company(companyId, companyName);
-            }
-            return new Computer(computerId, company, computerName, introduced, discontinued);
-        } catch (SQLException e) {
-            LOGGER.info("MapperComputer : error while mapping from resultset : " + e.getMessage());
-        }
-        return null;
-    }
-
 
     /**
      * Take a computer and map it to computer cdb.dto.

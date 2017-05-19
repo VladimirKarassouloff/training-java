@@ -33,7 +33,7 @@ public class DAODeleteException extends DAOException {
      * @param tableName reason
      * @param ids       of object deleted
      */
-    public DAODeleteException(String tableName, List<Integer> ids) {
+    public DAODeleteException(String tableName, int[] ids) {
         super("Error while deleting object from " + tableName + " where id = " + ids);
     }
 }

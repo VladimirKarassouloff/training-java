@@ -36,10 +36,9 @@ interface IComputerDAO {
      * Insert new record in DB.
      *
      * @param computer contains attributes for representation in DB
-     * @return id of new row
      * @throws DAOInsertException if error happens
      */
-    int insert(Computer computer) throws DAOInsertException;
+    void insert(Computer computer) throws DAOInsertException;
 
 
     /**
@@ -49,7 +48,7 @@ interface IComputerDAO {
      * @return success
      * @throws DAODeleteException if error happens
      */
-    boolean delete(List<Integer> ids) throws DAODeleteException;
+    boolean delete(int... ids) throws DAODeleteException;
 
     /**
      * Updated computer.

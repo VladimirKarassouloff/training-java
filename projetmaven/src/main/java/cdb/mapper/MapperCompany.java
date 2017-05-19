@@ -2,12 +2,14 @@ package cdb.mapper;
 
 import cdb.model.Company;
 import cdb.utils.SqlNames;
+import org.springframework.stereotype.Service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class MapperCompany {
 
     /**

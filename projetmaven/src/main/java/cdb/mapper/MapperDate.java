@@ -3,13 +3,12 @@ package cdb.mapper;
 import cdb.utils.Format;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.Date;
 
-/**
- * Created by vkarassouloff on 20/04/17.
- */
+@Service
 public class MapperDate {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MapperDate.class);

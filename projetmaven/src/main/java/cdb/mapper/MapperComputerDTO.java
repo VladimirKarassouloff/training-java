@@ -4,6 +4,7 @@ import cdb.dto.ComputerDTO;
 import cdb.utils.SqlNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,9 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by vkarassouloff on 18/04/17.
- */
+@Service
 public class MapperComputerDTO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MapperComputerDTO.class);
