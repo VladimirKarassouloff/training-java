@@ -1,13 +1,14 @@
-package cdb.services;
+package cdb.service;
 
 import cdb.model.Company;
+import cdb.persistence.ComputerDAOImpl;
 
 import java.util.List;
 
 /**
  * Created by vkarassouloff on 26/04/17.
  */
-interface ICompanyServices {
+public interface ICompanyService {
 
     /**
      * Get all companies in DB.
@@ -52,4 +53,10 @@ interface ICompanyServices {
      * @param id of the company
      */
     void delete(int id);
+
+    /**
+     * Change DAO source for object.
+     * @param dao source
+     */
+    void setComputerDaoImpl(ComputerDAOImpl dao);
 }

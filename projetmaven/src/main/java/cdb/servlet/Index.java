@@ -4,9 +4,12 @@ import cdb.bean.BeanParamUtils;
 import cdb.model.ComputerPage;
 import cdb.persistence.filter.FilterSelectComputer;
 import cdb.persistence.operator.LikeRight;
-import cdb.services.ComputerServices;
+import cdb.service.ComputerServiceImpl;
 import cdb.utils.SqlNames;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -33,8 +36,20 @@ public class Index extends HttpServlet {
     private static final int MAX_COMPUTER_DISPLAYED = 100;
     private static final int DEFAULT_COL_ORDERED = 0;
 
+    private ComputerServiceImpl services;
 
-    private static ComputerServices services = ComputerServices.getInstance();
+
+    @Autowired
+    public void setServices(ComputerServiceImpl services) {
+        this.services = services;
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+    }
+
 
     /**
      * Get informations for computers.
@@ -67,28 +82,24 @@ public class Index extends HttpServlet {
         // Parsing Page display asked by user
         try {
             pageDisplay = Integer.parseInt(pageStr);
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             pageDisplay = 0;
         }
 
         // Parsing Length asked by user
         try {
             lengthPageDisplay = Integer.parseInt(lengthPageStr);
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             lengthPageDisplay = DEFAULT_LENGTH;
         }
 
         // Parsing if order is asc or desc
-        try {
-            asc = Boolean.parseBoolean(ascStr);
-        } catch (Exception e) {
-            asc = DEFAULT_ORDER_ASC;
-        }
+        asc = Boolean.parseBoolean(ascStr);
 
         // Parsing which column is ordered
         try {
             numColOrder = Integer.parseInt(colOrderStr);
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             numColOrder = DEFAULT_COL_ORDERED;
         }
 
@@ -105,13 +116,14 @@ public class Index extends HttpServlet {
         // Filter for counting and selecting
         FilterSelectComputer.Builder builder = new FilterSelectComputer.Builder();
 
-
+        // Is the user reasearching by name or company name ?
         if (search != null && !"".equals(search)) {
             builder.withSearch(SqlNames.COMPANY_TABLE_NAME + "." + SqlNames.COMPANY_COL_COMPANY_NAME, new LikeRight(search))
                     .withSearch(SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME, new LikeRight(search));
         }
 
-        if (ascStr != null) {
+        // Is there a request for ordered data ?
+        if (ascStr != null || colOrderStr != null) {
             builder.withOrder(numColOrder, asc);
         }
 
@@ -149,4 +161,5 @@ public class Index extends HttpServlet {
         resp.sendRedirect(req.getContextPath() + PAGE_SUCCESS_FORM + bpu.buildUrl());
 
     }
+
 }

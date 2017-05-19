@@ -30,7 +30,7 @@ interface IComputerDAO {
      * @return resultset
      * @throws DAOSelectException if error happens
      */
-    Computer getById(int id) throws DAOSelectException;
+    Computer get(int id) throws DAOSelectException;
 
     /**
      * Insert new record in DB.
@@ -49,7 +49,7 @@ interface IComputerDAO {
      * @return success
      * @throws DAODeleteException if error happens
      */
-    boolean deleteById(List<Integer> ids) throws DAODeleteException;
+    boolean delete(List<Integer> ids) throws DAODeleteException;
 
     /**
      * Updated computer.

@@ -124,7 +124,7 @@ public abstract class Pageable<T> extends Page {
             // On test si l'utilisateur essaye d'acceder au detail de la liste
             try {
                 selected(Integer.parseInt(command));
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 otherCommands(command);
             }
         }

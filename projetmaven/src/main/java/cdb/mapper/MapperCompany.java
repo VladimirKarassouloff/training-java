@@ -22,7 +22,6 @@ public class MapperCompany {
             if (rs.next()) {
                 com = mapResultSetToObjectAux(rs);
             }
-            rs.close();
             return com;
         } catch (SQLException e) {
             e.printStackTrace();

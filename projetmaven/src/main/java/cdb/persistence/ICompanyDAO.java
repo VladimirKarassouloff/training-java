@@ -29,7 +29,7 @@ interface ICompanyDAO {
      * @return resultset
      * @throws DAOSelectException if error happens
      */
-    Company getById(int id) throws DAOSelectException;
+    Company get(int id) throws DAOSelectException;
 
     /**
      * Update the company having id = company.id.

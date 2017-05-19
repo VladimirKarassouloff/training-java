@@ -7,12 +7,17 @@ import cdb.exception.DAOSelectException;
 import cdb.exception.DAOUpdateException;
 import cdb.mapper.MapperComputer;
 import cdb.model.Computer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import cdb.persistence.filter.FilterSelect;
 import cdb.persistence.operator.Filter;
 import cdb.utils.SqlNames;
+import cdb.utils.UtilsSql;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,7 +27,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class ComputerDAO implements IComputerDAO {
+
+@Repository()
+public class ComputerDAOImpl implements IComputerDAO {
 
     //////////////////////////////////////////////////////////////////////
     /////Query parts
@@ -76,20 +83,17 @@ public class ComputerDAO implements IComputerDAO {
     //////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAOImpl.class);
 
-    private static ComputerDAO dao = new ComputerDAO();
-    private static Connector connector;
+    private DataSource dataSource;
 
     /**
-     * Constructor.
+     * Default constructor.
+     * @param dataSource from cdb DB
      */
-    private ComputerDAO() {
-        connector = Connector.getInstance();
-    }
-
-    public static ComputerDAO getInstance() {
-        return dao;
+    @Autowired
+    public ComputerDAOImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
 
@@ -100,7 +104,7 @@ public class ComputerDAO implements IComputerDAO {
         List<Computer> result = null;
 
         try {
-            connection = connector.getConnection();
+            connection = DataSourceUtils.getConnection(dataSource);
             rs = connection.prepareStatement(SELECT).executeQuery();
             result = MapperComputer.mapResultSetToObjects(rs);
             return result;
@@ -108,7 +112,8 @@ public class ComputerDAO implements IComputerDAO {
             LOGGER.info("Erreur getAll computerdao : " + e.getMessage());
             throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT);
         } finally {
-            connector.closeIfNotTransactionnal();
+            UtilsSql.closeResultSetSafely(rs);
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
@@ -122,7 +127,7 @@ public class ComputerDAO implements IComputerDAO {
         query.append(SELECT);
 
         try {
-            connection = connector.getConnection();
+            connection = DataSourceUtils.getConnection(dataSource);
 
             // If we have at least one column filtered
             Iterator<String> it = fs.getFilteredColumns().iterator();
@@ -158,38 +163,39 @@ public class ComputerDAO implements IComputerDAO {
 
             rs = preparedStatement.executeQuery();
             result = MapperComputer.mapResultSetToObjects(rs);
-            preparedStatement.close();
             return result;
         } catch (ArrayIndexOutOfBoundsException | SQLException e) {
-            LOGGER.info("Erreur getFromFilter ComputerDAO : " + e.getMessage() + " query built : " + query.toString());
+            LOGGER.info("Erreur getFromFilter ComputerDAOImpl : " + e.getMessage() + " query built : " + query.toString());
         } finally {
-            connector.closeIfNotTransactionnal();
+            UtilsSql.closeResultSetSafely(rs);
+            UtilsSql.closeStatementSafely(preparedStatement);
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
 
         throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, "Computer Select From Filter Exception");
     }
 
     @Override
-    public Computer getById(int id) throws DAOSelectException {
+    public Computer get(int id) throws DAOSelectException {
         Connection connection = null;
         ResultSet rs = null;
         PreparedStatement preparedStatement = null;
         Computer result = null;
 
         try {
-            connection = connector.getConnection();
+            connection = DataSourceUtils.getConnection(dataSource);
             preparedStatement = connection.prepareStatement(SELECT + WHERE_FILTER_ID);
             preparedStatement.setInt(1, id);
             rs = preparedStatement.executeQuery();
             result = MapperComputer.mapResultSetToObject(rs);
-
-            preparedStatement.close();
             return result;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             LOGGER.info("Erreur sql get by id : " + e.getMessage());
             throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT + WHERE_FILTER_ID + " (id=" + id + ")");
         } finally {
-            connector.closeIfNotTransactionnal();
+            UtilsSql.closeResultSetSafely(rs);
+            UtilsSql.closeStatementSafely(preparedStatement);
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
@@ -200,48 +206,40 @@ public class ComputerDAO implements IComputerDAO {
         ResultSet generatedKeys = null;
 
         try {
-            connection = connector.getConnection();
+            connection = DataSourceUtils.getConnection(dataSource);
             statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, computer.getName());
             statement.setDate(2, (computer.getIntroduced() != null ? new java.sql.Date(computer.getIntroduced().getTime()) : null));
             statement.setDate(3, (computer.getDiscontinued() != null ? new java.sql.Date(computer.getDiscontinued().getTime()) : null));
             statement.setString(4, computer.getCompany() != null ? String.valueOf(computer.getCompany().getId()) : null);
 
-
             if (statement.executeUpdate() != 0) {
                 generatedKeys = statement.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     computer.setId((int) generatedKeys.getLong(1));
-                    generatedKeys.close();
-                    statement.close();
                     return computer.getId();
                 } else {
-                    // No id returned
-                    LOGGER.info("Erreur insert computerdao : " + computer);
-                    generatedKeys.close();
-                    statement.close();
-                    throw new Exception();
+                    LOGGER.info("Erreur insert computerdao : " + computer + " => no id returned");
+                    throw new SQLException();
                 }
 
             } else {
-                // No row affected
-                LOGGER.info("Erreur insert 2 computerdao : " + computer);
-                statement.close();
-                throw new Exception();
+                LOGGER.info("Erreur insert 2 computerdao : " + computer + " => no row affected");
+                throw new SQLException();
             }
         } catch (SQLException e2) {
-            LOGGER.info("Erreur 4 insert SQL computerdao : " + computer + " => " + e2.getMessage());
-        } catch (Exception e) {
-            LOGGER.info("Erreur 3 insert computerdao : " + computer + " => " + e.getMessage());
+            LOGGER.info("Erreur 3 insert SQL computerdao : " + computer + " => " + e2.getMessage());
         } finally {
-            connector.closeIfNotTransactionnal();
+            UtilsSql.closeResultSetSafely(generatedKeys);
+            UtilsSql.closeStatementSafely(statement);
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
 
         throw new DAOInsertException(computer);
     }
 
     @Override
-    public boolean deleteById(List<Integer> ids) throws DAODeleteException {
+    public boolean delete(List<Integer> ids) throws DAODeleteException {
         if (ids == null) {
             LOGGER.info("Computerdao : Error delete nothing to delete");
             return false;
@@ -269,16 +267,16 @@ public class ComputerDAO implements IComputerDAO {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = connector.getConnection();
+            connection = DataSourceUtils.getConnection(dataSource);
             statement = connection.prepareStatement(queryDelete.toString());
             int resultExec = statement.executeUpdate();
-            statement.close();
             return resultExec != 0;
         } catch (SQLException e) {
             LOGGER.info("Computerdao : Error delete " + ids + " : " + e.getMessage());
             throw new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME, ids);
         } finally {
-            connector.closeIfNotTransactionnal();
+            UtilsSql.closeStatementSafely(statement);
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
@@ -288,20 +286,21 @@ public class ComputerDAO implements IComputerDAO {
         PreparedStatement statement = null;
 
         try {
-            connection = connector.getConnection();
+            connection = DataSourceUtils.getConnection(dataSource);
             statement = connection.prepareStatement(UPDATE);
             statement.setString(1, computer.getName());
             statement.setDate(2, (computer.getIntroduced() != null ? new java.sql.Date(computer.getIntroduced().getTime()) : null));
             statement.setDate(3, (computer.getDiscontinued() != null ? new java.sql.Date(computer.getDiscontinued().getTime()) : null));
             statement.setString(4, (computer.getCompany() == null ? null : String.valueOf(computer.getCompany().getId())));
             statement.setInt(5, computer.getId());
+
             int resultExec = statement.executeUpdate();
-            statement.close();
             return resultExec != 0;
         } catch (SQLException e) {
             LOGGER.info("Error Update Computerdao : " + computer + " => " + e.getMessage());
         } finally {
-            connector.closeIfNotTransactionnal();
+            UtilsSql.closeStatementSafely(statement);
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
         throw new DAOUpdateException(computer);
     }
@@ -310,16 +309,20 @@ public class ComputerDAO implements IComputerDAO {
     public Computer getLastComputerInserted() throws DAOSelectException {
         Connection connection = null;
         ResultSet rs = null;
+        PreparedStatement statement = null;
         Computer result = null;
         try {
-            connection = connector.getConnection();
-            rs = connection.prepareStatement(SELECT_LAST_COMPUTER_INSERTED).executeQuery();
+            connection = DataSourceUtils.getConnection(dataSource);
+            statement = connection.prepareStatement(SELECT_LAST_COMPUTER_INSERTED);
+            rs = statement.executeQuery();
             result = MapperComputer.mapResultSetToObject(rs);
             return result;
         } catch (SQLException e) {
             LOGGER.info("Error Get last computer inserted Computerdao : " + e.getMessage());
         } finally {
-            connector.closeIfNotTransactionnal();
+            UtilsSql.closeResultSetSafely(rs);
+            UtilsSql.closeStatementSafely(statement);
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
 
         throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT_LAST_COMPUTER_INSERTED);
@@ -331,12 +334,12 @@ public class ComputerDAO implements IComputerDAO {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;
-        Integer count = null;
+        int count = 0;
         StringBuilder query = new StringBuilder();
         query.append(COUNT);
 
         try {
-            connection = connector.getConnection();
+            connection = DataSourceUtils.getConnection(dataSource);
 
             // If we have at least one column filtered
             Iterator<String> it = fs.getFilteredColumns().iterator();
@@ -366,14 +369,14 @@ public class ComputerDAO implements IComputerDAO {
                 count = rs.getInt(1);
             }
 
-            rs.close();
-            preparedStatement.close();
             return count;
 
         } catch (SQLException e) {
-            LOGGER.info("Erreur count getFromFilter ComputerDAO : " + e.getMessage() + " query built : " + query.toString());
+            LOGGER.info("Erreur count getFromFilter ComputerDAOImpl : " + e.getMessage() + " query built : " + query.toString());
         } finally {
-            connector.closeIfNotTransactionnal();
+            UtilsSql.closeResultSetSafely(rs);
+            UtilsSql.closeStatementSafely(preparedStatement);
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
 
         throw new DAOCountException("Computer");
@@ -386,17 +389,18 @@ public class ComputerDAO implements IComputerDAO {
         PreparedStatement statement = null;
 
         try {
-            connection = connector.getConnection();
+            connection = DataSourceUtils.getConnection(dataSource);
             statement = connection.prepareStatement(DELETE_COMPUTER_OF_COMPANY);
             statement.setInt(1, idCompany);
-            int resultExec = statement.executeUpdate();
-            statement.close();
+            statement.executeUpdate();
         } catch (SQLException e) {
             LOGGER.info("Error deleting computers of company " + idCompany + " : " + e.getMessage());
             throw new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME, DELETE_COMPUTER_OF_COMPANY + " (idCompany = " + idCompany + ")");
         } finally {
-            connector.closeIfNotTransactionnal();
+            UtilsSql.closeStatementSafely(statement);
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
+
 
 }

@@ -1,4 +1,4 @@
-package cdb.services;
+package cdb.service;
 
 import cdb.dto.ComputerDTO;
 import cdb.exception.DAOCountException;
@@ -12,65 +12,74 @@ import cdb.exception.MapperException;
 import cdb.mapper.MapperComputer;
 import cdb.model.Computer;
 import cdb.model.ComputerPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import cdb.persistence.ComputerDAO;
+import cdb.persistence.ComputerDAOImpl;
 import cdb.persistence.filter.FilterSelect;
 import cdb.persistence.filter.FilterSelectComputer;
 import cdb.validator.ComputerValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by vkarassouloff on 19/04/17.
  */
-public class ComputerServices implements IComputerServices {
+@Service()
+public class ComputerServiceImpl implements IComputerService {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(ComputerServices.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(ComputerServiceImpl.class);
 
-    private static ComputerServices service = new ComputerServices();
-
-    private ComputerDAO computerDao;
+    private ComputerDAOImpl computerDaoImpl;
 
     /**
-     * Construct singleton.
+     * Default constructor.
+     *
+     * @param computerDaoImpl data access object for computers
      */
-    private ComputerServices() {
-        computerDao = ComputerDAO.getInstance();
+    @Autowired
+    public ComputerServiceImpl(ComputerDAOImpl computerDaoImpl) {
+        this.computerDaoImpl = computerDaoImpl;
     }
 
-    public static ComputerServices getInstance() {
-        return service;
+
+    public ComputerDAOImpl getComputerDaoImpl() {
+        return computerDaoImpl;
     }
+
+    public void setComputerDaoImpl(ComputerDAOImpl computerDaoImpl) {
+        this.computerDaoImpl = computerDaoImpl;
+    }
+
 
     @Override
     public List<Computer> getComputers() {
         try {
-            return computerDao.getAll();
+            return computerDaoImpl.getAll();
         } catch (DAOSelectException e) {
-            LOGGER.info("ComputerServices : Error getting all computers");
-            return new ArrayList<>();
+            LOGGER.info("ComputerServiceImpl : Error getting all computers");
+            throw new RuntimeException("ComputerService : Impossible to get all computers");
         }
     }
 
     @Override
     public List<ComputerDTO> getPagedComputerDTO(FilterSelect filter) {
         try {
-            return MapperComputer.toDTOs(computerDao.getFromFilter(filter));
+            return MapperComputer.toDTOs(computerDaoImpl.getFromFilter(filter));
         } catch (DAOSelectException e) {
-            LOGGER.info("ComputerServices : Error getting paged computer");
-            return new ArrayList<>();
+            LOGGER.info("ComputerServiceImpl : Error getting paged computer");
+            throw new RuntimeException("ComputerService : Impossible to get last computerDto");
         }
     }
 
     @Override
     public List<Computer> getPagedComputer(FilterSelect filter) {
         try {
-            return computerDao.getFromFilter(filter);
+            return computerDaoImpl.getFromFilter(filter);
         } catch (DAOSelectException e) {
-            LOGGER.info("ComputerServices : Error get paged computer");
-            return new ArrayList<>();
+            LOGGER.info("ComputerServiceImpl : Error get paged computer");
+            throw new RuntimeException("ComputerService : Impossible to get page of computers");
         }
     }
 
@@ -83,10 +92,10 @@ public class ComputerServices implements IComputerServices {
     @Override
     public int getCountComputer(FilterSelect filter) {
         try {
-            return computerDao.getCount(filter);
+            return computerDaoImpl.getCount(filter);
         } catch (DAOCountException e) {
-            LOGGER.info("ComputerServices : Error getting count computers");
-            return 0;
+            LOGGER.info("ComputerServiceImpl : Error getting count computers");
+            throw new RuntimeException("ComputerService : Impossible to get count of computer");
         }
     }
 
@@ -94,20 +103,20 @@ public class ComputerServices implements IComputerServices {
     @Override
     public Computer getComputer(int id) {
         try {
-            return computerDao.getById(id);
+            return computerDaoImpl.get(id);
         } catch (DAOSelectException e) {
-            LOGGER.info("ComputerServices : Error getting all computers");
-            return null;
+            LOGGER.info("ComputerServiceImpl : Error getting all computers");
+            throw new RuntimeException("ComputerService : Impossible to get computer with id " + id);
         }
     }
 
     @Override
     public ComputerDTO getComputerDTO(int id) {
         try {
-            return MapperComputer.toDTO(computerDao.getById(id));
+            return MapperComputer.toDTO(computerDaoImpl.get(id));
         } catch (DAOSelectException e) {
-            LOGGER.info("ComputerServices : Error getting all computers");
-            return null;
+            LOGGER.info("ComputerServiceImpl : Error getting all computers");
+            throw new RuntimeException("ComputerService : Impossible to get computerDto");
         }
     }
 
@@ -121,11 +130,11 @@ public class ComputerServices implements IComputerServices {
         }
 
         try {
-            return computerDao.insert(computer);
+            return computerDaoImpl.insert(computer);
         } catch (DAOInsertException e) {
-            LOGGER.info("ComputerServices : Error while inserting computer : (" + computer + ")");
+            LOGGER.info("ComputerServiceImpl : Error while inserting computer : (" + computer + ")");
+            throw new RuntimeException("ComputerService : Impossible to get add computer");
         }
-        return -1;
     }
 
     @Override
@@ -138,19 +147,19 @@ public class ComputerServices implements IComputerServices {
         }
 
         try {
-            return computerDao.update(computer);
+            return computerDaoImpl.update(computer);
         } catch (DAOUpdateException e) {
-            LOGGER.info("ComputerServices : Error while trying to update computer [" + computer + "]");
+            LOGGER.info("ComputerServiceImpl : Error while trying to update computer [" + computer + "]");
+            throw new RuntimeException("ComputerService : Impossible to update computer");
         }
-        return false;
     }
 
     @Override
     public boolean deleteComputer(List<Integer> ids) {
         try {
-            return computerDao.deleteById(ids);
+            return computerDaoImpl.delete(ids);
         } catch (DAODeleteException e) {
-            LOGGER.info("ComputerServices : Computer are not deleted (" + ids + ")");
+            LOGGER.info("ComputerServiceImpl : Computer are not deleted (" + ids + ")");
         }
         return false;
     }
@@ -162,7 +171,7 @@ public class ComputerServices implements IComputerServices {
         try {
             computer = MapperComputer.mapDTOToObject(form);
         } catch (MapperException e) {
-            LOGGER.info("ComputerServices : Mapping error " + e.getMessage());
+            LOGGER.info("ComputerServiceImpl : Mapping error " + e.getMessage());
             throw new RuntimeException("Impossible de cdb.mapper [" + form + "] en computer");
         }
 
@@ -181,8 +190,8 @@ public class ComputerServices implements IComputerServices {
         try {
             computer = MapperComputer.mapDTOToObject(form);
         } catch (MapperException e) {
-            LOGGER.info("ComputerServices : Cannot map computer to DTO " + e.getMessage());
-            throw new RuntimeException("Cannot map computer to DTO");
+            LOGGER.info("ComputerServiceImpl : Cannot map computer to DTO " + e.getMessage());
+            throw new FormException("Cannot map computer to DTO");
         }
 
         try {
@@ -196,10 +205,10 @@ public class ComputerServices implements IComputerServices {
     @Override
     public Computer getLastComputerInserted() {
         try {
-            return computerDao.getLastComputerInserted();
+            return computerDaoImpl.getLastComputerInserted();
         } catch (DAOSelectException e) {
-            LOGGER.info("ComputerServices : Error while getting the last computer");
-            return null;
+            LOGGER.info("ComputerServiceImpl : Error while getting the last computer");
+            throw new RuntimeException("ComputerService : Impossible to get last computer");
         }
     }
 
@@ -211,6 +220,7 @@ public class ComputerServices implements IComputerServices {
                 .withLengthPage(filter.getNumberOfResult())
                 .withDisplayedPage(filter.getPage())
                 .build();
+
 
         // Check user is at a valid page
         double calc = ((double) cp.getTotalCount() / (double) cp.getLengthPage());
@@ -226,4 +236,5 @@ public class ComputerServices implements IComputerServices {
         return cp;
 
     }
+
 }

@@ -2,6 +2,8 @@ package cdb.mapper;
 
 import cdb.dto.ComputerDTO;
 import cdb.utils.SqlNames;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,8 +16,12 @@ import java.util.List;
  */
 public class MapperComputerDTO {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MapperComputerDTO.class);
+
+
     /**
      * Map resultset to computer.
+     *
      * @param rs resultset
      * @return computer
      */
@@ -27,13 +33,14 @@ public class MapperComputerDTO {
             rs.close();
             return c;
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.info("MapperComputerDTO : error while mapping from resultset : " + e.getMessage());
         }
         return null;
     }
 
     /**
      * Map resultset to computers.
+     *
      * @param rs resultset
      * @return computers
      */
@@ -45,13 +52,14 @@ public class MapperComputerDTO {
             }
             rs.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.info("MapperComputerDTO : error while mapping from resultset : " + e.getMessage());
         }
         return list;
     }
 
     /**
      * Mapp Result set to computer without closing the resultset.
+     *
      * @param rs result set
      * @return computer
      */
@@ -64,8 +72,8 @@ public class MapperComputerDTO {
             Date discontinued = rs.getDate(SqlNames.COMPUTER_COL_COMPUTERDISCONTINUED);
             String companyName = rs.getString(SqlNames.COMPUTER_COL_JOINED_COMPANY_NAME);
             return new ComputerDTO(computerName, computerId, MapperDate.formatDate(introduced), MapperDate.formatDate(discontinued), companyName, companyId);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            LOGGER.info("MapperComputerDTO : error while mapping from resultset : " + e.getMessage());
         }
         return null;
     }

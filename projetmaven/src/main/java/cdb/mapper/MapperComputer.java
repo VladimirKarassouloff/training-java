@@ -59,7 +59,6 @@ public class MapperComputer {
             if (rs.next()) {
                 c = mapResultSetToObjectAux(rs);
             }
-            rs.close();
             return c;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -79,7 +78,6 @@ public class MapperComputer {
             while (rs.next()) {
                 list.add(MapperComputer.mapResultSetToObjectAux(rs));
             }
-            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -97,22 +95,10 @@ public class MapperComputer {
             int computerId = rs.getInt(SqlNames.COMPUTER_COL_COMPUTER_ID);
             int companyId = rs.getInt(SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID);
             String computerName = rs.getString(SqlNames.COMPUTER_COL_COMPUTER_NAME);
-
-            Date introduced = null;
-            try {
-                introduced = rs.getDate(SqlNames.COMPUTER_COL_COMPUTER_INTRODUCED);
-            } catch (SQLException e) {
-                LOGGER.info("MapperComputer : failed to parse introduced date of computer with id " + computerId);
-            }
-
-            Date discontinued = null;
-            try {
-                discontinued = rs.getDate(SqlNames.COMPUTER_COL_COMPUTERDISCONTINUED);
-            } catch (SQLException e) {
-                LOGGER.info("MapperComputer : failed to parse discontinued date of computer with id " + computerId);
-            }
-
+            Date introduced = rs.getDate(SqlNames.COMPUTER_COL_COMPUTER_INTRODUCED);
+            Date discontinued = rs.getDate(SqlNames.COMPUTER_COL_COMPUTERDISCONTINUED);
             String companyName = rs.getString(SqlNames.COMPUTER_COL_JOINED_COMPANY_NAME);
+
             Company company;
             if (companyId == 0) {
                 company = null;
@@ -120,8 +106,8 @@ public class MapperComputer {
                 company = new Company(companyId, companyName);
             }
             return new Computer(computerId, company, computerName, introduced, discontinued);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            LOGGER.info("MapperComputer : error while mapping from resultset : " + e.getMessage());
         }
         return null;
     }

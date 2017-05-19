@@ -2,15 +2,22 @@ package cdb.applicationcli.pages;
 
 import cdb.applicationcli.Application;
 import cdb.model.Company;
-import cdb.services.CompanyServices;
+import cdb.service.CompanyServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ListCompaniesPage extends Pageable<Company> {
 
+
+    @Autowired
+    public CompanyServiceImpl companyService;
+
+
     /**
      * Constructor.
+     *
      * @param app belonging to
      */
     public ListCompaniesPage(Application app) {
@@ -33,7 +40,7 @@ public class ListCompaniesPage extends Pageable<Company> {
 
     @Override
     protected int orderFetchDataCountPageable() {
-        return CompanyServices.getInstance().getCountCompany();
+        return companyService.getCountCompany();
     }
 
     @Override
@@ -43,7 +50,7 @@ public class ListCompaniesPage extends Pageable<Company> {
 
     @Override
     protected void orderFetchNewDataForPage() {
-        this.list = CompanyServices.getInstance().getPagedCompany(currentPage, numberItemPage);
+        this.list = companyService.getPagedCompany(currentPage, numberItemPage);
     }
 
     @Override
@@ -53,7 +60,7 @@ public class ListCompaniesPage extends Pageable<Company> {
         if (filterId.size() > 0) {
             this.app.pushPage(new DetailCompany(app, filterId.get(0)));
         } else {
-            Company tmp = CompanyServices.getInstance().getCompany(id);
+            Company tmp = companyService.getCompany(id);
             if (tmp != null) {
                 this.app.pushPage(new DetailCompany(app, tmp));
             }

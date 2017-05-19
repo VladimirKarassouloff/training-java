@@ -61,11 +61,7 @@ public class DetailComputer extends Page {
     public void onFirstGroundEvent() {
         if (isEditingCompanyId) {
             isEditingCompanyId = false;
-            try {
-                System.out.println("Succes de la modification");
-            } catch (Exception e) {
-                System.out.println("Erreur durant la modification");
-            }
+            System.out.println("Succes de la modification");
         }
     }
 

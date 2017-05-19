@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>projet-maven</groupId>
     <artifactId>projet-maven</artifactId>
-    <version>0.3.0</version>
+    <version>0.2.0</version>
     <packaging>war</packaging>
     <name>projet-mvn</name>
     <description>computer-database</description>
@@ -15,14 +15,23 @@
         <open-browser-at>${deployment-url}/${deployment-path}</open-browser-at>
         <shouldSkipTests>false</shouldSkipTests>
         <war-name>${project.artifactId}-${project.version}</war-name>
-        <version.hikari>2.6.1</version.hikari>
-        <version.mysql>5.1.42</version.mysql>
-        <version.slf4j>1.7.25</version.slf4j>
-        <version.logback>1.0.7</version.logback>
+
+
+        <version.spring>4.3.8.RELEASE</version.spring>
+        <version.spring-test>4.3.8.RELEASE</version.spring-test>
+
         <version.servlet-api>3.1.0</version.servlet-api>
         <version.jstl>1.2</version.jstl>
         <version.jspapi>2.2</version.jspapi>
         <version.taglibs>1.1.2</version.taglibs>
+
+        <version.dbcp>2.1.1</version.dbcp>
+        <version.mysql>5.1.42</version.mysql>
+
+        <version.jcloverslf4j>1.7.25</version.jcloverslf4j>
+        <version.slf4j>1.7.25</version.slf4j>
+        <version.logback>1.0.7</version.logback>
+
         <version.selenium>3.3.1</version.selenium>
         <version.mockito>1.9.5</version.mockito>
         <version.junit>4.12</version.junit>
@@ -77,12 +86,6 @@
         <!-- -->
         <!-- DB Connection -->
         <!-- -->
-        <!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>${version.hikari}</version>
-        </dependency>
 
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
@@ -97,6 +100,12 @@
         <!-- Logging -->
         <!-- -->
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${version.jcloverslf4j}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -120,6 +129,56 @@
         <!-- -->
         <!-- j2ee -->
         <!-- -->
+
+
+        <!-- Spring framework -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${version.spring}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${version.spring}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${version.spring}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${version.spring}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${version.spring-test}</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/commons-dbcp/commons-dbcp -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>${version.dbcp}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -189,6 +248,9 @@
 
         <resources>
             <resource>
+                <directory>${project.basedir}/src/main/resources/common</directory>
+            </resource>
+            <resource>
                 <directory>${project.basedir}/src/main/resources/${envName}</directory>
                 <excludes>
                     <exclude>**/*.java</exclude>
@@ -250,24 +312,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--
-            <plugin>
-                <artifactId>exec-maven-plugin</artifactId>
-                <groupId>org.codehaus.mojo</groupId>
-                <executions>
-                    <execution>
-                        <id>Launch catalina</id>
-                        <phase>clean</phase>
-                        <configuration>
-                            <executable>${basedir}/scripts/run-catalina.sh</executable>
-                        </configuration>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
+
             <!-- War deployment -->
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
@@ -283,15 +328,6 @@
                     <contextReloadable>true</contextReloadable>
                     <update>true</update>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>tomcat-deploy</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <!-- Exclude selenium test because it needs the app to be deployed-->
@@ -306,31 +342,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-
-            <!-- Open browser after deploying the war-->
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>Run URL in system browser.</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <target>
-                                <exec executable="start" vmlauncher="false">
-                                    <arg line="${open-browser-at}"/>
-                                </exec>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
 
         </plugins>
     </build>

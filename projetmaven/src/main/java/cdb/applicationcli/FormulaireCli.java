@@ -4,8 +4,9 @@ import cdb.exception.FormException;
 import cdb.mapper.MapperDate;
 import cdb.model.Company;
 import cdb.model.Computer;
-import cdb.services.CompanyServices;
-import cdb.services.ComputerServices;
+import cdb.service.CompanyServiceImpl;
+import cdb.service.ComputerServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.Scanner;
@@ -14,6 +15,12 @@ public class FormulaireCli {
 
 
     public static Scanner input = new Scanner(System.in);
+
+    @Autowired
+    public static ComputerServiceImpl computerService;
+
+    @Autowired
+    public static CompanyServiceImpl companyService;
 
     /**
      * Ask user to give a date formatted like yyyy-MM-dd.
@@ -29,18 +36,12 @@ public class FormulaireCli {
             if (inputUser.toLowerCase().equals("null")) {
                 return null;
             } else {
-
-                try {
-                    Date d = MapperDate.dateFromString(inputUser);
-                    if (d != null) {
-                        return d;
-                    } else {
-                        System.out.println("Date invalide");
-                    }
-                } catch (Exception e) {
+                Date d = MapperDate.dateFromString(inputUser);
+                if (d != null) {
+                    return d;
+                } else {
                     System.out.println("Date invalide");
                 }
-
             }
 
         }
@@ -66,8 +67,8 @@ public class FormulaireCli {
                     System.out.println("La valeur devrait etre entre " + startRange + " et " + endRange);
                 }
 
-            } catch (Exception e) {
-                System.out.println();
+            } catch (RuntimeException e) {
+                System.out.println("Error : " + e.getMessage());
             }
 
         }
@@ -113,7 +114,7 @@ public class FormulaireCli {
             } else {
                 try {
                     return Integer.parseInt(inputUser);
-                } catch (Exception e) {
+                } catch (NumberFormatException e) {
                     System.out.println("Mauvais format de date");
                 }
             }
@@ -157,8 +158,8 @@ public class FormulaireCli {
         Date newDate = FormulaireCli.reclaimDateOrNullInput();
         computer.setIntroduced(newDate);
         try {
-            ComputerServices.getInstance().updateComputer(computer);
-        } catch (Exception e) {
+            computerService.updateComputer(computer);
+        } catch (FormException e) {
             System.out.println("Error while updating computer");
         }
     }
@@ -173,9 +174,9 @@ public class FormulaireCli {
         Date newDate = FormulaireCli.reclaimDateOrNullInput();
         computer.setDiscontinued(newDate);
         try {
-            ComputerServices.getInstance().updateComputer(computer);
-        } catch (Exception e) {
-            System.out.println("Error while updating computer");
+            computerService.updateComputer(computer);
+        } catch (FormException e) {
+            System.out.println("Error while updating computer : " + e.getMessage());
         }
     }
 
@@ -188,7 +189,7 @@ public class FormulaireCli {
         System.out.println("Entrez le nouveau nom");
         computer.setName(FormulaireCli.input.nextLine());
         try {
-            ComputerServices.getInstance().updateComputer(computer);
+            computerService.updateComputer(computer);
         } catch (FormException e) {
             System.out.println("Error while updating computer");
         }
@@ -202,7 +203,7 @@ public class FormulaireCli {
     public static void updateCompanyName(Company company) {
         System.out.println("Entrez le nouveau nom");
         company.setName(FormulaireCli.input.nextLine());
-        CompanyServices.getInstance().updateCompany(company);
+        companyService.updateCompany(company);
     }
 
 

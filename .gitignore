@@ -125,3 +125,5 @@ projetmaven/.idea/*
 
 # End of https://www.gitignore.io/api/maven,intellij,intellij+iml
 0
+
+projetmaven/cdb.log

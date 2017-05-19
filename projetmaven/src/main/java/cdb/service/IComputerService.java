@@ -1,4 +1,4 @@
-package cdb.services;
+package cdb.service;
 
 import cdb.dto.ComputerDTO;
 import cdb.exception.FormException;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by vkarassouloff on 26/04/17.
  */
-interface IComputerServices {
+public interface IComputerService {
 
     /**
      * Get all the computer from DB.
@@ -99,17 +99,17 @@ interface IComputerServices {
      * Try updating a computer.
      *
      * @param form from user sent back from jsp
-     * @throws Exception error during validation
+     * @throws FormException error during validation
      */
-    void formUpdateComputer(ComputerDTO form) throws Exception;
+    void formUpdateComputer(ComputerDTO form) throws FormException;
 
     /**
      * Try inserting new computer.
      *
      * @param form from user sent back from jsp
-     * @throws Exception error during validation
+     * @throws FormException error during validation
      */
-    void formAddComputer(ComputerDTO form) throws Exception;
+    void formAddComputer(ComputerDTO form) throws FormException;
 
 
     /**

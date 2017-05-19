@@ -1,46 +1,50 @@
 package unit;
 
 import cdb.exception.DAODeleteException;
+import cdb.exception.DAOInsertException;
 import cdb.model.Company;
 import cdb.model.Computer;
+import cdb.persistence.CompanyDAOImpl;
+import cdb.persistence.ComputerDAOImpl;
+import cdb.service.ICompanyService;
+import cdb.service.IComputerService;
+import cdb.utils.SqlNames;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import cdb.persistence.CompanyDAO;
-import cdb.persistence.ComputerDAO;
-import cdb.persistence.Connector;
-import cdb.services.CompanyServices;
-import cdb.services.ComputerServices;
-import cdb.utils.SqlNames;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
-/**
- * Created by vkara on 30/04/2017.
- */
-public class CompanyDeleteTest {
-    private CompanyServices companyServices;
-    private ComputerServices computerServices;
-    private Connector connector;
 
-    private CompanyDAO companyDao;
-    private ComputerDAO computerDao;
+@ContextConfiguration(locations = { "/applicationContextTest.xml" })
+@RunWith(SpringJUnit4ClassRunner.class)
+public class CompanyDeleteTest {
+
+    @Autowired
+    private ICompanyService companyService;
+
+    @Autowired
+    private IComputerService computerService;
+
+    @Autowired
+    private CompanyDAOImpl companyDaoImpl;
+
+    @Autowired
+    private ComputerDAOImpl computerDaoImpl;
 
     private Company newCompany;
     private Computer newComputer1, newComputer2;
 
     @Before
     public void setUp() throws Exception {
-        companyServices = CompanyServices.getInstance();
-        computerServices = ComputerServices.getInstance();
-        connector = Connector.getInstance();
-
-        companyDao = CompanyDAO.getInstance();
-        computerDao = ComputerDAO.getInstance();
 
         newCompany = new Company("mdr nouvelle company");
         newComputer1 = new Computer.Builder()
@@ -55,10 +59,10 @@ public class CompanyDeleteTest {
 
 
         try {
-            companyDao.insert(newCompany);
-            computerDao.insert(newComputer1);
-            computerDao.insert(newComputer2);
-        } catch (Exception e) {
+            companyDaoImpl.insert(newCompany);
+            computerDaoImpl.insert(newComputer1);
+            computerDaoImpl.insert(newComputer2);
+        } catch (DAOInsertException e) {
             throw new RuntimeException("Cannot insert data for test");
         }
 
@@ -67,39 +71,40 @@ public class CompanyDeleteTest {
 
     @Test
     public void testDeleteCompany() {
-        assertEquals(true, companyServices.getCompany(newCompany.getId()) != null);
-        assertEquals(true, computerServices.getComputer(newComputer1.getId()) != null);
-        assertEquals(true, computerServices.getComputer(newComputer2.getId()) != null);
+        assertEquals(true, companyService.getCompany(newCompany.getId()) != null);
+        assertEquals(true, computerService.getComputer(newComputer1.getId()) != null);
+        assertEquals(true, computerService.getComputer(newComputer2.getId()) != null);
 
-        companyServices.delete(newCompany.getId());
+        companyService.delete(newCompany.getId());
 
-        assertEquals(null, companyServices.getCompany(newCompany.getId()));
-        assertEquals(null, computerServices.getComputer(newComputer1.getId()));
-        assertEquals(null, computerServices.getComputer(newComputer2.getId()));
+        assertEquals(null, companyService.getCompany(newCompany.getId()));
+        assertEquals(null, computerService.getComputer(newComputer1.getId()));
+        assertEquals(null, computerService.getComputer(newComputer2.getId()));
     }
 
     @Test
     public void testDeleteCompanyRollback() {
         // Assert that got inserted
-        assertEquals(true, companyServices.getCompany(newCompany.getId()) != null);
-        assertEquals(true, computerServices.getComputer(newComputer1.getId()) != null);
-        assertEquals(true, computerServices.getComputer(newComputer2.getId()) != null);
+        assertEquals(true, companyService.getCompany(newCompany.getId()) != null);
+        assertEquals(true, computerService.getComputer(newComputer1.getId()) != null);
+        assertEquals(true, computerService.getComputer(newComputer2.getId()) != null);
 
         try {
             // Setup mock
-            ComputerDAO mockedDao = mock(ComputerDAO.class);
+            ComputerDAOImpl mockedDao = mock(ComputerDAOImpl.class);
             Mockito.doThrow(new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME, "MOCKED OBJECT THROW EXCEPTION")).when(mockedDao).deleteComputerBelongingToCompany(newCompany.getId());
-            companyServices.setComputerDao(mockedDao);
+            companyService.setComputerDaoImpl(mockedDao);
+
             // Test it
-            companyServices.delete(newCompany.getId());
-        } catch (DAODeleteException e) {
+            companyService.delete(newCompany.getId());
+        } catch (DAODeleteException | RuntimeException e) {
             e.printStackTrace();
         }
 
         // Assert that none got deleted
-        assertEquals(true, computerServices.getComputer(newComputer1.getId()) != null);
-        assertEquals(true, computerServices.getComputer(newComputer2.getId()) != null);
-        assertEquals(true, companyServices.getCompany(newCompany.getId()) != null);
+        assertEquals(true, computerService.getComputer(newComputer1.getId()) != null);
+        assertEquals(true, computerService.getComputer(newComputer2.getId()) != null);
+        assertEquals(true, companyService.getCompany(newCompany.getId()) != null);
     }
 
     @After
@@ -107,8 +112,8 @@ public class CompanyDeleteTest {
 
         try {
             System.out.println("Suppression des elements de test newComputer1 & newComputer2 : " +
-                    computerDao.deleteById(Arrays.asList(newComputer1.getId(),newComputer2.getId())) + ", " +
-                    "newCompany : " + companyDao.delete(newCompany.getId()));
+                    computerDaoImpl.delete(Arrays.asList(newComputer1.getId(),newComputer2.getId())) + ", " +
+                    "newCompany : " + companyDaoImpl.delete(newCompany.getId()));
         } catch (DAODeleteException e) {
             System.err.println("Error happened during cleanup");
         }

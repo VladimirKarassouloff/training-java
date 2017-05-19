@@ -2,10 +2,14 @@ package cdb.servlet;
 
 import cdb.dto.ComputerDTO;
 import cdb.exception.FormException;
-import cdb.services.CompanyServices;
-import cdb.services.ComputerServices;
+import cdb.service.ComputerServiceImpl;
+import cdb.service.ICompanyService;
+import cdb.service.IComputerService;
 import cdb.utils.UtilsServletError;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,8 +36,27 @@ public class Computer extends HttpServlet {
     private static final String FORM_DATE_INTRODUCED = "introduced_computer";
     private static final String FORM_DATE_DISCONTINUED = "discontinued_computer";
 
-    private static ComputerServices serviceComputer = ComputerServices.getInstance();
-    private static CompanyServices serviceCompany = CompanyServices.getInstance();
+    private IComputerService computerServiceImpl;
+
+    private ICompanyService companyService;
+
+
+    @Autowired
+    public void setComputerServiceImpl(ComputerServiceImpl computerServiceImpl) {
+        this.computerServiceImpl = computerServiceImpl;
+    }
+
+    @Autowired
+    public void setICompanyService(ICompanyService companyService) {
+        this.companyService = companyService;
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+    }
+
 
     /**
      * Present form for adding / editing computer.
@@ -57,7 +80,7 @@ public class Computer extends HttpServlet {
 
             try {
                 int parsedIdComputer = Integer.parseInt(idComputer);
-                form = serviceComputer.getComputerDTO(parsedIdComputer);
+                form = computerServiceImpl.getComputerDTO(parsedIdComputer);
 
                 // Computer not found while giving a precise id, error, redirect to 404
                 if (form == null) {
@@ -73,7 +96,7 @@ public class Computer extends HttpServlet {
             }
         }
 
-        request.setAttribute(ATTR_COMPANIES, serviceCompany.getCompanies());
+        request.setAttribute(ATTR_COMPANIES, companyService.getCompanies());
         request.setAttribute(ATTR_FORM, form);
         request.setAttribute(ATTR_ERROR, "");
         getServletContext().getRequestDispatcher(PAGE_FORM).forward(request, response);
@@ -101,7 +124,7 @@ public class Computer extends HttpServlet {
         } else {
             try {
                 id = Integer.parseInt(request.getParameter(FORM_ID));
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 error = "Error parsing computer id";
             }
         }
@@ -112,7 +135,7 @@ public class Computer extends HttpServlet {
         } else {
             try {
                 companyId = Integer.parseInt(request.getParameter(FORM_COMPANY_ID));
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 error = "Error parsing company id";
             }
         }
@@ -130,9 +153,9 @@ public class Computer extends HttpServlet {
         if (error == null) {
             try {
                 if (form.getId() == null) { // Create new Computer
-                    serviceComputer.formAddComputer(form);
+                    computerServiceImpl.formAddComputer(form);
                 } else { // Edit a computer
-                    serviceComputer.formUpdateComputer(form);
+                    computerServiceImpl.formUpdateComputer(form);
                 }
             } catch (FormException e) {
                 error = e.getMessage();
@@ -141,7 +164,7 @@ public class Computer extends HttpServlet {
 
         // Sendback to page if error, otherwise redirect to dashboard
         if (error != null) {
-            request.setAttribute(ATTR_COMPANIES, serviceCompany.getCompanies());
+            request.setAttribute(ATTR_COMPANIES, companyService.getCompanies());
             request.setAttribute(ATTR_ERROR, error);
             request.setAttribute(ATTR_FORM, form);
             request.getRequestDispatcher(PAGE_FORM).forward(request, response);
@@ -151,4 +174,5 @@ public class Computer extends HttpServlet {
 
 
     }
+
 }
