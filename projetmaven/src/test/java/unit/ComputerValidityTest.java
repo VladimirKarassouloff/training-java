@@ -4,11 +4,8 @@ import cdb.exception.InvalidComputerException;
 import cdb.mapper.MapperDate;
 import cdb.model.Company;
 import cdb.model.Computer;
-import org.junit.Test;
-import cdb.utils.Format;
 import cdb.validator.ComputerValidator;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 /**
  * Created by vkarassouloff on 18/04/17.
@@ -17,19 +14,19 @@ public class ComputerValidityTest {
 
     //@Test(expected=IllegalArgumentException.class)
 
-    @Test(expected=InvalidComputerException.class)
+    @Test(expected = InvalidComputerException.class)
     public void testValidityBadDates() throws InvalidComputerException {
         Computer computer = new Computer(null, "mdr", MapperDate.dateFromString("2017-04-05"), MapperDate.dateFromString("2017-04-04"));
         ComputerValidator.checkValidity(computer);
     }
 
-    @Test(expected=InvalidComputerException.class)
+    @Test(expected = InvalidComputerException.class)
     public void testValidityBadName() throws InvalidComputerException {
         Computer computer = new Computer(null, "", null, null);
         ComputerValidator.checkValidity(computer);
     }
 
-    @Test(expected=InvalidComputerException.class)
+    @Test(expected = InvalidComputerException.class)
     public void testValidityBadName2() throws InvalidComputerException {
         Computer computer = new Computer(null, null, null, null);
         ComputerValidator.checkValidity(computer);

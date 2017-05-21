@@ -119,4 +119,14 @@ public class CompanyServiceImpl implements ICompanyService {
         }
     }
 
+    @Override
+    public Company getLastCompanyInserted() {
+        try {
+            return companyDaoImpl.getLastCompanyInserted();
+        } catch (DAOSelectException e) {
+            LOGGER.info("CompanyServiceImpl : Error while getting the last company");
+            throw new RuntimeException("CompanyServiceImpl : Error while getting the last company");
+        }
+    }
+
 }

@@ -1,8 +1,8 @@
 package unit;
 
 import cdb.model.Company;
-import org.junit.Test;
 import cdb.validator.CompanyValidator;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,7 +19,7 @@ public class CompanyValidityTest {
 
     @Test
     public void testValidityEmptyName() {
-        Company company = new Company(0,"");
+        Company company = new Company(0, "");
         assertEquals(false, CompanyValidator.isValid(company));
     }
 

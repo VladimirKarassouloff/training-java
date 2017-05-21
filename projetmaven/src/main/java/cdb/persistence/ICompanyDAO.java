@@ -76,4 +76,12 @@ interface ICompanyDAO {
      */
     boolean delete(int id) throws DAODeleteException;
 
+    /**
+     * Get the last inserted record.
+     *
+     * @return last inserted company
+     * @throws DAOSelectException if error happens
+     */
+    Company getLastCompanyInserted() throws DAOSelectException;
+
 }

@@ -18,13 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 
-@ContextConfiguration(locations = { "/applicationContextTest.xml" })
+@ContextConfiguration(locations = {"/applicationContextTest.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CompanyDeleteTest {
 
@@ -57,11 +56,13 @@ public class CompanyDeleteTest {
                 .build();
 
 
-
         try {
             companyDaoImpl.insert(newCompany);
+            newCompany.setId(companyDaoImpl.getLastCompanyInserted().getId());
             computerDaoImpl.insert(newComputer1);
+            newComputer1 = computerDaoImpl.getLastComputerInserted();
             computerDaoImpl.insert(newComputer2);
+            newComputer2 = computerDaoImpl.getLastComputerInserted();
         } catch (DAOInsertException e) {
             throw new RuntimeException("Cannot insert data for test");
         }
@@ -77,9 +78,27 @@ public class CompanyDeleteTest {
 
         companyService.delete(newCompany.getId());
 
-        assertEquals(null, companyService.getCompany(newCompany.getId()));
-        assertEquals(null, computerService.getComputer(newComputer1.getId()));
-        assertEquals(null, computerService.getComputer(newComputer2.getId()));
+        try {
+            companyService.getCompany(newCompany.getId());
+            fail("Should have failed");
+        } catch (Exception e) {
+            System.out.println("Success delete company");
+        }
+
+        try {
+            computerService.getComputer(newComputer1.getId());
+            fail("Should have failed");
+        } catch (Exception e) {
+            System.out.println("Success delete newComputer1");
+        }
+
+        try {
+            computerService.getComputer(newComputer2.getId());
+            fail("Should have failed");
+        } catch (Exception e) {
+            System.out.println("Success delete newComputer2");
+        }
+
     }
 
     @Test
@@ -102,9 +121,24 @@ public class CompanyDeleteTest {
         }
 
         // Assert that none got deleted
-        assertEquals(true, computerService.getComputer(newComputer1.getId()) != null);
-        assertEquals(true, computerService.getComputer(newComputer2.getId()) != null);
-        assertEquals(true, companyService.getCompany(newCompany.getId()) != null);
+        try {
+            assertEquals(true, computerService.getComputer(newComputer1.getId()) != null);
+        } catch (Exception e) {
+            fail("Error while selecting rollback data");
+        }
+
+        try {
+            assertEquals(true, computerService.getComputer(newComputer2.getId()) != null);
+        } catch (Exception e) {
+            fail("Error while selecting rollback data");
+        }
+
+        try {
+            assertEquals(true, companyService.getCompany(newCompany.getId()) != null);
+        } catch (Exception e) {
+            fail("Error while selecting rollback data");
+        }
+
     }
 
     @After
@@ -112,7 +146,7 @@ public class CompanyDeleteTest {
 
         try {
             System.out.println("Suppression des elements de test newComputer1 & newComputer2 : " +
-                    computerDaoImpl.delete(Arrays.asList(newComputer1.getId(),newComputer2.getId())) + ", " +
+                    computerDaoImpl.delete(newComputer1.getId(), newComputer2.getId()) + ", " +
                     "newCompany : " + companyDaoImpl.delete(newCompany.getId()));
         } catch (DAODeleteException e) {
             System.err.println("Error happened during cleanup");

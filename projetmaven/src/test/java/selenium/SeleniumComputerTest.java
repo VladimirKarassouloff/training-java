@@ -2,19 +2,22 @@ package selenium;
 
 import cdb.mapper.MapperDate;
 import cdb.model.Computer;
+import cdb.persistence.filter.FilterSelectComputer;
+import cdb.persistence.operator.Equal;
 import cdb.service.ComputerServiceImpl;
+import cdb.utils.SqlNames;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
-import cdb.persistence.filter.FilterSelectComputer;
-import cdb.persistence.operator.Equal;
-import cdb.utils.SqlNames;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -22,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+@ContextConfiguration(locations = {"/applicationContextTest.xml"})
+@RunWith(SpringJUnit4ClassRunner.class)
 public class SeleniumComputerTest {
 
     private WebDriver driver;
@@ -29,9 +34,9 @@ public class SeleniumComputerTest {
     @Autowired
     private ComputerServiceImpl computerService;
 
-    private static final String baseUrl = "http://localhost:8080/mydeployyy/";
-    private static final String baseUrlAddEdit = baseUrl + "computer";
-    private static final String baseUrlRemove = baseUrl;
+    private static final String BASEURL = "http://localhost:8080/mydeployyy/";
+    private static final String BASEURLADDEDIT = BASEURL + "computer";
+    private static final String BASEURLREMOVE = BASEURL;
     private StringBuffer verificationErrors = new StringBuffer();
 
     /////////////////////////////////////////
@@ -68,7 +73,7 @@ public class SeleniumComputerTest {
 
     @Test
     public void testAddComputer() throws Exception {
-        driver.get(baseUrlAddEdit);
+        driver.get(BASEURLADDEDIT);
 
         // Grab inputs and submit
         getAllFormElement();
@@ -110,7 +115,7 @@ public class SeleniumComputerTest {
     @Test
     public void testEditComputer() throws Exception {
         Computer computerJustAdded = computerService.getLastComputerInserted();
-        driver.get(baseUrlAddEdit + "?id=" + computerJustAdded.getId());
+        driver.get(BASEURLADDEDIT + "?id=" + computerJustAdded.getId());
         driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
 
 
@@ -158,8 +163,6 @@ public class SeleniumComputerTest {
         System.out.println("New values for edit computer are ok");
 
     }
-
-
 
 
     /**

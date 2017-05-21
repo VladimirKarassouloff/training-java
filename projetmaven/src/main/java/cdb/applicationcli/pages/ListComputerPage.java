@@ -8,7 +8,6 @@ import cdb.persistence.filter.FilterSelectComputer;
 import cdb.service.ComputerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,19 +60,17 @@ public class ListComputerPage extends Pageable<Computer> {
             Computer comp = computerService.getComputer(idDelete);
             if (comp == null) {
                 throw new RuntimeException("Id invalide");
-            } else if (computerService.deleteComputer(Arrays.asList(comp.getId()))) {
-                countItemTotal--;
-                if (!checkPageIsCorrect()) {
-                    orderFetchNewDataForPage();
-                }
-
-                System.out.println("Suppression reussie");
-            } else {
-                throw new RuntimeException("impossible de supprimer cet element");
             }
+            computerService.deleteComputer(comp.getId());
+            countItemTotal--;
+            if (!checkPageIsCorrect()) {
+                orderFetchNewDataForPage();
+            }
+            System.out.println("Suppression reussie");
         } catch (RuntimeException e) {
             System.out.println("Erreur : " + e.getMessage());
         }
+
     }
 
     /**

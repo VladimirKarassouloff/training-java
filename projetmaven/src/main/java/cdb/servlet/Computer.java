@@ -78,20 +78,21 @@ public class Computer extends HttpServlet {
             form = new ComputerDTO();
         } else { // Trying to edit computer
 
+            int parsedIdComputer;
             try {
-                int parsedIdComputer = Integer.parseInt(idComputer);
-                form = computerServiceImpl.getComputerDTO(parsedIdComputer);
-
-                // Computer not found while giving a precise id, error, redirect to 404
-                if (form == null) {
-                    request.setAttribute(UtilsServletError.NAME_ATTRIBUTE_ERROR, "Computer not found");
-                    request.getRequestDispatcher(UtilsServletError.ERROR_404).forward(request, response);
-                    return;
-                }
+                parsedIdComputer = Integer.parseInt(idComputer);
             } catch (NumberFormatException e) {
                 // If id cannot be parsed
                 request.setAttribute(UtilsServletError.NAME_ATTRIBUTE_ERROR, "Invalid id");
                 request.getRequestDispatcher(UtilsServletError.ERROR_403).forward(request, response);
+                return;
+            }
+
+            try {
+                form = computerServiceImpl.getComputerDTO(parsedIdComputer);
+            } catch (RuntimeException e) {
+                request.setAttribute(UtilsServletError.NAME_ATTRIBUTE_ERROR, "Computer not found");
+                request.getRequestDispatcher(UtilsServletError.ERROR_404).forward(request, response);
                 return;
             }
         }

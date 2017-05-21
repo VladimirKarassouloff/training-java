@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Servlet implementation class Index.
@@ -128,18 +126,21 @@ public class Index extends HttpServlet {
         }
 
         // Get the datas for the page
-        ComputerPage cp = services.getPage((FilterSelectComputer) builder.withPage(pageDisplay)
-                .withLengthPage(lengthPageDisplay)
-                .build());
+        try {
+            ComputerPage cp = services.getPage((FilterSelectComputer) builder.withPage(pageDisplay)
+                    .withLengthPage(lengthPageDisplay)
+                    .build());
 
-        // Set all attributes
-        request.setAttribute("computers", cp.getResults());
-        request.setAttribute("totalCount", cp.getTotalCount());
-        request.setAttribute("currentPage", cp.getDisplayedPage());
-        request.setAttribute("lengthPage", lengthPageDisplay);
-        request.setAttribute("search", (search == null ? "" : search));
-        getServletContext().getRequestDispatcher(INDEX).forward(request, response);
-
+            // Set all attributes
+            request.setAttribute("computers", cp.getResults());
+            request.setAttribute("totalCount", cp.getTotalCount());
+            request.setAttribute("currentPage", cp.getDisplayedPage());
+            request.setAttribute("lengthPage", lengthPageDisplay);
+            request.setAttribute("search", (search == null ? "" : search));
+            getServletContext().getRequestDispatcher(INDEX).forward(request, response);
+        } catch (RuntimeException e) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
     }
 
 
@@ -148,12 +149,16 @@ public class Index extends HttpServlet {
         String deleteUnparsed = req.getParameter("selection");
         if (deleteUnparsed != null) {
             String[] deleteThoseIds = deleteUnparsed.split(",");
-            List<Integer> idsParsed = new ArrayList<>();
-            for (String idToDelete : deleteThoseIds) {
-                idsParsed.add(Integer.parseInt(idToDelete));
+            int[] parsedId = new int[deleteThoseIds.length];
+            for (int i = 0; i < parsedId.length; i++) {
+                try {
+                    parsedId[i] = Integer.parseInt(deleteThoseIds[i]);
+                } catch (NumberFormatException e) {
+                    resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    return;
+                }
             }
-
-            services.deleteComputer(idsParsed);
+            services.deleteComputer(parsedId);
         }
 
         BeanParamUtils bpu = new BeanParamUtils(req);

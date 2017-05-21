@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(function() {
 
     $('.input-group.date.introduced').datepicker({
         format: "yyyy-mm-dd"
@@ -8,37 +8,21 @@ $(document).ready(function () {
         format: "yyyy-mm-dd"
     });
 
-
-    $('#myform').bootstrapValidator({
+    $("#myform").bootstrapValidator({
         framework: 'bootstrap',
-
+        icon: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
         fields: {
             name_computer: {
                 validators: {
                     notEmpty: {
-                        message: 'A computer must have a name'
+                        message: 'The name is required and cannot be empty'
                     }
                 }
-            }/*,
-            introduced_computer: {
-                validators: {
-                    date: {
-                        format: 'YYYY-MM-DD',
-                        message: 'The value is not a valid date'
-                    }
-                }
-            },
-            discontinued_computer: {
-                validators: {
-                    date: {
-                        format: 'YYYY-MM-DD',
-                        message: 'The value is not a valid date'
-                    }
-                }
-            },
-            company_id_computer: {
-
-            }*/
+            }
         }
     });
 

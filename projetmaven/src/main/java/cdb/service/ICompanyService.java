@@ -16,7 +16,7 @@ public interface ICompanyService {
      */
     List<Company> getCompanies();
 
-    /**
+    /**é
      * Get Page of campanies.
      * @param page       number of page
      * @param numberItem number of result per page
@@ -59,4 +59,10 @@ public interface ICompanyService {
      * @param dao source
      */
     void setComputerDaoImpl(ComputerDAOImpl dao);
+
+    /**
+     * Get the last inserted record.
+     * @return last record
+     */
+    Company getLastCompanyInserted();
 }

@@ -48,7 +48,7 @@ if (typeof jQuery === 'undefined') {
         var el = document.createElement('div');
         this._changeEvent = (ieVersion === 9 || !('oninput' in el)) ? 'keyup' : 'input';
 
-        // The flag to indicate that the form is ready to submit when a remote/callback cdb.validator returns
+        // The flag to indicate that the form is ready to submit when a remote/callback validator returns
         this._submitIfValid = null;
 
         // Field elements
@@ -78,8 +78,8 @@ if (typeof jQuery === 'undefined') {
                         fieldError:       this.$form.attr('data-bv-events-field-error'),
                         fieldSuccess:     this.$form.attr('data-bv-events-field-success'),
                         fieldStatus:      this.$form.attr('data-bv-events-field-status'),
-                        validatorError:   this.$form.attr('data-bv-events-cdb.validator-error'),
-                        validatorSuccess: this.$form.attr('data-bv-events-cdb.validator-success')
+                        validatorError:   this.$form.attr('data-bv-events-validator-error'),
+                        validatorSuccess: this.$form.attr('data-bv-events-validator-success')
                     },
                     excluded:       this.$form.attr('data-bv-excluded'),
                     feedbackIcons: {
@@ -175,7 +175,7 @@ if (typeof jQuery === 'undefined') {
         },
 
         /**
-         * Parse the cdb.validator options from HTML attributes
+         * Parse the validator options from HTML attributes
          *
          * @param {jQuery} $field The field element
          * @returns {Object}
@@ -311,7 +311,7 @@ if (typeof jQuery === 'undefined') {
                 }
 
                 // Remove all error messages and feedback icons
-                $message.find('.help-block[data-bv-cdb.validator][data-bv-for="' + field + '"]').remove();
+                $message.find('.help-block[data-bv-validator][data-bv-for="' + field + '"]').remove();
                 $parent.find('i[data-bv-icon-for="' + field + '"]').remove();
 
                 // Whenever the user change the field value, mark it as not validated yet
@@ -328,14 +328,14 @@ if (typeof jQuery === 'undefined') {
                         $('<small/>')
                             .css('display', 'none')
                             .addClass('help-block')
-                            .attr('data-bv-cdb.validator', validatorName)
+                            .attr('data-bv-validator', validatorName)
                             .attr('data-bv-for', field)
                             .attr('data-bv-result', this.STATUS_NOT_VALIDATED)
                             .html(this._getMessage(field, validatorName))
                             .appendTo($message);
                     }
 
-                    // Init the cdb.validator
+                    // Init the validator
                     if ('function' === typeof $.fn.bootstrapValidator.validators[validatorName].init) {
                         $.fn.bootstrapValidator.validators[validatorName].init(this, $field, this.options.fields[field].validators[validatorName]);
                     }
@@ -483,10 +483,10 @@ if (typeof jQuery === 'undefined') {
         },
 
         /**
-         * Get the error message for given field and cdb.validator
+         * Get the error message for given field and validator
          *
          * @param {String} field The field name
-         * @param {String} validatorName The cdb.validator name
+         * @param {String} validatorName The validator name
          * @returns {String}
          */
         _getMessage: function(field, validatorName) {
@@ -693,7 +693,7 @@ if (typeof jQuery === 'undefined') {
          * Called after validating a field element
          *
          * @param {jQuery} $field The field element
-         * @param {String} [validatorName] The cdb.validator name
+         * @param {String} [validatorName] The validator name
          */
         _onFieldValidated: function($field, validatorName) {
             var field         = $field.attr('data-bv-field'),
@@ -708,7 +708,7 @@ if (typeof jQuery === 'undefined') {
                     result: $field.data('bv.response.' + validatorName)
                 };
 
-            // Trigger an event after given cdb.validator completes
+            // Trigger an event after given validator completes
             if (validatorName) {
                 switch ($field.data('bv.result.' + validatorName)) {
                     case this.STATUS_INVALID:
@@ -745,7 +745,7 @@ if (typeof jQuery === 'undefined') {
 
                 $field.trigger($.Event(this.options.events.fieldSuccess), data);
             }
-            // If all validators are completed and there is at least one cdb.validator which doesn't pass
+            // If all validators are completed and there is at least one validator which doesn't pass
             else if ((counter[this.STATUS_NOT_VALIDATED] === 0 || !this._isOptionEnabled(field, 'verbose')) && counter[this.STATUS_VALIDATING] === 0 && counter[this.STATUS_INVALID] > 0) {
                 // Add to the list of invalid fields
                 this.$invalidFields = this.$invalidFields.add($field);
@@ -795,7 +795,7 @@ if (typeof jQuery === 'undefined') {
          * Get the field options
          *
          * @param {String|jQuery} [field] The field name or field element. If it is not set, the method returns the form options
-         * @param {String} [validator] The name of cdb.validator. It null, the method returns form options
+         * @param {String} [validator] The name of validator. It null, the method returns form options
          * @param {String} [option] The option name
          * @return {String|Object}
          */
@@ -927,7 +927,7 @@ if (typeof jQuery === 'undefined') {
                         $field.data('bv.dfs.' + validatorName, validateResult);
 
                         validateResult.done(function($f, v, response) {
-                            // v is cdb.validator name
+                            // v is validator name
                             $f.removeData('bv.dfs.' + v).data('bv.response.' + v, response);
                             if (response.message) {
                                 that.updateMessage($f, v, response.message);
@@ -936,7 +936,7 @@ if (typeof jQuery === 'undefined') {
                             that.updateStatus(updateAll ? $f.attr('data-bv-field') : $f, response.valid ? that.STATUS_VALID : that.STATUS_INVALID, v);
 
                             if (response.valid && that._submitIfValid === true) {
-                                // If a remote cdb.validator returns true and the form is ready to submit, then do it
+                                // If a remote validator returns true and the form is ready to submit, then do it
                                 that._submit();
                             } else if (!response.valid && !verbose) {
                                 stop = true;
@@ -970,7 +970,7 @@ if (typeof jQuery === 'undefined') {
          * Update the error message
          *
          * @param {String|jQuery} field The field name or field element
-         * @param {String} validator The cdb.validator name
+         * @param {String} validator The validator name
          * @param {String} message The message
          * @returns {BootstrapValidator}
          */
@@ -989,7 +989,7 @@ if (typeof jQuery === 'undefined') {
             }
 
             $fields.each(function() {
-                $(this).data('bv.messages').find('.help-block[data-bv-cdb.validator="' + validator + '"][data-bv-for="' + field + '"]').html(message);
+                $(this).data('bv.messages').find('.help-block[data-bv-validator="' + validator + '"][data-bv-for="' + field + '"]').html(message);
             });
         },
 
@@ -998,7 +998,7 @@ if (typeof jQuery === 'undefined') {
          *
          * @param {String|jQuery} field The field name or field element
          * @param {String} status The status. Can be 'NOT_VALIDATED', 'VALIDATING', 'INVALID' or 'VALID'
-         * @param {String} [validatorName] The cdb.validator name. If null, the method updates validity result for all validators
+         * @param {String} [validatorName] The validator name. If null, the method updates validity result for all validators
          * @returns {BootstrapValidator}
          */
         updateStatus: function(field, status, validatorName) {
@@ -1017,7 +1017,7 @@ if (typeof jQuery === 'undefined') {
 
             if (status === this.STATUS_NOT_VALIDATED) {
                 // Reset the flag
-                // To prevent the form from doing submit when a deferred cdb.validator returns true while typing
+                // To prevent the form from doing submit when a deferred validator returns true while typing
                 this._submitIfValid = false;
             }
 
@@ -1034,8 +1034,8 @@ if (typeof jQuery === 'undefined') {
 
                 var $parent      = $field.parents(group),
                     $message     = $field.data('bv.messages'),
-                    $allErrors   = $message.find('.help-block[data-bv-cdb.validator][data-bv-for="' + field + '"]'),
-                    $errors      = validatorName ? $allErrors.filter('[data-bv-cdb.validator="' + validatorName + '"]') : $allErrors,
+                    $allErrors   = $message.find('.help-block[data-bv-validator][data-bv-for="' + field + '"]'),
+                    $errors      = validatorName ? $allErrors.filter('[data-bv-validator="' + validatorName + '"]') : $allErrors,
                     $icon        = $field.data('bv.icon'),
                     container    = ('function' === typeof (this.options.fields[field].container || this.options.container)) ? (this.options.fields[field].container || this.options.container).call(this, $field, this) : (this.options.fields[field].container || this.options.container),
                     isValidField = null;
@@ -1250,7 +1250,7 @@ if (typeof jQuery === 'undefined') {
             for (var field in map) {
                 var $f = map[field];
                 if ($f.data('bv.messages')
-                        .find('.help-block[data-bv-cdb.validator][data-bv-for="' + field + '"]')
+                        .find('.help-block[data-bv-validator][data-bv-for="' + field + '"]')
                         .filter('[data-bv-result="' + this.STATUS_INVALID +'"]')
                         .length > 0)
                 {
@@ -1307,8 +1307,8 @@ if (typeof jQuery === 'undefined') {
          *
          * @param {String|jQuery} [field] The field name or field element
          * If the field is not defined, the method returns all error messages of all fields
-         * @param {String} [validator] The name of cdb.validator
-         * If the cdb.validator is not defined, the method returns error messages of all validators
+         * @param {String} [validator] The name of validator
+         * If the validator is not defined, the method returns error messages of all validators
          * @returns {String[]}
          */
         getMessages: function(field, validator) {
@@ -1332,14 +1332,14 @@ if (typeof jQuery === 'undefined') {
                     break;
             }
 
-            var filter = validator ? '[data-bv-cdb.validator="' + validator + '"]' : '';
+            var filter = validator ? '[data-bv-validator="' + validator + '"]' : '';
             $fields.each(function() {
                 messages = messages.concat(
                     $(this)
                         .data('bv.messages')
                         .find('.help-block[data-bv-for="' + $(this).attr('data-bv-field') + '"][data-bv-result="' + that.STATUS_INVALID + '"]' + filter)
                         .map(function() {
-                            var v = $(this).attr('data-bv-cdb.validator'),
+                            var v = $(this).attr('data-bv-validator'),
                                 f = $(this).attr('data-bv-for');
                             return (that.options.fields[f].validators[v].enabled === false) ? '' : $(this).html();
                         })
@@ -1351,10 +1351,10 @@ if (typeof jQuery === 'undefined') {
         },
 
         /**
-         * Update the option of a specific cdb.validator
+         * Update the option of a specific validator
          *
          * @param {String|jQuery} field The field name or field element
-         * @param {String} validator The cdb.validator name
+         * @param {String} validator The validator name
          * @param {String} option The option name
          * @param {String} value The value to set
          * @returns {BootstrapValidator}
@@ -1375,7 +1375,7 @@ if (typeof jQuery === 'undefined') {
          * Add a new field
          *
          * @param {String|jQuery} field The field name or field element
-         * @param {Object} [options] The cdb.validator rules
+         * @param {Object} [options] The validator rules
          * @returns {BootstrapValidator}
          */
         addField: function(field, options) {
@@ -1560,13 +1560,13 @@ if (typeof jQuery === 'undefined') {
          *
          * @param {String} field The field name
          * @param {Boolean} enabled Enable/Disable field validators
-         * @param {String} [validatorName] The cdb.validator name. If null, all validators will be enabled/disabled
+         * @param {String} [validatorName] The validator name. If null, all validators will be enabled/disabled
          * @returns {BootstrapValidator}
          */
         enableFieldValidators: function(field, enabled, validatorName) {
             var validators = this.options.fields[field].validators;
 
-            // Enable/disable particular cdb.validator
+            // Enable/disable particular validator
             if (validatorName
                 && validators
                 && validators[validatorName] && validators[validatorName].enabled !== enabled)
@@ -1587,7 +1587,7 @@ if (typeof jQuery === 'undefined') {
 
         /**
          * Some validators have option which its value is dynamic.
-         * For example, the zipCode cdb.validator has the country option which might be changed dynamically by a select element.
+         * For example, the zipCode validator has the country option which might be changed dynamically by a select element.
          *
          * @param {jQuery|String} field The field name or element
          * @param {String|Function} option The option which can be determined by:
@@ -1597,9 +1597,9 @@ if (typeof jQuery === 'undefined') {
          * - a function returns the value
          *
          * The callback function has the format of
-         *      callback: function(value, cdb.validator, $field) {
+         *      callback: function(value, validator, $field) {
          *          // value is the value of field
-         *          // cdb.validator is the BootstrapValidator instance
+         *          // validator is the BootstrapValidator instance
          *          // $field is the field element
          *      }
          *
@@ -1643,7 +1643,7 @@ if (typeof jQuery === 'undefined') {
                     $field
                     // Remove all error messages
                         .data('bv.messages')
-                        .find('.help-block[data-bv-cdb.validator][data-bv-for="' + field + '"]').remove().end()
+                        .find('.help-block[data-bv-validator][data-bv-for="' + field + '"]').remove().end()
                         .end()
                         .removeData('bv.messages')
                         // Remove feedback classes
@@ -1680,7 +1680,7 @@ if (typeof jQuery === 'undefined') {
                             .removeData('bv.response.' + validator)
                             .removeData('bv.dfs.' + validator);
 
-                        // Destroy the cdb.validator
+                        // Destroy the validator
                         if ('function' === typeof $.fn.bootstrapValidator.validators[validator].destroy) {
                             $.fn.bootstrapValidator.validators[validator].destroy(this, $field, this.options.fields[field].validators[validator]);
                         }
@@ -1763,9 +1763,9 @@ if (typeof jQuery === 'undefined') {
         // - A string. Use a comma to separate filter
         // - An array. Each element is a filter
         // - An array. Each element can be a callback function
-        //      function($field, cdb.validator) {
+        //      function($field, validator) {
         //          $field is jQuery object representing the field element
-        //          cdb.validator is the BootstrapValidator instance
+        //          validator is the BootstrapValidator instance
         //          return true or false;
         //      }
         //
@@ -1802,7 +1802,7 @@ if (typeof jQuery === 'undefined') {
             validating: null
         },
 
-        // Map the field name with cdb.validator rules
+        // Map the field name with validator rules
         fields: null,
 
         // The CSS selector for indicating the element consists the field
@@ -1844,7 +1844,7 @@ if (typeof jQuery === 'undefined') {
 
     $.fn.bootstrapValidator.Constructor = BootstrapValidator;
 
-    // Helper methods, which can be used in cdb.validator class
+    // Helper methods, which can be used in validator class
     $.fn.bootstrapValidator.helpers = {
         /**
          * Execute a callback function
@@ -2010,7 +2010,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Return true if the input value is a base 64 encoded string.
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -2054,7 +2054,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Return true if the input value is between (strictly or not) two given numbers
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - min
@@ -2106,11 +2106,11 @@ if (typeof jQuery === 'undefined') {
 ;(function($) {
     $.fn.bootstrapValidator.validators.blank = {
         /**
-         * Placeholder cdb.validator that can be used to display a custom validation message
+         * Placeholder validator that can be used to display a custom validation message
          * returned from the server
          * Example:
          *
-         * (1) a "blank" cdb.validator is applied to an input field.
+         * (1) a "blank" validator is applied to an input field.
          * (2) data is entered via the UI that is unable to be validated client-side.
          * (3) server returns a 400 with JSON data that contains the field that failed
          *     validation and an associated message.
@@ -2121,7 +2121,7 @@ if (typeof jQuery === 'undefined') {
          *
          * @see https://github.com/nghuuphuoc/bootstrapvalidator/issues/542
          * @see https://github.com/nghuuphuoc/bootstrapvalidator/pull/666
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -2146,13 +2146,13 @@ if (typeof jQuery === 'undefined') {
         /**
          * Return result from the callback method
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - callback: The callback method that passes 2 parameters:
-         *      callback: function(fieldValue, cdb.validator, $field) {
+         *      callback: function(fieldValue, validator, $field) {
          *          // fieldValue is the value of field
-         *          // cdb.validator is instance of BootstrapValidator
+         *          // validator is instance of BootstrapValidator
          *          // $field is the field element
          *      }
          * - message: The invalid message
@@ -2191,7 +2191,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Check if the number of checked boxes are less or more than a given number
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Consists of following keys:
          * - min
@@ -2307,7 +2307,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Return true if the input value is a valid color
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -2380,7 +2380,7 @@ if (typeof jQuery === 'undefined') {
          * Return true if the input value is valid credit card number
          * Based on https://gist.github.com/DiegoSalazar/4075533
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} [options] Can consist of the following key:
          * - message: The invalid message
@@ -2486,7 +2486,7 @@ if (typeof jQuery === 'undefined') {
          * - Invalid: 31430F200, 022615AC2
          *
          * @see http://en.wikipedia.org/wiki/CUSIP
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} [options] Can consist of the following keys:
          * - message: The invalid message
@@ -2542,7 +2542,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Return true if the input value is a valid CVV number.
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - creditCardField: The credit card number field. It can be null
@@ -2664,7 +2664,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Return true if the input value is valid date
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -2910,7 +2910,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Return true if the input value is different with given field's value
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Consists of the following key:
          * - field: The name of field that will be used to compare with current one
@@ -2981,7 +2981,7 @@ if (typeof jQuery === 'undefined') {
          * - Invalid: 73513536
          *
          * @see http://en.wikipedia.org/wiki/European_Article_Number
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -3116,7 +3116,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Validate upload file. Use HTML 5 API if the browser supports
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - extension: The allowed extensions, separated by a comma
@@ -3268,7 +3268,7 @@ if (typeof jQuery === 'undefined') {
          * - Invalid: A1-2425G-ABC1234002-Q
          *
          * @see http://en.wikipedia.org/wiki/Global_Release_Identifier
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -3301,7 +3301,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Return true if and only if the input value is a valid hexadecimal number
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Consist of key:
          * - message: The invalid message
@@ -3330,7 +3330,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Return true if the input value is a valid hex color
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -3533,7 +3533,7 @@ if (typeof jQuery === 'undefined') {
          * To test it, take the sample IBAN from
          * http://www.nordea.com/Our+services/International+products+and+services/Cash+Management/IBAN+countries/908462.html
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -3648,7 +3648,7 @@ if (typeof jQuery === 'undefined') {
          * Validate identification number in different countries
          *
          * @see http://en.wikipedia.org/wiki/National_identification_number
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Consist of key:
          * - message: The invalid message
@@ -4986,7 +4986,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Check if input value equals to value of particular one
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Consists of the following key:
          * - field: The name of field that will be used to compare with current one
@@ -5025,7 +5025,7 @@ if (typeof jQuery === 'undefined') {
          * - Invalid: 490154203237517
          *
          * @see http://en.wikipedia.org/wiki/International_Mobile_Station_Equipment_Identity
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -5069,7 +5069,7 @@ if (typeof jQuery === 'undefined') {
          * - Invalid: IMO 8814274
          *
          * @see http://en.wikipedia.org/wiki/IMO_Number
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -5114,7 +5114,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Return true if the input value is an integer
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following key:
          * - message: The invalid message
@@ -5150,11 +5150,11 @@ if (typeof jQuery === 'undefined') {
         /**
          * Return true if the input value is a IP address.
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
-         * - ipv4: Enable IPv4 cdb.validator, default to true
-         * - ipv6: Enable IPv6 cdb.validator, default to true
+         * - ipv4: Enable IPv4 validator, default to true
+         * - ipv6: Enable IPv6 validator, default to true
          * - message: The invalid message
          * @returns {Boolean|Object}
          */
@@ -5212,7 +5212,7 @@ if (typeof jQuery === 'undefined') {
          * ISBN 13: 978-0-306-40615-6
          *
          * @see http://en.wikipedia.org/wiki/International_Standard_Book_Number
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} [options] Can consist of the following keys:
          * - message: The invalid message
@@ -5298,7 +5298,7 @@ if (typeof jQuery === 'undefined') {
          * - Invalid: US0378331004, AA0000XVGZA3
          *
          * @see http://en.wikipedia.org/wiki/International_Securities_Identifying_Number
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -5353,7 +5353,7 @@ if (typeof jQuery === 'undefined') {
          * - Invalid: 9790060115614
          *
          * @see http://en.wikipedia.org/wiki/International_Standard_Music_Number
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -5412,7 +5412,7 @@ if (typeof jQuery === 'undefined') {
          * - Invalid: 0032-147X
          *
          * @see http://en.wikipedia.org/wiki/International_Standard_Serial_Number
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -5473,7 +5473,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Return true if the input value is less than or equal to given number
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - value: The number used to compare to. It can be
@@ -5526,7 +5526,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Return true if the input value is a MAC address.
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -5555,7 +5555,7 @@ if (typeof jQuery === 'undefined') {
          * - Invalid: 2936087365007037101
          *
          * @see http://en.wikipedia.org/wiki/Mobile_equipment_identifier
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -5639,7 +5639,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Check if input value is empty or not
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options
          * @returns {Boolean}
@@ -5679,7 +5679,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Validate decimal number
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Consist of key:
          * - message: The invalid message
@@ -5910,7 +5910,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Check if the element value matches given regular expression
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Consists of the following key:
          * - regexp: The regular expression you need to check
@@ -5943,7 +5943,7 @@ if (typeof jQuery === 'undefined') {
         },
 
         /**
-         * Destroy the timer when destroying the bootstrapValidator (using cdb.validator.destroy() method)
+         * Destroy the timer when destroying the bootstrapValidator (using validator.destroy() method)
          */
         destroy: function(validator, $field, options) {
             if ($field.data('bv.remote.timer')) {
@@ -6047,7 +6047,7 @@ if (typeof jQuery === 'undefined') {
          * - Valid: 021200025, 789456124
          *
          * @see http://en.wikipedia.org/wiki/Routing_transit_number
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -6085,7 +6085,7 @@ if (typeof jQuery === 'undefined') {
          * - Valid: 0263494, B0WNLY7
          *
          * @see http://en.wikipedia.org/wiki/SEDOL
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - message: The invalid message
@@ -6122,7 +6122,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Check if a string is a siren number
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Consist of key:
          * - message: The invalid message
@@ -6150,7 +6150,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Check if a string is a siret number
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Consist of key:
          * - message: The invalid message
@@ -6194,7 +6194,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Return true if the input value is valid step one
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Can consist of the following keys:
          * - baseValue: The base value
@@ -6258,7 +6258,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Check if a string is a lower or upper case one
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Consist of key:
          * - message: The invalid message
@@ -6313,7 +6313,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Check if the length of element value is less or more than given number
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Consists of following keys:
          * - min
@@ -6406,7 +6406,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Return true if the input value is a valid URL
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options
          * - message: The error message
@@ -6512,7 +6512,7 @@ if (typeof jQuery === 'undefined') {
          * Return true if and only if the input value is a valid UUID string
          *
          * @see http://en.wikipedia.org/wiki/Universally_unique_identifier
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Consist of key:
          * - message: The invalid message
@@ -6604,7 +6604,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Validate an European VAT number
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Consist of key:
          * - message: The invalid message
@@ -7968,7 +7968,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Validate an US VIN (Vehicle Identification Number)
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Consist of key:
          * - message: The invalid message
@@ -8048,7 +8048,7 @@ if (typeof jQuery === 'undefined') {
         /**
          * Return true if and only if the input value is a valid country zip code
          *
-         * @param {BootstrapValidator} validator The cdb.validator plugin instance
+         * @param {BootstrapValidator} validator The validator plugin instance
          * @param {jQuery} $field Field element
          * @param {Object} options Consist of key:
          * - message: The invalid message
@@ -8060,9 +8060,9 @@ if (typeof jQuery === 'undefined') {
          * - Name of callback function that returns the country code
          * - A callback function that returns the country code
          *
-         * callback: function(value, cdb.validator, $field) {
+         * callback: function(value, validator, $field) {
          *      // value is the value of field
-         *      // cdb.validator is the BootstrapValidator instance
+         *      // validator is the BootstrapValidator instance
          *      // $field is jQuery element representing the field
          * }
          *

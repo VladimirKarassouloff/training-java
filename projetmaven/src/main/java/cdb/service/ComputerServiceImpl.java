@@ -121,7 +121,7 @@ public class ComputerServiceImpl implements IComputerService {
     }
 
     @Override
-    public int addComputer(Computer computer) throws FormException {
+    public void addComputer(Computer computer) throws FormException {
         try {
             ComputerValidator.checkValidity(computer);
         } catch (InvalidComputerException e) {
@@ -130,7 +130,7 @@ public class ComputerServiceImpl implements IComputerService {
         }
 
         try {
-            return computerDaoImpl.insert(computer);
+            computerDaoImpl.insert(computer);
         } catch (DAOInsertException e) {
             LOGGER.info("ComputerServiceImpl : Error while inserting computer : (" + computer + ")");
             throw new RuntimeException("ComputerService : Impossible to get add computer");
@@ -155,13 +155,13 @@ public class ComputerServiceImpl implements IComputerService {
     }
 
     @Override
-    public boolean deleteComputer(List<Integer> ids) {
+    public void deleteComputer(int... ids) {
         try {
-            return computerDaoImpl.delete(ids);
+            computerDaoImpl.delete(ids);
         } catch (DAODeleteException e) {
-            LOGGER.info("ComputerServiceImpl : Computer are not deleted (" + ids + ")");
+            LOGGER.info("ComputerServiceImpl : Computer are not deleted (" + ids + ")" + " => " + e.getMessage());
+            throw new RuntimeException("ComputerService : Impossible to delete  computer => " + ids);
         }
-        return false;
     }
 
 

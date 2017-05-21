@@ -1,7 +1,5 @@
 package cdb.exception;
 
-import java.util.List;
-
 /**
  * Created by vkarassouloff on 19/04/17.
  */

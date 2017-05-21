@@ -86,7 +86,7 @@ public class ComputerDAOImpl implements IComputerDAO {
 
 
     public static final int[] TYPES_INSERT = new int[]{Types.LONGVARCHAR, Types.DATE, Types.DATE, Types.INTEGER};
-    public static final int[] TYPES_UPDATE = new int[]{Types.LONGVARCHAR, Types.DATE, Types.DATE, Types.INTEGER};
+    public static final int[] TYPES_UPDATE = new int[]{Types.VARCHAR, Types.DATE, Types.DATE, Types.INTEGER, Types.INTEGER};
 
 
     /**
@@ -105,7 +105,7 @@ public class ComputerDAOImpl implements IComputerDAO {
     @Override
     public List<Computer> getAll() throws DAOSelectException {
         try {
-            return jdbcTemplate.queryForList(SELECT, Computer.class);
+            return jdbcTemplate.query(SELECT, mapper);
         } catch (DataAccessException e) {
             LOGGER.info("Erreur getAll computerdao : " + e.getMessage());
             throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT);
@@ -140,7 +140,7 @@ public class ComputerDAOImpl implements IComputerDAO {
         }
 
         try {
-            return jdbcTemplate.query(query.toString(), mapper, fs.getFilterValues().stream().map(Filter::getValue).collect(Collectors.toList()));
+            return jdbcTemplate.query(query.toString(), mapper, fs.getFilterValues().stream().map(Filter::getValue).collect(Collectors.toList()).toArray());
         } catch (DataAccessException e) {
             LOGGER.info("Erreur getFromFilter ComputerDAOImpl : " + e.getMessage() + " query built : " + query.toString());
             throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, "Computer Select From Filter Exception");
@@ -149,7 +149,6 @@ public class ComputerDAOImpl implements IComputerDAO {
 
     @Override
     public Computer get(int id) throws DAOSelectException {
-
         try {
             return jdbcTemplate.queryForObject(SELECT + WHERE_FILTER_ID, new Object[]{id}, mapper);
         } catch (DataAccessException e) {
@@ -186,7 +185,7 @@ public class ComputerDAOImpl implements IComputerDAO {
         // Build query
         StringBuilder queryDelete = new StringBuilder(DELETE);
         for (int i = 0; i < ids.length; i++) {
-            queryDelete.append(" " + SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_ID + "=" + ids);
+            queryDelete.append(" ").append(SqlNames.COMPUTER_TABLE_NAME).append(".").append(SqlNames.COMPUTER_COL_COMPUTER_ID).append("=").append(ids[i]);
             if (i < ids.length - 1) {
                 queryDelete.append(" OR ");
             }
@@ -194,7 +193,7 @@ public class ComputerDAOImpl implements IComputerDAO {
 
         // Exec query
         try {
-            return jdbcTemplate.update(queryDelete.toString(), ids, Types.INTEGER) != 0;
+            return jdbcTemplate.update(queryDelete.toString()) != 0;
         } catch (DataAccessException e) {
             LOGGER.info("Computerdao : Error delete " + ids + " : " + e.getMessage());
             throw new DAODeleteException(SqlNames.COMPUTER_TABLE_NAME, ids);
@@ -226,8 +225,8 @@ public class ComputerDAOImpl implements IComputerDAO {
             return jdbcTemplate.queryForObject(SELECT_LAST_COMPUTER_INSERTED, mapper);
         } catch (DataAccessException e) {
             LOGGER.info("Error Get last computer inserted Computerdao : " + e.getMessage());
+            throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT_LAST_COMPUTER_INSERTED);
         }
-        throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT_LAST_COMPUTER_INSERTED);
     }
 
 
@@ -250,7 +249,7 @@ public class ComputerDAOImpl implements IComputerDAO {
                 }
             }
 
-            return jdbcTemplate.update(query.toString(), fs.getFilterValues().stream().map(Filter::getValue).collect(Collectors.toList()));
+            return jdbcTemplate.queryForObject(query.toString(), fs.getFilterValues().stream().map(Filter::getValue).collect(Collectors.toList()).toArray(), Integer.class);
         } catch (DataAccessException e) {
             LOGGER.info("Erreur count getFromFilter ComputerDAOImpl : " + e.getMessage() + " query built : " + query.toString());
             throw new DAOCountException("Computer");

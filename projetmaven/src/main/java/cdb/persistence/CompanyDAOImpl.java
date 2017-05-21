@@ -8,19 +8,17 @@ import cdb.exception.DAOUpdateException;
 import cdb.mapper.MapperCompany;
 import cdb.model.Company;
 import cdb.utils.SqlNames;
-import cdb.utils.UtilsSql;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Types;
 import java.util.List;
 
 @Repository()
@@ -31,6 +29,8 @@ public class CompanyDAOImpl implements ICompanyDAO {
     /////Query parts
 
     public static final String SELECT = "SELECT * FROM " + SqlNames.COMPANY_TABLE_NAME;
+
+    public static final String SELECT_LAST_COMPANY_INSERTED = SELECT + " ORDER BY " + SqlNames.COMPANY_TABLE_NAME + "." + SqlNames.COMPANY_COL_COMPANY_ID + " DESC LIMIT 1";
 
     public static final String COUNT = "SELECT Count(*) FROM " + SqlNames.COMPANY_TABLE_NAME;
 
@@ -49,193 +49,116 @@ public class CompanyDAOImpl implements ICompanyDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDAOImpl.class);
 
-    private DataSource dataSource;
+    public static final int[] TYPES_UPDATE = new int[]{Types.VARCHAR, Types.INTEGER};
+    public static final int[] TYPES_INSERT = new int[]{Types.VARCHAR};
+    public static final int[] TYPES_DELETE = new int[]{Types.INTEGER};
+
+
+    private final JdbcTemplate jdbcTemplate;
+    private final MapperCompany mapper;
 
     /**
      * Default constructor.
      *
      * @param dataSource from the DB
+     * @param mapper used for turning resultsset into companies
      */
     @Autowired
-    public CompanyDAOImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public CompanyDAOImpl(DataSource dataSource, MapperCompany mapper) {
+        this.mapper = mapper;
+        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
 
     @Override
     public List<Company> getAll() throws DAOSelectException {
-        Connection connection = null;
-        ResultSet rs = null;
-        List<Company> result = null;
-
         try {
-            connection = DataSourceUtils.getConnection(dataSource);
-            rs = connection.prepareStatement(SELECT).executeQuery();
-            result = MapperCompany.mapResultSetToObjects(rs);
-            return result;
-        } catch (SQLException e) {
-            LOGGER.info("Error getAll CompanyDAOImpl : " + e.getMessage());
-            throw new DAOSelectException("Company", SELECT);
-        } finally {
-            UtilsSql.closeResultSetSafely(rs);
-            DataSourceUtils.releaseConnection(connection, dataSource);
+            return jdbcTemplate.query(SELECT, mapper);
+        } catch (DataAccessException e) {
+            LOGGER.info("CompanyDAOImpl : Error getAll companyDao : " + e.getMessage());
+            throw new DAOSelectException(SqlNames.COMPANY_TABLE_NAME, SELECT);
         }
     }
 
     @Override
     public Company get(int id) throws DAOSelectException {
-        ResultSet rs = null;
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        Company result = null;
-
         try {
-            connection = DataSourceUtils.getConnection(dataSource);
-            preparedStatement = connection.prepareStatement(SELECT + WHERE_FILTER_ID);
-            preparedStatement.setInt(1, id);
-            rs = preparedStatement.executeQuery();
-            result = MapperCompany.mapResultSetToObject(rs);
-            return result;
-        } catch (SQLException e) {
-            LOGGER.info("Error get CompanyDAOImpl : " + e.getMessage() + " => id = " + id);
-        } finally {
-            UtilsSql.closeResultSetSafely(rs);
-            UtilsSql.closeStatementSafely(preparedStatement);
-            DataSourceUtils.releaseConnection(connection, dataSource);
+            return jdbcTemplate.queryForObject(SELECT + WHERE_FILTER_ID, new Object[]{id}, mapper);
+        } catch (DataAccessException e) {
+            LOGGER.info("CompanyDAOImpl : Error sql get by id : " + e.getMessage());
+            throw new DAOSelectException(SqlNames.COMPUTER_TABLE_NAME, SELECT + WHERE_FILTER_ID + " (id=" + id + ") => " + e.getMessage());
         }
-
-        return null;
     }
 
     @Override
     public boolean update(Company company) throws DAOUpdateException {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-
         try {
-            connection = DataSourceUtils.getConnection(dataSource);
-            preparedStatement = connection.prepareStatement(UPDATE);
-            preparedStatement.setString(1, company.getName());
-            preparedStatement.setInt(2, company.getId());
-            int resExec = preparedStatement.executeUpdate();
-            return resExec != 0;
-        } catch (SQLException e) {
-            LOGGER.info("Error Update CompanyDAOImpl : " + e.getMessage() + " " + company);
+            Object[] params = new Object[]{
+                    company.getName(),
+                    company.getId()
+            };
+
+            return jdbcTemplate.update(UPDATE, params, TYPES_UPDATE) != 0;
+        } catch (DataAccessException e) {
+            LOGGER.info("CompanyDAO : Error insert SQL : " + company + " => " + e.getMessage());
             throw new DAOUpdateException(company);
-        } finally {
-            UtilsSql.closeStatementSafely(preparedStatement);
-            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
     @Override
     public Integer getCount() throws DAOCountException {
-        Connection connection = null;
-        ResultSet rs = null;
-        PreparedStatement statement = null;
-        Integer count = null;
-
         try {
-            connection = DataSourceUtils.getConnection(dataSource);
-            statement = connection.prepareStatement(COUNT);
-            rs = statement.executeQuery();
-            if (rs.next()) {
-                count = rs.getInt(1);
-            }
-
-            return count;
-        } catch (SQLException e) {
-            LOGGER.info("Error getCount CompanyDAOImpl : " + e.getMessage());
+            return jdbcTemplate.queryForObject(COUNT, Integer.class);
+        } catch (DataAccessException e) {
+            LOGGER.info("CompanyDAOImpl : Error getCount => " + e.getMessage());
             throw new DAOCountException("Company");
-        } finally {
-            UtilsSql.closeResultSetSafely(rs);
-            UtilsSql.closeStatementSafely(statement);
-            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
     @Override
     public List<Company> getPagination(int page, int numberOfResults) throws DAOSelectException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet rs = null;
-        List<Company> res = null;
+        StringBuilder sb = new StringBuilder(SELECT);
+        sb.append(" LIMIT ").append(numberOfResults).append(" OFFSET ").append((page * numberOfResults));
 
         try {
-            connection = DataSourceUtils.getConnection(dataSource);
-            statement = connection.prepareStatement(SELECT + " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults));
-            rs = statement.executeQuery();
-
-            res = MapperCompany.mapResultSetToObjects(rs);
-            return res;
-        } catch (SQLException e) {
-            LOGGER.info("Error getPagination CompanyDAOImpl : " + e.getMessage());
-            throw new DAOSelectException("Company", SELECT + " LIMIT " + numberOfResults + " OFFSET " + (page * numberOfResults));
-        } finally {
-            UtilsSql.closeResultSetSafely(rs);
-            UtilsSql.closeStatementSafely(statement);
-            DataSourceUtils.releaseConnection(connection, dataSource);
+            return jdbcTemplate.query(sb.toString(), mapper);
+        } catch (DataAccessException e) {
+            LOGGER.info("CompanyDAOImpl : Error getPagination => " + e.getMessage());
+            throw new DAOSelectException("Company", sb.toString());
         }
     }
 
 
     @Override
     public void insert(Company company) throws DAOInsertException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet generatedKeys = null;
-
         try {
-            connection = DataSourceUtils.getConnection(dataSource);
-            statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, company.getName());
-
-            if (statement.executeUpdate() != 0) {
-                generatedKeys = statement.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    company.setId((int) generatedKeys.getLong(1));
-                } else {
-                    // No id returned
-                    LOGGER.info("Erreur insert companydao : " + company);
-                    throw new DAOInsertException(company);
-                }
-
-            } else {
-                // No row affected
-                LOGGER.info("Erreur insert 2 companydao : " + company);
-                throw new DAOInsertException(company);
-            }
-        } catch (SQLException e2) {
-            LOGGER.info("Erreur 4 insert SQL companydao : " + company + " => " + e2.getMessage());
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbcTemplate.update(INSERT, new Object[]{company.getName()}, TYPES_INSERT);
+        } catch (DataAccessException e) {
+            LOGGER.info("CompanyDAOImpl : Error insert SQL : " + company + " => " + e.getMessage());
             throw new DAOInsertException(company);
-        } finally {
-            UtilsSql.closeResultSetSafely(generatedKeys);
-            UtilsSql.closeStatementSafely(statement);
-            DataSourceUtils.releaseConnection(connection, dataSource);
         }
-
     }
 
 
     @Override
     public boolean delete(int id) throws DAODeleteException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-
         try {
-            connection = DataSourceUtils.getConnection(dataSource);
-            statement = connection.prepareStatement(DELETE);
-            statement.setInt(1, id);
-            int resultExec = statement.executeUpdate();
-            return resultExec != 0;
-        } catch (SQLException e) {
-            LOGGER.info("Error delete CompanyDao " + id + " : " + e.getMessage());
+            return jdbcTemplate.update(DELETE, new Object[]{id}, TYPES_DELETE) != 0;
+        } catch (DataAccessException e) {
+            LOGGER.info("CompanyDAOImpl : Error delete " + id + " => " + e.getMessage());
             throw new DAODeleteException(SqlNames.COMPANY_TABLE_NAME, id);
-        } finally {
-            UtilsSql.closeStatementSafely(statement);
-            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
+    @Override
+    public Company getLastCompanyInserted() throws DAOSelectException {
+        try {
+            return jdbcTemplate.queryForObject(SELECT_LAST_COMPANY_INSERTED, mapper);
+        } catch (DataAccessException e) {
+            LOGGER.info("CompanyDAOImpl : Error Get last company inserted : " + e.getMessage());
+            throw new DAOSelectException(SqlNames.COMPANY_TABLE_NAME, SELECT_LAST_COMPANY_INSERTED);
+        }
+    }
 
 }

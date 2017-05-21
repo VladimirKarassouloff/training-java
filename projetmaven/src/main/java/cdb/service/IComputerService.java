@@ -73,9 +73,8 @@ public interface IComputerService {
      *
      * @param computer added
      * @throws FormException if computer is not valid
-     * @return int for the id generated of the new computer, or -1 if insert failed
      */
-    int addComputer(Computer computer) throws FormException;
+    void addComputer(Computer computer) throws FormException;
 
     /**
      * Update computer from DB.
@@ -90,9 +89,8 @@ public interface IComputerService {
      * Delete computer of the DB having the id equals of the computer id param.
      *
      * @param ids deleted
-     * @return success query
      */
-    boolean deleteComputer(List<Integer> ids);
+    void deleteComputer(int... ids);
 
 
     /**
