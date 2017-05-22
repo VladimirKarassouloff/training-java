@@ -12,7 +12,7 @@ import cdb.exception.MapperException;
 import cdb.mapper.MapperComputer;
 import cdb.model.Computer;
 import cdb.model.ComputerPage;
-import cdb.persistence.ComputerDAOImpl;
+import cdb.persistence.IComputerDAO;
 import cdb.persistence.filter.FilterSelect;
 import cdb.persistence.filter.FilterSelectComputer;
 import cdb.validator.ComputerValidator;
@@ -31,32 +31,32 @@ public class ComputerServiceImpl implements IComputerService {
 
     private final Logger LOGGER = LoggerFactory.getLogger(ComputerServiceImpl.class);
 
-    private ComputerDAOImpl computerDaoImpl;
+    private IComputerDAO computerDao;
 
     /**
      * Default constructor.
      *
-     * @param computerDaoImpl data access object for computers
+     * @param computerDao data access object for computers
      */
     @Autowired
-    public ComputerServiceImpl(ComputerDAOImpl computerDaoImpl) {
-        this.computerDaoImpl = computerDaoImpl;
+    public ComputerServiceImpl(IComputerDAO computerDao) {
+        this.computerDao = computerDao;
     }
 
 
-    public ComputerDAOImpl getComputerDaoImpl() {
-        return computerDaoImpl;
+    public IComputerDAO getIComputerDAO() {
+        return computerDao;
     }
 
-    public void setComputerDaoImpl(ComputerDAOImpl computerDaoImpl) {
-        this.computerDaoImpl = computerDaoImpl;
+    public void setIComputerDAO(IComputerDAO computerDao) {
+        this.computerDao = computerDao;
     }
 
 
     @Override
     public List<Computer> getComputers() {
         try {
-            return computerDaoImpl.getAll();
+            return computerDao.getAll();
         } catch (DAOSelectException e) {
             LOGGER.info("ComputerServiceImpl : Error getting all computers");
             throw new RuntimeException("ComputerService : Impossible to get all computers");
@@ -66,7 +66,7 @@ public class ComputerServiceImpl implements IComputerService {
     @Override
     public List<ComputerDTO> getPagedComputerDTO(FilterSelect filter) {
         try {
-            return MapperComputer.toDTOs(computerDaoImpl.getFromFilter(filter));
+            return MapperComputer.toDTOs(computerDao.getFromFilter(filter));
         } catch (DAOSelectException e) {
             LOGGER.info("ComputerServiceImpl : Error getting paged computer");
             throw new RuntimeException("ComputerService : Impossible to get last computerDto");
@@ -76,7 +76,7 @@ public class ComputerServiceImpl implements IComputerService {
     @Override
     public List<Computer> getPagedComputer(FilterSelect filter) {
         try {
-            return computerDaoImpl.getFromFilter(filter);
+            return computerDao.getFromFilter(filter);
         } catch (DAOSelectException e) {
             LOGGER.info("ComputerServiceImpl : Error get paged computer");
             throw new RuntimeException("ComputerService : Impossible to get page of computers");
@@ -92,7 +92,7 @@ public class ComputerServiceImpl implements IComputerService {
     @Override
     public int getCountComputer(FilterSelect filter) {
         try {
-            return computerDaoImpl.getCount(filter);
+            return computerDao.getCount(filter);
         } catch (DAOCountException e) {
             LOGGER.info("ComputerServiceImpl : Error getting count computers");
             throw new RuntimeException("ComputerService : Impossible to get count of computer");
@@ -103,7 +103,7 @@ public class ComputerServiceImpl implements IComputerService {
     @Override
     public Computer getComputer(int id) {
         try {
-            return computerDaoImpl.get(id);
+            return computerDao.get(id);
         } catch (DAOSelectException e) {
             LOGGER.info("ComputerServiceImpl : Error getting all computers");
             throw new RuntimeException("ComputerService : Impossible to get computer with id " + id);
@@ -113,7 +113,7 @@ public class ComputerServiceImpl implements IComputerService {
     @Override
     public ComputerDTO getComputerDTO(int id) {
         try {
-            return MapperComputer.toDTO(computerDaoImpl.get(id));
+            return MapperComputer.toDTO(computerDao.get(id));
         } catch (DAOSelectException e) {
             LOGGER.info("ComputerServiceImpl : Error getting all computers");
             throw new RuntimeException("ComputerService : Impossible to get computerDto");
@@ -130,7 +130,7 @@ public class ComputerServiceImpl implements IComputerService {
         }
 
         try {
-            computerDaoImpl.insert(computer);
+            computerDao.insert(computer);
         } catch (DAOInsertException e) {
             LOGGER.info("ComputerServiceImpl : Error while inserting computer : (" + computer + ")");
             throw new RuntimeException("ComputerService : Impossible to get add computer");
@@ -147,7 +147,7 @@ public class ComputerServiceImpl implements IComputerService {
         }
 
         try {
-            return computerDaoImpl.update(computer);
+            return computerDao.update(computer);
         } catch (DAOUpdateException e) {
             LOGGER.info("ComputerServiceImpl : Error while trying to update computer [" + computer + "]");
             throw new RuntimeException("ComputerService : Impossible to update computer");
@@ -157,7 +157,7 @@ public class ComputerServiceImpl implements IComputerService {
     @Override
     public void deleteComputer(int... ids) {
         try {
-            computerDaoImpl.delete(ids);
+            computerDao.delete(ids);
         } catch (DAODeleteException e) {
             LOGGER.info("ComputerServiceImpl : Computer are not deleted (" + ids + ")" + " => " + e.getMessage());
             throw new RuntimeException("ComputerService : Impossible to delete  computer => " + ids);
@@ -205,7 +205,7 @@ public class ComputerServiceImpl implements IComputerService {
     @Override
     public Computer getLastComputerInserted() {
         try {
-            return computerDaoImpl.getLastComputerInserted();
+            return computerDao.getLastComputerInserted();
         } catch (DAOSelectException e) {
             LOGGER.info("ComputerServiceImpl : Error while getting the last computer");
             throw new RuntimeException("ComputerService : Impossible to get last computer");

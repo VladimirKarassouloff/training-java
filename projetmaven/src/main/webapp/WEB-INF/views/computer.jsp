@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +12,7 @@
     <link href="css/main.css" rel="stylesheet" media="screen">
     <link href="css/bootstrapValidator.min.css" rel="stylesheet" media="screen">
     <style>
-        .datepicker.datepicker-dropdown.dropdown-menu{
+        .datepicker.datepicker-dropdown.dropdown-menu {
             z-index: 1600;
         }
     </style>
@@ -29,7 +30,7 @@
             <div class="col-xs-8 col-xs-offset-2 box">
                 <h1>
                     <c:choose>
-                        <c:when test="${form.id != null}">
+                        <c:when test="${formComputer.id != null}">
                             Edit computer
                         </c:when>
                         <c:otherwise>
@@ -43,50 +44,67 @@
                     </div>
                 </c:if>
 
-                <form id="myform" action="computer<c:if test="${form.id != null}">?id=${form.id}</c:if>" method="POST">
+                <c:choose>
+                    <c:when test="${formComputer.id != null}">
+                        <c:set var="actionForm" value="?id=${formComputer.id}"></c:set>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="actionForm" value=""></c:set>
+                    </c:otherwise>
+                </c:choose>
+
+                <form:form id="myform" action="${actionForm}" method="POST" modelAttribute="formComputer">
+
                     <fieldset>
                         <div class="form-group">
-                            <label for="computerName">Computer name</label>
-                            <input type="text" class="form-control" id="computerName" placeholder="Computer name"
-                                   value="${form.name}" name="name_computer">
+                            <form:label path="name">Computer name</form:label>
+                            <form:input path="name" type="text" class="form-control" id="computerName"
+                                        placeholder="Computer name"
+                                        value="${formComputer.name}" name="name_computer"/>
+
+                            <form:errors path="name" cssClass="text-danger" />
                         </div>
 
                         <div class="form-group">
-                            <label for="introduced">Introduced date</label>
+                            <form:label path="introduced" for="introduced">Introduced date</form:label>
                             <div class="input-group date introduced">
-                                <input id="introduced" type="text" class="form-control" name="introduced_computer" value="${form.introduced}"><span
+                                <form:input path="introduced" id="introduced" type="text" class="form-control"
+                                            name="introduced_computer" value="${formComputer.introduced}"/><span
                                     class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="discontinued">Discontinued date</label>
+                            <form:label path="discontinued" for="discontinued">Discontinued date</form:label>
                             <div class="input-group date discontinued">
-                                <input id="discontinued" type="text" class="form-control" name="discontinued_computer" value="${form.discontinued}"><span
+                                <form:input path="discontinued" id="discontinued" type="text" class="form-control"
+                                            name="discontinued_computer" value="${formComputer.discontinued}"/><span
                                     class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="companyId">Company</label>
-                            <select class="form-control" id="companyId" name="company_id_computer"
-                                    value="${form.companyId}">
-                                <option value="" <c:if test="${form.companyId == null}">selected</c:if>>--</option>
+                            <form:select path="companyId" class="form-control" id="companyId" name="company_id_computer"
+                                         value="${formComputer.companyId}">
+                                <option value="" <c:if test="${formComputer.companyId == null}">selected</c:if>>--
+                                </option>
                                 <c:forEach var="company" items="${companies}">
                                     <option value="${company.id}" <c:if
-                                            test="${form.companyId == company.id}"> selected</c:if> >${company.name}</option>
+                                            test="${formComputer.companyId == company.id}"> selected</c:if> >${company.name}</option>
                                 </c:forEach>
-                            </select>
+                            </form:select>
                         </div>
                     </fieldset>
                     <div class="actions pull-right">
-                        <input type="hidden" id="id_computer" name="id_computer" value="${form.id}"/>
-                        <input id="submit-button" type="submit" value="<c:choose><c:when test="${form.id == null}">Add</c:when><c:otherwise>Edit</c:otherwise></c:choose>"
+                        <input type="hidden" id="id_computer" name="id_computer" value="${formComputer.id}"/>
+                        <input id="submit-button" type="submit"
+                               value="<c:choose><c:when test="${formComputer.id == null}">Add</c:when><c:otherwise>Edit</c:otherwise></c:choose>"
                                class="btn btn-primary">
                         or
                         <a href="index" class="btn btn-default">Cancel</a>
                     </div>
-                </form>
+                </form:form>
             </div>
         </div>
     </div>
@@ -96,5 +114,4 @@
 <script src="js/bootstrap.min.js"></script>
 <script src="js/bootstrap-datepicker.js"></script>
 <script src="js/bootstrapValidator.min.js"></script>
-<script src="js/computer.js"></script>
 </html>

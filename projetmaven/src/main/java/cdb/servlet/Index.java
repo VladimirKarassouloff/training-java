@@ -4,112 +4,55 @@ import cdb.bean.BeanParamUtils;
 import cdb.model.ComputerPage;
 import cdb.persistence.filter.FilterSelectComputer;
 import cdb.persistence.operator.LikeRight;
-import cdb.service.ComputerServiceImpl;
+import cdb.service.IComputerService;
 import cdb.utils.SqlNames;
+import cdb.utils.UtilsServletError;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * Servlet implementation class Index.
  */
 
-@WebServlet({"", "/index"})
-public class Index extends HttpServlet {
+@Controller
+@RequestMapping(value = {"", "/index"})
+public class Index {
     private static final long serialVersionUID = 1L;
 
-    private static final String PAGE_SUCCESS_FORM = "/index";
-    public static final String INDEX = "/WEB-INF/views/dashboard.jsp";
+    private static final String PAGE_SUCCESS_FORM = "dashboard";
+    public static final String INDEX = "dashboard";
 
     // Fallback values
     private static final boolean DEFAULT_ORDER_ASC = false;
-    private static final int DEFAULT_LENGTH = 20;
+    private static final String DEFAULT_LENGTH = "20";
     private static final int MAX_COMPUTER_DISPLAYED = 100;
     private static final int DEFAULT_COL_ORDERED = 0;
 
-    private ComputerServiceImpl services;
+
+    private IComputerService services;
 
 
     @Autowired
-    public void setServices(ComputerServiceImpl services) {
+    public void setServices(IComputerService services) {
         this.services = services;
     }
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
-    }
 
+    @RequestMapping(method = RequestMethod.GET)
+    public String index(ModelMap model,
+                        @RequestParam(value = "search", required = false) String search,
+                        @RequestParam(value = "currentPage", defaultValue = "0") int pageDisplay,
+                        @RequestParam(value = "lengthPage", defaultValue = DEFAULT_LENGTH) int lengthPageDisplay,
+                        @RequestParam(value = "asc", required = false) Boolean asc,
+                        @RequestParam(value = "colOrder", required = false) Integer colOrder) {
 
-    /**
-     * Get informations for computers.
-     *
-     * @param request  ?
-     * @param response ?
-     * @throws ServletException ?
-     * @throws IOException      ?
-     */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        /////// Get all params
-        // Search by computer or company name
-        String search = request.getParameter("search");
-        // Page number being displayed
-        String pageStr = request.getParameter("currentPage");
-        // Length of page of pagination
-        String lengthPageStr = request.getParameter("lengthPage");
-        // Asc or desc ?
-        String ascStr = request.getParameter("asc");
-        // On order on which column ?
-        String colOrderStr = request.getParameter("colOrder");
-
-        // Params needing parse
-        int lengthPageDisplay;
-        int pageDisplay;
-        int numColOrder;
-        boolean asc;
-
-        //////////////////////// Parsing
-        // Parsing Page display asked by user
-        try {
-            pageDisplay = Integer.parseInt(pageStr);
-        } catch (NumberFormatException e) {
-            pageDisplay = 0;
-        }
-
-        // Parsing Length asked by user
-        try {
-            lengthPageDisplay = Integer.parseInt(lengthPageStr);
-        } catch (NumberFormatException e) {
-            lengthPageDisplay = DEFAULT_LENGTH;
-        }
-
-        // Parsing if order is asc or desc
-        asc = Boolean.parseBoolean(ascStr);
-
-        // Parsing which column is ordered
-        try {
-            numColOrder = Integer.parseInt(colOrderStr);
-        } catch (NumberFormatException e) {
-            numColOrder = DEFAULT_COL_ORDERED;
-        }
-
-        ////////////////////////
-
-
-        // Verify that length page is valid
-        if (lengthPageDisplay <= 0) {
-            lengthPageDisplay = DEFAULT_LENGTH;
-        } else if (lengthPageDisplay > MAX_COMPUTER_DISPLAYED) {
-            lengthPageDisplay = MAX_COMPUTER_DISPLAYED;
-        }
 
         // Filter for counting and selecting
         FilterSelectComputer.Builder builder = new FilterSelectComputer.Builder();
@@ -121,8 +64,8 @@ public class Index extends HttpServlet {
         }
 
         // Is there a request for ordered data ?
-        if (ascStr != null || colOrderStr != null) {
-            builder.withOrder(numColOrder, asc);
+        if (asc != null && colOrder != null) {
+            builder.withOrder(colOrder, asc);
         }
 
         // Get the datas for the page
@@ -132,21 +75,23 @@ public class Index extends HttpServlet {
                     .build());
 
             // Set all attributes
-            request.setAttribute("computers", cp.getResults());
-            request.setAttribute("totalCount", cp.getTotalCount());
-            request.setAttribute("currentPage", cp.getDisplayedPage());
-            request.setAttribute("lengthPage", lengthPageDisplay);
-            request.setAttribute("search", (search == null ? "" : search));
-            getServletContext().getRequestDispatcher(INDEX).forward(request, response);
+            model.addAttribute("computers", cp.getResults());
+            model.addAttribute("totalCount", cp.getTotalCount());
+            model.addAttribute("currentPage", cp.getDisplayedPage());
+            model.addAttribute("lengthPage", lengthPageDisplay);
+            model.addAttribute("search", (search == null ? "" : search));
+            return INDEX;
         } catch (RuntimeException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return UtilsServletError.ERROR_500;
         }
+
     }
 
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String deleteUnparsed = req.getParameter("selection");
+    @RequestMapping(method = RequestMethod.POST)
+    public String delete(HttpServletRequest request, HttpServletResponse response, ModelMap model,
+                          @RequestParam(value = "selection", required = false) String deleteUnparsed) {
+
         if (deleteUnparsed != null) {
             String[] deleteThoseIds = deleteUnparsed.split(",");
             int[] parsedId = new int[deleteThoseIds.length];
@@ -154,17 +99,15 @@ public class Index extends HttpServlet {
                 try {
                     parsedId[i] = Integer.parseInt(deleteThoseIds[i]);
                 } catch (NumberFormatException e) {
-                    resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                    return;
+                    return UtilsServletError.ERROR_500;
                 }
             }
             services.deleteComputer(parsedId);
         }
 
-        BeanParamUtils bpu = new BeanParamUtils(req);
+        BeanParamUtils bpu = new BeanParamUtils(request);
         bpu.forget("selection");
-        resp.sendRedirect(req.getContextPath() + PAGE_SUCCESS_FORM + bpu.buildUrl());
-
+        return "redirect://index" + bpu.buildUrl();
     }
 
 }

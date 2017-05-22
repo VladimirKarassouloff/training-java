@@ -2,6 +2,7 @@ package cdb.service;
 
 import cdb.model.Company;
 import cdb.persistence.ComputerDAOImpl;
+import cdb.persistence.IComputerDAO;
 
 import java.util.List;
 
@@ -58,7 +59,7 @@ public interface ICompanyService {
      * Change DAO source for object.
      * @param dao source
      */
-    void setComputerDaoImpl(ComputerDAOImpl dao);
+    void setComputerDao(IComputerDAO dao);
 
     /**
      * Get the last inserted record.

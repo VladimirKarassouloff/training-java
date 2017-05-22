@@ -7,8 +7,8 @@ public class UtilsServletError {
 
     public static  final String NAME_ATTRIBUTE_ERROR = "message";
 
-    public static final String ERROR_403 = "/WEB-INF/views/403.jsp";
-    public static final String ERROR_404 = "/WEB-INF/views/404.jsp";
-    public static final String ERROR_500 = "/WEB-INF/views/500.jsp";
+    public static final String ERROR_403 = "403";
+    public static final String ERROR_404 = "404";
+    public static final String ERROR_500 = "500";
 
 }

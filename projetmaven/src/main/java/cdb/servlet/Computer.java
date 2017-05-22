@@ -7,26 +7,36 @@ import cdb.service.ICompanyService;
 import cdb.service.IComputerService;
 import cdb.utils.UtilsServletError;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by vkarassouloff on 20/04/17.
  */
-@WebServlet({"/computer"})
-public class Computer extends HttpServlet {
+@Controller
+@RequestMapping("/computer")
+public class Computer {
 
-    private static final String PAGE_FORM = "/WEB-INF/views/computer.jsp";
-    private static final String PAGE_SUCCESS_FORM = "/index";
+    private static final String PAGE_FORM = "computer";
+    private static final String PAGE_SUCCESS_FORM = "index";
 
-    private static final String ATTR_FORM = "form";
+    private static final String ATTR_FORM = "formComputer";
     private static final String ATTR_COMPANIES = "companies";
     private static final String ATTR_ERROR = "error";
 
@@ -51,107 +61,36 @@ public class Computer extends HttpServlet {
         this.companyService = companyService;
     }
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
-    }
 
-
-    /**
-     * Present form for adding / editing computer.
-     *
-     * @param request  ?
-     * @param response ?
-     * @throws ServletException ?
-     * @throws IOException      ?
-     */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @RequestMapping(method = RequestMethod.GET)
+    public String doGet(ModelMap model, @RequestParam(value = "id", required = false) Integer idComputer) {
 
         // Form holder
         ComputerDTO form = null;
 
-        // Check Id parameter
-        String idComputer = request.getParameter("id");
-
         if (idComputer == null) { // Trying to create a new computer
             form = new ComputerDTO();
         } else { // Trying to edit computer
-
-            int parsedIdComputer;
-            try {
-                parsedIdComputer = Integer.parseInt(idComputer);
-            } catch (NumberFormatException e) {
-                // If id cannot be parsed
-                request.setAttribute(UtilsServletError.NAME_ATTRIBUTE_ERROR, "Invalid id");
-                request.getRequestDispatcher(UtilsServletError.ERROR_403).forward(request, response);
-                return;
-            }
-
-            try {
-                form = computerServiceImpl.getComputerDTO(parsedIdComputer);
-            } catch (RuntimeException e) {
-                request.setAttribute(UtilsServletError.NAME_ATTRIBUTE_ERROR, "Computer not found");
-                request.getRequestDispatcher(UtilsServletError.ERROR_404).forward(request, response);
-                return;
-            }
+            form = computerServiceImpl.getComputerDTO(idComputer);
         }
 
-        request.setAttribute(ATTR_COMPANIES, companyService.getCompanies());
-        request.setAttribute(ATTR_FORM, form);
-        request.setAttribute(ATTR_ERROR, "");
-        getServletContext().getRequestDispatcher(PAGE_FORM).forward(request, response);
+        model.addAttribute(ATTR_COMPANIES, companyService.getCompanies());
+        model.addAttribute(ATTR_FORM, form);
+        model.addAttribute(ATTR_ERROR, "");
+
+        return PAGE_FORM;
     }
 
-    /**
-     * Do computer creation/edition or redirect to the page if an error occured.
-     *
-     * @param request  ?
-     * @param response ?
-     * @throws ServletException ?
-     * @throws IOException      ?
-     */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Error to display on form-page if any
-        String error = null;
 
-        // Get back the form
-        Integer id = null;
-        Integer companyId = null;
+    @RequestMapping(method = RequestMethod.POST)
+    public String doPost(@ModelAttribute(ATTR_FORM) @Validated ComputerDTO form, BindingResult result, ModelMap model) {
+        List<ObjectError> errors = result.getAllErrors();
+        StringBuilder sb = new StringBuilder();
+        errors.stream().map(e -> sb.append(e.toString()));
+        String error = sb.toString();
 
-        // Parse Form id computer to check whether it's an edit or an add
-        if (request.getParameter(FORM_ID) == null || request.getParameter(FORM_ID).equals("")) {
-            id = null;
-        } else {
-            try {
-                id = Integer.parseInt(request.getParameter(FORM_ID));
-            } catch (NumberFormatException e) {
-                error = "Error parsing computer id";
-            }
-        }
-
-        // Parse Form id company
-        if (request.getParameter(FORM_COMPANY_ID) == null || request.getParameter(FORM_COMPANY_ID).equals("")) {
-            companyId = null;
-        } else {
-            try {
-                companyId = Integer.parseInt(request.getParameter(FORM_COMPANY_ID));
-            } catch (NumberFormatException e) {
-                error = "Error parsing company id";
-            }
-        }
-
-        // Build computerdto from form
-        ComputerDTO form = new ComputerDTO.Builder()
-                .withId(id)
-                .withName(request.getParameter(FORM_NAME))
-                .withIntroducedDate(request.getParameter(FORM_DATE_INTRODUCED))
-                .withDiscontinuedDate(request.getParameter(FORM_DATE_DISCONTINUED))
-                .withCompanyId(companyId)
-                .build();
-
-        // Insert or Update if there are no id-parsing error
-        if (error == null) {
+        // Insert or Update if there are no id for the computer
+        if (!result.hasErrors()) {
             try {
                 if (form.getId() == null) { // Create new Computer
                     computerServiceImpl.formAddComputer(form);
@@ -161,18 +100,13 @@ public class Computer extends HttpServlet {
             } catch (FormException e) {
                 error = e.getMessage();
             }
-        }
-
-        // Sendback to page if error, otherwise redirect to dashboard
-        if (error != null) {
-            request.setAttribute(ATTR_COMPANIES, companyService.getCompanies());
-            request.setAttribute(ATTR_ERROR, error);
-            request.setAttribute(ATTR_FORM, form);
-            request.getRequestDispatcher(PAGE_FORM).forward(request, response);
+            return "redirect://" + PAGE_SUCCESS_FORM;
         } else {
-            response.sendRedirect(request.getContextPath() + PAGE_SUCCESS_FORM);
+            model.addAttribute(ATTR_COMPANIES, companyService.getCompanies());
+            model.addAttribute(ATTR_ERROR, error);
+            model.addAttribute(ATTR_FORM, form);
+            return PAGE_FORM;
         }
-
 
     }
 

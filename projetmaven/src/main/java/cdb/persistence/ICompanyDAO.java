@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by vkarassouloff on 26/04/17.
  */
-interface ICompanyDAO {
+public interface ICompanyDAO {
 
     /**
      * Get all records.

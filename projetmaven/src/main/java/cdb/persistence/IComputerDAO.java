@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by vkarassouloff on 26/04/17.
  */
-interface IComputerDAO {
+public interface IComputerDAO {
 
     /**
      * Get all records.
