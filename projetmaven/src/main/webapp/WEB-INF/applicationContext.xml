@@ -12,6 +12,7 @@
     <context:component-scan base-package="cdb.persistence"/>
     <context:component-scan base-package="cdb.service"/>
     <context:component-scan base-package="cdb.mapper"/>
+    <context:component-scan base-package="cdb.validator"/>
 
     <context:annotation-config/>
     <tx:annotation-driven/>
@@ -30,11 +31,6 @@
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
-    </bean>
-
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/jsp/"/>
-        <property name="suffix" value=".jsp"/>
     </bean>
 
     <!--

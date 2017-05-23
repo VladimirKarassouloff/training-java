@@ -1,16 +1,13 @@
 package cdb.dto;
 
 
-import cdb.validator.ComputerDTOValidator;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.Constraint;
 import javax.validation.constraints.Size;
 
 /**
  * Created by vkarassouloff on 14/04/17.
  */
-@Constraint(validatedBy = ComputerDTOValidator.class)
 public class ComputerDTO {
 
     @NotEmpty(message = "A computer should have a name !")

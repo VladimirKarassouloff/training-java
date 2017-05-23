@@ -5,26 +5,21 @@ import cdb.exception.FormException;
 import cdb.service.ComputerServiceImpl;
 import cdb.service.ICompanyService;
 import cdb.service.IComputerService;
-import cdb.utils.UtilsServletError;
+import cdb.validator.ComputerDTOValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by vkarassouloff on 20/04/17.
@@ -50,6 +45,7 @@ public class Computer {
 
     private ICompanyService companyService;
 
+    private ComputerDTOValidator computerValidator;
 
     @Autowired
     public void setComputerServiceImpl(ComputerServiceImpl computerServiceImpl) {
@@ -59,6 +55,17 @@ public class Computer {
     @Autowired
     public void setICompanyService(ICompanyService companyService) {
         this.companyService = companyService;
+    }
+
+
+    /**
+     * Inject validator for computer.
+     *
+     * @param binder holder of validator
+     */
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(computerValidator);
     }
 
 
@@ -83,10 +90,13 @@ public class Computer {
 
 
     @RequestMapping(method = RequestMethod.POST)
-    public String doPost(@ModelAttribute(ATTR_FORM) @Validated ComputerDTO form, BindingResult result, ModelMap model) {
-        List<ObjectError> errors = result.getAllErrors();
+    public String doPost(@ModelAttribute(ATTR_FORM) @Valid ComputerDTO form, BindingResult result, ModelMap model) {
         StringBuilder sb = new StringBuilder();
-        errors.stream().map(e -> sb.append(e.toString()));
+        for (ObjectError er : result.getAllErrors()) {
+            if (er.getCodes().length >= 2) {
+                sb.append(er.getCodes()[1]);
+            }
+        }
         String error = sb.toString();
 
         // Insert or Update if there are no id for the computer

@@ -7,7 +7,6 @@ import cdb.exception.DAOSelectException;
 import cdb.exception.DAOUpdateException;
 import cdb.model.Company;
 import cdb.persistence.ICompanyDAO;
-import cdb.persistence.ComputerDAOImpl;
 import cdb.persistence.IComputerDAO;
 import cdb.validator.CompanyValidator;
 import org.slf4j.Logger;
