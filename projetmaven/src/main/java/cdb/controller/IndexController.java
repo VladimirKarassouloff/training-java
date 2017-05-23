@@ -100,7 +100,8 @@ public class IndexController {
         }
 
         BeanParamUtils bpu = new BeanParamUtils(request);
-        return "redirect://" + INDEX + bpu.buildUrl();
+        bpu.forget("selection");
+        return "redirect://index" + bpu.buildUrl();
     }
 
 }

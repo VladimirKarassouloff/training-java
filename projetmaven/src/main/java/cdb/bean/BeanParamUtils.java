@@ -42,7 +42,7 @@ public class BeanParamUtils implements Serializable {
         Iterator<String> it = paramsHash.keySet().iterator();
         while (it.hasNext()) {
             String paramName = it.next();
-            sb.append(paramName + "=" + paramsHash.get(paramName));
+            sb.append(paramName).append("=").append(paramsHash.get(paramName));
             if (it.hasNext()) {
                 sb.append("&");
             }
