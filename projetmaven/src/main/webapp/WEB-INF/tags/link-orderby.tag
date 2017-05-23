@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <!-- Needed args -->
 <%@ attribute name="linkGenerated" required="true" type="java.lang.String" description="Url to this page" %>
@@ -37,7 +38,7 @@ ${paramUtils.overrideParam(orderGetParameter, valueOrder)}
 <!-------------------------------------------------------------------------------------------------------->
 
 <a href="${pageContext.request.contextPath}/${linkGenerated}${paramUtils.buildUrl()}">
-    ${innerhtml}
+    <spring:message code="${innerhtml}" />
     <c:choose>
         <c:when test="${valueAsc}"><i class="fa fa-chevron-up" aria-hidden="true"></i></c:when>
         <c:otherwise><i class="fa fa-chevron-down" aria-hidden="true"></i></c:otherwise>

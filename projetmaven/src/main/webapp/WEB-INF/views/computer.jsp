@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,10 +32,10 @@
                 <h1>
                     <c:choose>
                         <c:when test="${formComputer.id != null}">
-                            Edit computer
+                            <spring:message code="computer.edit" />
                         </c:when>
                         <c:otherwise>
-                            Add Computer
+                            <spring:message code="computer.add" />
                         </c:otherwise>
                     </c:choose>
                 </h1>
@@ -46,10 +47,10 @@
 
                 <c:choose>
                     <c:when test="${formComputer.id != null}">
-                        <c:set var="actionForm" value="?id=${formComputer.id}"></c:set>
+                        <c:set var="actionForm" value="?id=${formComputer.id}"/>
                     </c:when>
                     <c:otherwise>
-                        <c:set var="actionForm" value=""></c:set>
+                        <c:set var="actionForm" value=""/>
                     </c:otherwise>
                 </c:choose>
 
@@ -57,16 +58,15 @@
 
                     <fieldset>
                         <div class="form-group">
-                            <form:label path="name">Computer name</form:label>
+                            <form:label path="name"><spring:message code="computer.name" /></form:label>
                             <form:input path="name" type="text" class="form-control" id="computerName"
-                                        placeholder="Computer name"
                                         value="${formComputer.name}" name="name_computer"/>
 
-                            <form:errors path="name" cssClass="text-danger" />
+                            <form:errors path="name" cssClass="text-danger"/>
                         </div>
 
                         <div class="form-group">
-                            <form:label path="introduced" for="introduced">Introduced date</form:label>
+                            <form:label path="introduced" for="introduced"><spring:message code="computer.introduced" /></form:label>
                             <div class="input-group date introduced">
                                 <form:input path="introduced" id="introduced" type="text" class="form-control"
                                             name="introduced_computer" value="${formComputer.introduced}"/><span
@@ -75,7 +75,7 @@
                         </div>
 
                         <div class="form-group">
-                            <form:label path="discontinued" for="discontinued">Discontinued date</form:label>
+                            <form:label path="discontinued" for="discontinued"><spring:message code="computer.discontinued" /></form:label>
                             <div class="input-group date discontinued">
                                 <form:input path="discontinued" id="discontinued" type="text" class="form-control"
                                             name="discontinued_computer" value="${formComputer.discontinued}"/><span
@@ -84,7 +84,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="companyId">Company</label>
+                            <label for="companyId"><spring:message code="company" /></label>
                             <form:select path="companyId" class="form-control" id="companyId" name="company_id_computer"
                                          value="${formComputer.companyId}">
                                 <option value="" <c:if test="${formComputer.companyId == null}">selected</c:if>>--
@@ -99,10 +99,10 @@
                     <div class="actions pull-right">
                         <input type="hidden" id="id_computer" name="id_computer" value="${formComputer.id}"/>
                         <input id="submit-button" type="submit"
-                               value="<c:choose><c:when test="${formComputer.id == null}">Add</c:when><c:otherwise>Edit</c:otherwise></c:choose>"
+                               value="<c:choose><c:when test="${formComputer.id == null}"><spring:message code="add" /></c:when><c:otherwise><spring:message code="edit" /></c:otherwise></c:choose>"
                                class="btn btn-primary">
-                        or
-                        <a href="index" class="btn btn-default">Cancel</a>
+                        <spring:message code="or" />
+                        <a href="index" class="btn btn-default"><spring:message code="abort" /></a>
                     </div>
                 </form:form>
             </div>

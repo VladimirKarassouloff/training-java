@@ -857,7 +857,7 @@
 			}
 			if (this.focusDate && date.valueOf() === this.focusDate.valueOf())
 				cls.push('focused');
-			// Compare internal UTC date with local today, not UTC today
+			// Compare internal UTC date with local_fr.properties today, not UTC today
 			if (this.o.todayHighlight &&
 				date.getUTCFullYear() === today.getFullYear() &&
 				date.getUTCMonth() === today.getMonth() &&
