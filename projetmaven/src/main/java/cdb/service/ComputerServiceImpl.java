@@ -214,7 +214,7 @@ public class ComputerServiceImpl implements IComputerService {
 
 
     @Override
-    public ComputerPage getPage(FilterSelectComputer filter) {
+    public ComputerPage getPage(FilterSelect filter) {
         ComputerPage cp = new ComputerPage.Builder()
                 .withCount(getCountComputer(filter))
                 .withLengthPage(filter.getNumberOfResult())

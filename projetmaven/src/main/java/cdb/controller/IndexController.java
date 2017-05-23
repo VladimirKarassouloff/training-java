@@ -1,4 +1,4 @@
-package cdb.servlet;
+package cdb.controller;
 
 import cdb.bean.BeanParamUtils;
 import cdb.model.ComputerPage;
@@ -23,21 +23,15 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping(value = {"", "/index"})
-public class Index {
+public class IndexController {
     private static final long serialVersionUID = 1L;
 
-    private static final String PAGE_SUCCESS_FORM = "dashboard";
     public static final String INDEX = "dashboard";
 
-    // Fallback values
-    private static final boolean DEFAULT_ORDER_ASC = false;
     private static final String DEFAULT_LENGTH = "20";
-    private static final int MAX_COMPUTER_DISPLAYED = 100;
-    private static final int DEFAULT_COL_ORDERED = 0;
 
 
     private IComputerService services;
-
 
     @Autowired
     public void setServices(IComputerService services) {
@@ -70,7 +64,7 @@ public class Index {
 
         // Get the datas for the page
         try {
-            ComputerPage cp = services.getPage((FilterSelectComputer) builder.withPage(pageDisplay)
+            ComputerPage cp = services.getPage(builder.withPage(pageDisplay)
                     .withLengthPage(lengthPageDisplay)
                     .build());
 
@@ -90,7 +84,7 @@ public class Index {
 
     @RequestMapping(method = RequestMethod.POST)
     public String delete(HttpServletRequest request, HttpServletResponse response, ModelMap model,
-                          @RequestParam(value = "selection", required = false) String deleteUnparsed) {
+                         @RequestParam(value = "selection", required = false) String deleteUnparsed) {
 
         if (deleteUnparsed != null) {
             String[] deleteThoseIds = deleteUnparsed.split(",");
@@ -106,8 +100,7 @@ public class Index {
         }
 
         BeanParamUtils bpu = new BeanParamUtils(request);
-        bpu.forget("selection");
-        return "redirect://index" + bpu.buildUrl();
+        return "redirect://" + INDEX + bpu.buildUrl();
     }
 
 }

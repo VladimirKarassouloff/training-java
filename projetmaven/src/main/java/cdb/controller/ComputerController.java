@@ -1,4 +1,4 @@
-package cdb.servlet;
+package cdb.controller;
 
 import cdb.dto.ComputerDTO;
 import cdb.exception.FormException;
@@ -19,14 +19,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * Created by vkarassouloff on 20/04/17.
  */
 @Controller
 @RequestMapping("/computer")
-public class Computer {
+public class ComputerController {
 
     private static final String PAGE_FORM = "computer";
     private static final String PAGE_SUCCESS_FORM = "index";
@@ -107,16 +106,17 @@ public class Computer {
                 } else { // Edit a computer
                     computerServiceImpl.formUpdateComputer(form);
                 }
+                return "redirect://" + PAGE_SUCCESS_FORM;
             } catch (FormException e) {
                 error = e.getMessage();
             }
-            return "redirect://" + PAGE_SUCCESS_FORM;
-        } else {
-            model.addAttribute(ATTR_COMPANIES, companyService.getCompanies());
-            model.addAttribute(ATTR_ERROR, error);
-            model.addAttribute(ATTR_FORM, form);
-            return PAGE_FORM;
         }
+
+        // Exception during add/edit computer, go back to form
+        model.addAttribute(ATTR_COMPANIES, companyService.getCompanies());
+        model.addAttribute(ATTR_ERROR, error);
+        model.addAttribute(ATTR_FORM, form);
+        return PAGE_FORM;
 
     }
 

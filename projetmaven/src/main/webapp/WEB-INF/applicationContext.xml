@@ -33,9 +33,8 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <!--
-    <bean id="messageSource"
-          class="org.springframework.context.support.ResourceBundleMessageSource">
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basename" value="messages" />
-    </bean>-->
+    </bean>
+
 </beans>

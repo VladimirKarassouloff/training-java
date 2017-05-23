@@ -121,5 +121,5 @@ public interface IComputerService {
      * @param filter constraints
      * @return db-results
      */
-    ComputerPage getPage(FilterSelectComputer filter);
+    ComputerPage getPage(FilterSelect filter);
 }

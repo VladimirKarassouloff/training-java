@@ -1,23 +1,11 @@
 package cdb.dto;
 
 
-import org.hibernate.validator.constraints.NotEmpty;
-
-import javax.validation.constraints.Size;
-
-/**
- * Created by vkarassouloff on 14/04/17.
- */
 public class ComputerDTO {
 
-    @NotEmpty(message = "A computer should have a name !")
-    @Size(min = 3, max = 15, message = "The name should be between 3 and 15 char")
     private String name;
-
     private Integer id;
-
     private String introduced;
-
     private String discontinued;
     private String companyName;
     private Integer companyId;
@@ -117,6 +105,7 @@ public class ComputerDTO {
 
         /**
          * Set company name.
+         *
          * @param nameCompany string
          * @return builder
          */
