@@ -17,12 +17,12 @@
 <%@ attribute name="valueAsc" required="false" type="java.lang.Boolean"
               description="choose if chevron up / down" %>
 <c:choose>
-    <c:when test="${pageContext.request.getParameter(ascGetParameter).equals('true')
+    <c:when test="${pageContext.request.getParameter(ascGetParameter).equals('false')
      && pageContext.request.getParameter(orderGetParameter).equals(valueOrder)}">
-        <c:set var="valueAsc" value="true"/>
+        <c:set var="valueAsc" value="false"/>
     </c:when>
     <c:otherwise>
-        <c:set var="valueAsc" value="false"/>
+        <c:set var="valueAsc" value="true"/>
     </c:otherwise>
 </c:choose>
 <c:set var="invValueAsc" value="${!valueAsc}"/>

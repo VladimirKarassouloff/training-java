@@ -64,8 +64,8 @@ public class MapperComputerDTO {
      */
     public static ComputerDTO mapResultSetToObjectAux(ResultSet rs) {
         try {
-            int computerId = rs.getInt(SqlNames.COMPUTER_COL_COMPUTER_ID);
-            int companyId = rs.getInt(SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID);
+            long computerId = rs.getLong(SqlNames.COMPUTER_COL_COMPUTER_ID);
+            long companyId = rs.getLong(SqlNames.COMPUTER_COL_COMPUTER_COMPANY_ID);
             String computerName = rs.getString(SqlNames.COMPUTER_COL_COMPUTER_NAME);
             Date introduced = rs.getDate(SqlNames.COMPUTER_COL_COMPUTER_INTRODUCED);
             Date discontinued = rs.getDate(SqlNames.COMPUTER_COL_COMPUTERDISCONTINUED);

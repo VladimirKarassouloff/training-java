@@ -4,9 +4,9 @@ import cdb.applicationcli.Application;
 import cdb.applicationcli.FormulaireCli;
 import cdb.exception.FormException;
 import cdb.model.Computer;
-import cdb.persistence.filter.FilterSelectComputer;
 import cdb.service.ComputerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,7 +56,7 @@ public class ListComputerPage extends Pageable<Computer> {
     public void handleDeletion() {
         System.out.println("Entrez le numero l'id de l'ordinateur a supprimer");
         try {
-            int idDelete = Integer.parseInt(input.nextLine());
+            long idDelete = Long.parseLong(input.nextLine());
             Computer comp = computerService.getComputer(idDelete);
             if (comp == null) {
                 throw new RuntimeException("Id invalide");
@@ -98,14 +98,11 @@ public class ListComputerPage extends Pageable<Computer> {
 
     @Override
     protected void orderFetchNewDataForPage() {
-        this.list = computerService.getPagedComputer(new FilterSelectComputer.Builder()
-                .withPage(currentPage)
-                .withLengthPage(numberItemPage)
-                .build());
+        this.list = computerService.getComputers(new PageRequest(currentPage, numberItemPage)).getContent();
     }
 
     @Override
-    protected int orderFetchDataCountPageable() {
+    protected long orderFetchDataCountPageable() {
         return computerService.getCountComputer();
     }
 

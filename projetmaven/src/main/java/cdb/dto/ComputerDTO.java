@@ -4,11 +4,11 @@ package cdb.dto;
 public class ComputerDTO {
 
     private String name;
-    private Integer id;
+    private Long id;
     private String introduced;
     private String discontinued;
     private String companyName;
-    private Integer companyId;
+    private Long companyId;
 
     /**
      * Empty constructor.
@@ -27,7 +27,7 @@ public class ComputerDTO {
      * @param companyName  of the computerdto
      * @param companyId    of the computerdto
      */
-    public ComputerDTO(String name, Integer id, String introduced, String discontinued, String companyName, Integer companyId) {
+    public ComputerDTO(String name, Long id, String introduced, String discontinued, String companyName, Long companyId) {
         this.name = name;
         this.id = id;
         this.introduced = introduced;
@@ -54,7 +54,7 @@ public class ComputerDTO {
          * @param id of computer
          * @return builder
          */
-        public Builder withId(Integer id) {
+        public Builder withId(Long id) {
             computer.setId(id);
             return this;
         }
@@ -98,7 +98,7 @@ public class ComputerDTO {
          * @param idCompany integer
          * @return builder
          */
-        public Builder withCompanyId(Integer idCompany) {
+        public Builder withCompanyId(Long idCompany) {
             computer.companyId = idCompany;
             return this;
         }
@@ -135,11 +135,11 @@ public class ComputerDTO {
         this.name = name;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -167,11 +167,11 @@ public class ComputerDTO {
         this.companyName = companyName;
     }
 
-    public Integer getCompanyId() {
+    public Long getCompanyId() {
         return companyId;
     }
 
-    public void setCompanyId(Integer comanyId) {
+    public void setCompanyId(Long comanyId) {
         this.companyId = comanyId;
     }
 }

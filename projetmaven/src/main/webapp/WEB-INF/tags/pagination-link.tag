@@ -68,17 +68,7 @@ ${paramUtils.copyGetParameterFromRequest(pageContext.request)}
 <!--------------------------------HTML GENERATION FOR PAGINATION------------------------------------------>
 <!-------------------------------------------------------------------------------------------------------->
 <ul class="pagination">
-    <!-- Generation of [1] [...] [currentpage-1] [currentpage] etc-->
-    <c:choose>
-        <c:when test="${beginLoop > numberPageLeftRight}">
-            ${paramUtils.overrideParam(paramNameUrlCurrent, 0)}
-            <li><a href="${pageContext.request.contextPath}/${linkGenerated}${paramUtils.buildUrl()}">1</a></li>
-            <li class="disabled"><a href="#">...</a></li>
-        </c:when>
-        <c:otherwise>
-            <c:set var="beginLoop" value="0"/>
-        </c:otherwise>
-    </c:choose>
+
 
     <!-- Now we check if we can avoid putting [CurrentPage] [...] [Endpage] by generating  [CurrentPage] [CurrentPage+1] [Endpage]-->
     <c:if test="${not(endLoop < pageCount - numberPageLeftRight)}">
@@ -95,6 +85,17 @@ ${paramUtils.copyGetParameterFromRequest(pageContext.request)}
         <c:set var="beginLoop" value="${Math.max(0.0, beginLoop - (currentPage + numberPageLeftRight - pageCount) - 2.0)}"/>
     </c:if>
 
+    <!-- Generation of [1] [...] [currentpage-1] [currentpage] etc-->
+    <c:choose>
+        <c:when test="${beginLoop > numberPageLeftRight}">
+            ${paramUtils.overrideParam(paramNameUrlCurrent, 0)}
+            <li><a href="${pageContext.request.contextPath}/${linkGenerated}${paramUtils.buildUrl()}">1</a></li>
+            <li class="disabled"><a href="#">...</a></li>
+        </c:when>
+        <c:otherwise>
+            <c:set var="beginLoop" value="0"/>
+        </c:otherwise>
+    </c:choose>
 
     <!-- Generation of pages on left and right of the current one -->
     <c:forEach begin="${beginLoop}" end="${endLoop}" varStatus="loop">

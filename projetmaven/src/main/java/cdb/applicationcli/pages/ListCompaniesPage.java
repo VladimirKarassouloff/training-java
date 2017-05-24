@@ -4,6 +4,7 @@ import cdb.applicationcli.Application;
 import cdb.model.Company;
 import cdb.service.CompanyServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,7 +40,7 @@ public class ListCompaniesPage extends Pageable<Company> {
     }
 
     @Override
-    protected int orderFetchDataCountPageable() {
+    protected long orderFetchDataCountPageable() {
         return companyService.getCountCompany();
     }
 
@@ -50,7 +51,7 @@ public class ListCompaniesPage extends Pageable<Company> {
 
     @Override
     protected void orderFetchNewDataForPage() {
-        this.list = companyService.getPagedCompany(currentPage, numberItemPage);
+        this.list = companyService.getPagedCompany(new PageRequest(currentPage, numberItemPage)).getContent();
     }
 
     @Override

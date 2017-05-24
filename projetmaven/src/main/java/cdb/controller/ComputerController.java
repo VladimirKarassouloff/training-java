@@ -2,6 +2,8 @@ package cdb.controller;
 
 import cdb.dto.ComputerDTO;
 import cdb.exception.FormException;
+import cdb.mapper.MapperComputer;
+import cdb.mapper.MapperComputerDTO;
 import cdb.service.ComputerServiceImpl;
 import cdb.service.ICompanyService;
 import cdb.service.IComputerService;
@@ -30,15 +32,15 @@ public class ComputerController {
     private static final String ATTR_COMPANIES = "companies";
     private static final String ATTR_ERROR = "error";
 
-    private IComputerService computerServiceImpl;
+    private IComputerService computerService;
 
     private ICompanyService companyService;
 
     private ComputerDTOValidator computerValidator;
 
     @Autowired
-    public void setComputerServiceImpl(ComputerServiceImpl computerServiceImpl) {
-        this.computerServiceImpl = computerServiceImpl;
+    public void setComputerServiceImpl(IComputerService computerService) {
+        this.computerService = computerService;
     }
 
     @Autowired
@@ -65,7 +67,7 @@ public class ComputerController {
         if (idComputer == null) { // Trying to create a new computer
             form = new ComputerDTO();
         } else { // Trying to edit computer
-            form = computerServiceImpl.getComputerDTO(idComputer);
+            form = MapperComputer.toDTO(computerService.getComputer(idComputer));
         }
 
         model.addAttribute(ATTR_COMPANIES, companyService.getCompanies());
@@ -83,9 +85,9 @@ public class ComputerController {
         if (!result.hasErrors()) {
             try {
                 if (form.getId() == null) { // Create new Computer
-                    computerServiceImpl.formAddComputer(form);
+                    computerService.formAddComputer(form);
                 } else { // Edit a computer
-                    computerServiceImpl.formUpdateComputer(form);
+                    computerService.formUpdateComputer(form);
                 }
                 return "redirect://" + PAGE_SUCCESS_FORM;
             } catch (FormException e) {

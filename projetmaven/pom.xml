@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>projet-maven</groupId>
     <artifactId>projet-maven</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.5.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>projet-mvn</name>
     <description>computer-database</description>
@@ -20,6 +20,8 @@
 
         <version.spring>4.3.8.RELEASE</version.spring>
         <version.spring-test>4.3.8.RELEASE</version.spring-test>
+        <version.spring-data-jpa>1.11.3.RELEASE</version.spring-data-jpa>
+        <version.hibernate-core>5.2.10.Final</version.hibernate-core>
 
         <version.servlet-api>3.1.0</version.servlet-api>
         <version.jstl>1.2</version.jstl>
@@ -84,6 +86,12 @@
 
     <dependencies>
 
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${version.hibernate-core}</version>
+        </dependency>
 
         <!-- Hibernate Validator -->
         <dependency>
@@ -188,6 +196,11 @@
             <version>${version.spring}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>${version.spring-data-jpa}</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/commons-dbcp/commons-dbcp -->
         <dependency>

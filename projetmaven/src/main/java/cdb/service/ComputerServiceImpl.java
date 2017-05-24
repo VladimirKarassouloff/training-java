@@ -1,32 +1,30 @@
 package cdb.service;
 
 import cdb.dto.ComputerDTO;
-import cdb.exception.DAOCountException;
-import cdb.exception.DAODeleteException;
-import cdb.exception.DAOInsertException;
-import cdb.exception.DAOSelectException;
-import cdb.exception.DAOUpdateException;
 import cdb.exception.FormException;
 import cdb.exception.InvalidComputerException;
 import cdb.exception.MapperException;
 import cdb.mapper.MapperComputer;
 import cdb.model.Computer;
-import cdb.model.ComputerPage;
 import cdb.persistence.IComputerDAO;
-import cdb.persistence.filter.FilterSelect;
-import cdb.persistence.filter.FilterSelectComputer;
 import cdb.validator.ComputerValidator;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
  * Created by vkarassouloff on 19/04/17.
  */
-@Service()
+@Service
+@Transactional
 public class ComputerServiceImpl implements IComputerService {
 
     private final Logger LOGGER = LoggerFactory.getLogger(ComputerServiceImpl.class);
@@ -56,69 +54,27 @@ public class ComputerServiceImpl implements IComputerService {
     @Override
     public List<Computer> getComputers() {
         try {
-            return computerDao.getAll();
-        } catch (DAOSelectException e) {
-            LOGGER.info("ComputerServiceImpl : Error getting all computers");
-            throw new RuntimeException("ComputerService : Impossible to get all computers");
+            return computerDao.findAll();
+        } catch (IllegalArgumentException e) {
+            LOGGER.info("ComputerServiceImpl : Error getting all computers" + e.getMessage());
+            throw new RuntimeException("ComputerService : Impossible to get all computers" + e.getMessage());
         }
     }
 
+
     @Override
-    public List<ComputerDTO> getPagedComputerDTO(FilterSelect filter) {
+    @Transactional(readOnly = true)
+    public Computer getComputer(long id) {
         try {
-            return MapperComputer.toDTOs(computerDao.getFromFilter(filter));
-        } catch (DAOSelectException e) {
-            LOGGER.info("ComputerServiceImpl : Error getting paged computer");
-            throw new RuntimeException("ComputerService : Impossible to get last computerDto");
+            Computer obj = computerDao.getOne(id);
+            Hibernate.initialize(obj);
+            return obj;
+        } catch (IllegalArgumentException e) {
+            LOGGER.info("ComputerService : Impossible to get computer with id " + id + " => " + e.getMessage());
+            throw new RuntimeException("ComputerService : Impossible to get computer with id " + id + " => " + e.getMessage());
         }
     }
 
-    @Override
-    public List<Computer> getPagedComputer(FilterSelect filter) {
-        try {
-            return computerDao.getFromFilter(filter);
-        } catch (DAOSelectException e) {
-            LOGGER.info("ComputerServiceImpl : Error get paged computer");
-            throw new RuntimeException("ComputerService : Impossible to get page of computers");
-        }
-    }
-
-
-    @Override
-    public int getCountComputer() {
-        return this.getCountComputer(new FilterSelectComputer());
-    }
-
-    @Override
-    public int getCountComputer(FilterSelect filter) {
-        try {
-            return computerDao.getCount(filter);
-        } catch (DAOCountException e) {
-            LOGGER.info("ComputerServiceImpl : Error getting count computers");
-            throw new RuntimeException("ComputerService : Impossible to get count of computer");
-        }
-    }
-
-
-    @Override
-    public Computer getComputer(int id) {
-        try {
-            return computerDao.get(id);
-        } catch (DAOSelectException e) {
-            LOGGER.info("ComputerServiceImpl : Error getting all computers");
-            throw new RuntimeException("ComputerService : Impossible to get computer with id " + id);
-        }
-    }
-
-    @Override
-    public ComputerDTO getComputerDTO(int id) {
-        try {
-            return MapperComputer.toDTO(computerDao.get(id));
-        } catch (DAOSelectException e) {
-            LOGGER.info("ComputerServiceImpl : Error getting all computers");
-            throw new RuntimeException("ComputerService : Impossible to get computerDto");
-        }
-    }
 
     @Override
     public void addComputer(Computer computer) throws FormException {
@@ -130,15 +86,15 @@ public class ComputerServiceImpl implements IComputerService {
         }
 
         try {
-            computerDao.insert(computer);
-        } catch (DAOInsertException e) {
-            LOGGER.info("ComputerServiceImpl : Error while inserting computer : (" + computer + ")");
-            throw new RuntimeException("ComputerService : Impossible to get add computer");
+            computerDao.saveAndFlush(computer);
+        } catch (IllegalArgumentException e) {
+            LOGGER.info("ComputerService : Error while inserting computer : (" + computer + ") => " + e.getMessage());
+            throw new RuntimeException("ComputerService : Error while inserting computer : (" + computer + ") => " + e.getMessage());
         }
     }
 
     @Override
-    public boolean updateComputer(Computer computer) throws FormException {
+    public void updateComputer(Computer computer) throws FormException {
         try {
             ComputerValidator.checkValidity(computer);
         } catch (InvalidComputerException e) {
@@ -147,20 +103,23 @@ public class ComputerServiceImpl implements IComputerService {
         }
 
         try {
-            return computerDao.update(computer);
-        } catch (DAOUpdateException e) {
-            LOGGER.info("ComputerServiceImpl : Error while trying to update computer [" + computer + "]");
-            throw new RuntimeException("ComputerService : Impossible to update computer");
+            computerDao.saveAndFlush(computer);
+        } catch (IllegalArgumentException e) {
+            LOGGER.info("ComputerService : Impossible to update computer [" + computer + "] => " + e.getMessage());
+            throw new RuntimeException("ComputerService : Impossible to update computer [" + computer + "] => " + e.getMessage());
         }
     }
 
     @Override
-    public void deleteComputer(int... ids) {
+    public void deleteComputer(long... ids) {
         try {
-            computerDao.delete(ids);
-        } catch (DAODeleteException e) {
-            LOGGER.info("ComputerServiceImpl : Computer are not deleted (" + ids + ")" + " => " + e.getMessage());
-            throw new RuntimeException("ComputerService : Impossible to delete  computer => " + ids);
+            for (long id : ids) {
+                computerDao.delete(id);
+            }
+            computerDao.flush();
+        } catch (RuntimeException e) {
+            LOGGER.info("ComputerService : Computer are not deleted (" + ids + ")" + " => " + e.getMessage());
+            throw new RuntimeException("ComputerService : Computer are not deleted (" + ids + ")" + " => " + e.getMessage());
         }
     }
 
@@ -171,14 +130,14 @@ public class ComputerServiceImpl implements IComputerService {
         try {
             computer = MapperComputer.mapDTOToObject(form);
         } catch (MapperException e) {
-            LOGGER.info("ComputerServiceImpl : Mapping error " + e.getMessage());
-            throw new RuntimeException("Impossible de cdb.mapper [" + form + "] en computer");
+            LOGGER.info("ComputerService : Mapping error  [" + form + "] " + e.getMessage());
+            throw new RuntimeException("ComputerService : Mapping error  [" + form + "] " + e.getMessage());
         }
 
         try {
             ComputerValidator.checkValidityForUpdate(computer);
         } catch (InvalidComputerException e) {
-            throw new FormException("An error occured : " + e.getMessage());
+            throw new FormException("ComputerService : An error occured : " + e.getMessage());
         }
 
         updateComputer(computer);
@@ -190,8 +149,8 @@ public class ComputerServiceImpl implements IComputerService {
         try {
             computer = MapperComputer.mapDTOToObject(form);
         } catch (MapperException e) {
-            LOGGER.info("ComputerServiceImpl : Cannot map computer to DTO " + e.getMessage());
-            throw new FormException("Cannot map computer to DTO");
+            LOGGER.info("ComputerService : Cannot map computer to DTO " + e.getMessage());
+            throw new FormException("ComputerService : Cannot map computer to DTO " + e.getMessage());
         }
 
         try {
@@ -205,36 +164,69 @@ public class ComputerServiceImpl implements IComputerService {
     @Override
     public Computer getLastComputerInserted() {
         try {
-            return computerDao.getLastComputerInserted();
-        } catch (DAOSelectException e) {
-            LOGGER.info("ComputerServiceImpl : Error while getting the last computer");
+            return computerDao.findFirstByOrderByIdDesc();
+        } catch (RuntimeException e) {
+            LOGGER.info("ComputerService : Error while getting the last computer");
             throw new RuntimeException("ComputerService : Impossible to get last computer");
         }
     }
 
 
     @Override
-    public ComputerPage getPage(FilterSelect filter) {
-        ComputerPage cp = new ComputerPage.Builder()
-                .withCount(getCountComputer(filter))
-                .withLengthPage(filter.getNumberOfResult())
-                .withDisplayedPage(filter.getPage())
-                .build();
-
-
-        // Check user is at a valid page
-        double calc = ((double) cp.getTotalCount() / (double) cp.getLengthPage());
-        if (filter.getPage() < 0) {
-            cp.setDisplayedPage(0);
-        } else if ((double) filter.getPage() >= calc) {
-            cp.setDisplayedPage((calc % 1 == 0) ? (int) calc : (int) (calc - 1));
+    public long getCountComputer() {
+        try {
+            return computerDao.count();
+        } catch (RuntimeException e) {
+            LOGGER.info("ComputerService : Impossible to computer count => " + e.getMessage());
+            throw new RuntimeException("ComputerService : Impossible to computer count => " + e.getMessage());
         }
-        filter.setPage(cp.getDisplayedPage());
-
-        // Get the page asked
-        cp.setResults(getPagedComputerDTO(filter));
-        return cp;
-
     }
 
+    @Override
+    public long getCountComputer(String nameOrCompanyName) {
+        try {
+            if (nameOrCompanyName == null) {
+                return getCountComputer();
+            } else {
+                return computerDao.countByNameStartingWithOrCompanyNameStartingWith(nameOrCompanyName, nameOrCompanyName);
+            }
+        } catch (RuntimeException e) {
+            LOGGER.info("ComputerService : Impossible to computer count => " + e.getMessage());
+            throw new RuntimeException("ComputerService : Impossible to computer count => " + e.getMessage());
+        }
+    }
+
+
+    @Override
+    public Page<Computer> getComputers(PageRequest pr) {
+        return getPage(pr, null);
+    }
+
+    @Override
+    public Page<Computer> getPage(Pageable pr, String nameOrCompanyName) {
+        try {
+            Page<Computer> page = null;
+
+            // Check that we are not asking for a negative page
+            if (pr.getPageNumber() < 0) {
+                pr = pr.first();
+            }
+
+            if (nameOrCompanyName == null) {
+                page = computerDao.getComputersBy(pr);
+            } else {
+                page = computerDao.getComputersByNameStartingWithOrCompanyNameStartingWith(pr, nameOrCompanyName, nameOrCompanyName);
+            }
+
+            // Check that user asked for a valid page
+            if (page.getContent().isEmpty() && page.getTotalPages() != 0 && page.getTotalElements() != 0) {
+                return getPage(new PageRequest(page.getTotalPages() - 1, page.getSize()), nameOrCompanyName);
+            }
+
+            return page;
+        } catch (RuntimeException e) {
+            LOGGER.info("ComputerService : Impossible to computer page => " + e.getMessage());
+            throw new RuntimeException("ComputerService : Impossible to computer page => " + e.getMessage());
+        }
+    }
 }

@@ -1,13 +1,15 @@
 package cdb.controller;
 
 import cdb.bean.BeanParamUtils;
-import cdb.model.ComputerPage;
-import cdb.persistence.filter.FilterSelectComputer;
-import cdb.persistence.operator.LikeRight;
+import cdb.dto.ComputerDTO;
+import cdb.mapper.MapperComputer;
+import cdb.model.Computer;
 import cdb.service.IComputerService;
-import cdb.utils.SqlNames;
 import cdb.utils.UtilsServletError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,8 @@ public class IndexController {
     public static final String INDEX = "dashboard";
 
     private static final String DEFAULT_LENGTH = "20";
+    private static final String DEFAULT_ORDER_ASC = "true";
+    private static final String DEFAULT_ORDERED_COL = "0";
 
     private IComputerService services;
 
@@ -39,33 +43,21 @@ public class IndexController {
                         @RequestParam(value = "search", required = false) String search,
                         @RequestParam(value = "currentPage", defaultValue = "0") int pageDisplay,
                         @RequestParam(value = "lengthPage", defaultValue = DEFAULT_LENGTH) int lengthPageDisplay,
-                        @RequestParam(value = "asc", required = false) Boolean asc,
-                        @RequestParam(value = "colOrder", required = false) Integer colOrder) {
+                        @RequestParam(value = "asc", defaultValue = DEFAULT_ORDER_ASC) boolean asc,
+                        @RequestParam(value = "colOrder", defaultValue = DEFAULT_ORDERED_COL) int colOrder) {
 
-        // Filter for counting and selecting
-        FilterSelectComputer.Builder builder = new FilterSelectComputer.Builder();
 
-        // Is the user reasearching by name or company name ?
-        if (search != null && !"".equals(search)) {
-            builder.withSearch(SqlNames.COMPANY_TABLE_NAME + "." + SqlNames.COMPANY_COL_COMPANY_NAME, new LikeRight(search))
-                    .withSearch(SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME, new LikeRight(search));
-        }
-
-        // Is there a request for ordered data ?
-        if (asc != null && colOrder != null) {
-            builder.withOrder(colOrder, asc);
-        }
 
         // Get the datas for the page
-        ComputerPage cp = services.getPage(builder.withPage(pageDisplay)
-                .withLengthPage(lengthPageDisplay)
-                .build());
+        Page<ComputerDTO> cp = services.getPage(new PageRequest(pageDisplay, lengthPageDisplay,
+                (asc ? Sort.Direction.ASC : Sort.Direction.DESC), Computer.colToProperty(colOrder)), search).map(MapperComputer::toDTO);
 
         // Set all attributes
-        model.addAttribute("computers", cp.getResults());
-        model.addAttribute("totalCount", cp.getTotalCount());
-        model.addAttribute("currentPage", cp.getDisplayedPage());
-        model.addAttribute("lengthPage", lengthPageDisplay);
+        model.addAttribute("asc", asc);
+        model.addAttribute("computers", cp.getContent());
+        model.addAttribute("totalCount", cp.getTotalElements());
+        model.addAttribute("currentPage", cp.getNumber());
+        model.addAttribute("lengthPage", cp.getSize());
         model.addAttribute("search", (search == null ? "" : search));
 
         return INDEX;
@@ -78,7 +70,7 @@ public class IndexController {
 
         if (deleteUnparsed != null) {
             String[] deleteThoseIds = deleteUnparsed.split(",");
-            int[] parsedId = new int[deleteThoseIds.length];
+            long[] parsedId = new long[deleteThoseIds.length];
             for (int i = 0; i < parsedId.length; i++) {
                 try {
                     parsedId[i] = Integer.parseInt(deleteThoseIds[i]);

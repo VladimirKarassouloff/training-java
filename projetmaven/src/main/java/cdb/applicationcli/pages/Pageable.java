@@ -8,7 +8,7 @@ public abstract class Pageable<T> extends Page {
 
     protected int currentPage;
     protected int numberItemPage;
-    protected int countItemTotal;
+    protected long countItemTotal;
 
     protected List<T> list;
 
@@ -71,7 +71,7 @@ public abstract class Pageable<T> extends Page {
      * Should get the row count from the database.
      * @return nombre de lignes
      */
-    protected abstract int orderFetchDataCountPageable();
+    protected abstract long orderFetchDataCountPageable();
 
     /**
      * Should get new data from database depending of the currentpage.

@@ -1,16 +1,55 @@
 package cdb.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.util.Date;
 
-
+@Entity
+@Table(schema = "computer-database-db", name = "computer")
 public class Computer {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private long id;
 
-    private int id;
+    @ManyToOne(fetch = FetchType.EAGER)
     private Company company;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "introduced")
     private Date introduced;
+
+    @Column(name = "discontinued")
     private Date discontinued;
+
+    /**
+     * Bind a col number to a propert name.
+     * @param colOrder to translate
+     * @return name of property
+     */
+    public static String colToProperty(int colOrder) {
+       switch (colOrder) {
+           case 0:
+               return "name";
+           case 1:
+               return "introduced";
+           case 2:
+               return "discontinued";
+           case 3:
+               return "company.name";
+           default:
+               return "id";
+       }
+    }
 
 
     public static class Builder {
@@ -29,7 +68,7 @@ public class Computer {
          * @param id property set
          * @return builder
          */
-        public Builder withId(int id) {
+        public Builder withId(long id) {
             computer.setId(id);
             return this;
         }
@@ -153,11 +192,11 @@ public class Computer {
                 + " name : " + name + ", introduced : " + introduced + ", discontinued : " + discontinued + " } }";
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -11,6 +11,11 @@
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="css/font-awesome.css" rel="stylesheet" media="screen">
     <link href="css/main.css" rel="stylesheet" media="screen">
+    <style>
+        .pagination a {
+            min-width: 50px;
+        }
+    </style>
 </head>
 <body>
 <header class="navbar navbar-inverse navbar-fixed-top">
@@ -83,6 +88,14 @@
             </thead>
             <!-- Browse attribute computers -->
             <tbody id="results">
+            <c:if test="${computers.size() eq 0}">
+                <tr>
+                    <td colspan="5" style="text-align: center;">
+                        <spring:message code="no.computer.found"/>
+                    </td>
+                </tr>
+            </c:if>
+
             <c:forEach var="computer" items="${computers}">
                 <tr>
                     <td class="editMode" style="display: none;"><input type="checkbox" name="cb" class="cb"

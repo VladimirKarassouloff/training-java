@@ -2,6 +2,9 @@ package cdb.service;
 
 import cdb.model.Company;
 import cdb.persistence.IComputerDAO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -22,17 +25,16 @@ public interface ICompanyService {
      * Get Page of campanies.
      *
      * @param page       number of page
-     * @param numberItem number of result per page
      * @return companies
      */
-    List<Company> getPagedCompany(int page, int numberItem);
+    Page<Company> getPagedCompany(PageRequest page);
 
     /**
      * Get the total count of companies in DB.
      *
      * @return number of companoes
      */
-    int getCountCompany();
+    long getCountCompany();
 
 
     /**
@@ -41,7 +43,7 @@ public interface ICompanyService {
      * @param id of the company returned
      * @return company having the id or null
      */
-    Company getCompany(int id);
+    Company getCompany(long id);
 
     /**
      * Update the company in DB with the value of the company parameter.
@@ -49,14 +51,14 @@ public interface ICompanyService {
      * @param company updated
      * @return boolean for success
      */
-    boolean updateCompany(Company company);
+    Company updateCompany(Company company);
 
     /**
      * Delete a companny and all her belongings computers.
      *
      * @param id of the company
      */
-    void delete(int id);
+    void delete(long id);
 
     /**
      * Change DAO source for object.

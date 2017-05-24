@@ -3,9 +3,9 @@ package cdb.service;
 import cdb.dto.ComputerDTO;
 import cdb.exception.FormException;
 import cdb.model.Computer;
-import cdb.model.ComputerPage;
-import cdb.persistence.filter.FilterSelect;
-import cdb.persistence.filter.FilterSelectComputer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -21,36 +21,28 @@ public interface IComputerService {
      */
     List<Computer> getComputers();
 
-
     /**
-     * Get Page of computers.
+     * Get page of computer.
      *
-     * @param filter constraints
-     * @return computers
+     * @param pr request
+     * @return result set
      */
-    List<Computer> getPagedComputer(FilterSelect filter);
-
-    /**
-     * Get computerdto matching filter.
-     * @param filter for your select
-     * @return computer matching filter
-     */
-    List<ComputerDTO> getPagedComputerDTO(FilterSelect filter);
-
-    /**
-     * Get Total count of the computers in DB having the name like searchByName.
-     *
-     * @param fs filters
-     * @return number of computers matching
-     */
-    int getCountComputer(FilterSelect fs);
+    Page<Computer> getComputers(PageRequest pr);
 
     /**
      * Get Total count of the computers in DB.
      *
      * @return number of computers
      */
-    int getCountComputer();
+    long getCountComputer();
+
+    /**
+     * Get Total count of the computers in DB.
+     *
+     * @param nameOrCompanyName filter
+     * @return number of computers
+     */
+    long getCountComputer(String nameOrCompanyName);
 
     /**
      * Get specific Computer having this id.
@@ -58,15 +50,7 @@ public interface IComputerService {
      * @param id of the computer returned
      * @return computer or null
      */
-    Computer getComputer(int id);
-
-    /**
-     * Get specific ComputerDTO having this id.
-     *
-     * @param id of the computer returned
-     * @return computer or null
-     */
-    ComputerDTO getComputerDTO(int id);
+    Computer getComputer(long id);
 
     /**
      * Add Computer to the DB.
@@ -81,16 +65,15 @@ public interface IComputerService {
      *
      * @param computer updated
      * @throws FormException if computer is not valid
-     * @return success query
      */
-    boolean updateComputer(Computer computer) throws FormException;
+    void updateComputer(Computer computer) throws FormException;
 
     /**
      * Delete computer of the DB having the id equals of the computer id param.
      *
      * @param ids deleted
      */
-    void deleteComputer(int... ids);
+    void deleteComputer(long... ids);
 
 
     /**
@@ -112,14 +95,18 @@ public interface IComputerService {
 
     /**
      * Return the last computer inserted in DB.
+     *
      * @return last computer inserted
      */
     Computer getLastComputerInserted();
 
     /**
-     * Get set of result, with total count, and the 'real' page displayed in case of wrong requirement.
-     * @param filter constraints
-     * @return db-results
+     * Get a result set.
+     *
+     * @param pr                page request
+     * @param nameOrCompanyName filters
+     * @return result
      */
-    ComputerPage getPage(FilterSelect filter);
+    Page<Computer> getPage(Pageable pr, String nameOrCompanyName);
+
 }

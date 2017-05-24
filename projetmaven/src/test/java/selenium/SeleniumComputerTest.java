@@ -2,10 +2,8 @@ package selenium;
 
 import cdb.mapper.MapperDate;
 import cdb.model.Computer;
-import cdb.persistence.filter.FilterSelectComputer;
-import cdb.persistence.operator.Equal;
 import cdb.service.ComputerServiceImpl;
-import cdb.utils.SqlNames;
+import cdb.service.IComputerService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +14,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -32,7 +31,7 @@ public class SeleniumComputerTest {
     private WebDriver driver;
 
     @Autowired
-    private ComputerServiceImpl computerService;
+    private IComputerService computerService;
 
     private static final String BASEURL = "http://localhost:8080/mydeployyy/";
     private static final String BASEURLADDEDIT = BASEURL + "computer";
@@ -97,12 +96,9 @@ public class SeleniumComputerTest {
         System.out.println("Count is ok");
 
         // Test if all values inserted are correct
-        Computer computerInserted = computerService.getPagedComputer(new FilterSelectComputer.Builder()
-                .withPage(0)
-                .withLengthPage(1)
-                .withSearch(SqlNames.COMPUTER_TABLE_NAME + "." + SqlNames.COMPUTER_COL_COMPUTER_NAME, new Equal(testValues.getNameComputer()))
-                .build()
-        ).get(0);
+        Computer computerInserted = computerService.getPage(new PageRequest(0, 1),
+                testValues.getNameComputer()
+        ).getContent().get(0);
         System.out.println("Comparing now value of form vs inserted");
         assertEquals(testValues.nameComputer.equals(computerInserted.getName()), true);
         assertEquals(MapperDate.dateFromString(testValues.dateIntro).getTime(), computerInserted.getIntroduced().getTime());
@@ -114,6 +110,7 @@ public class SeleniumComputerTest {
 
     @Test
     public void testEditComputer() throws Exception {
+        testAddComputer();
         Computer computerJustAdded = computerService.getLastComputerInserted();
         driver.get(BASEURLADDEDIT + "?id=" + computerJustAdded.getId());
         driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
@@ -207,8 +204,8 @@ public class SeleniumComputerTest {
      */
     public static class TestValues {
 
-        private int countBeforeSubmit;
-        private int countAfterSubmit;
+        private long countBeforeSubmit;
+        private long countAfterSubmit;
         private Date d;
         private String nameComputer;
         private String dateIntro;
@@ -225,7 +222,7 @@ public class SeleniumComputerTest {
             companyId = "1";
         }
 
-        public int getCountBeforeSubmit() {
+        public long getCountBeforeSubmit() {
             return countBeforeSubmit;
         }
 
@@ -233,7 +230,7 @@ public class SeleniumComputerTest {
             this.countBeforeSubmit = countBeforeSubmit;
         }
 
-        public int getCountAfterSubmit() {
+        public long getCountAfterSubmit() {
             return countAfterSubmit;
         }
 
@@ -320,7 +317,7 @@ public class SeleniumComputerTest {
             return this;
         }
 
-        public Builder withCountBefore(int i) {
+        public Builder withCountBefore(long i) {
             test.countBeforeSubmit = i;
             return this;
         }
