@@ -56,13 +56,15 @@
 
                 <form:form id="myform" action="${actionForm}" method="POST" modelAttribute="formComputer">
 
+                    <form:errors cssClass="text-danger alert alert-danger"  element="div"/>
+
                     <fieldset>
                         <div class="form-group">
                             <form:label path="name"><spring:message code="computer.name" /></form:label>
                             <form:input path="name" type="text" class="form-control" id="computerName"
                                         value="${formComputer.name}" name="name_computer"/>
 
-                            <form:errors path="name" cssClass="text-danger"/>
+                            <form:errors path="name" cssClass="text-danger" element="div"/>
                         </div>
 
                         <div class="form-group">
@@ -72,6 +74,7 @@
                                             name="introduced_computer" value="${formComputer.introduced}"/><span
                                     class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
+                            <form:errors path="introduced" cssClass="text-danger" element="div"/>
                         </div>
 
                         <div class="form-group">
@@ -81,6 +84,7 @@
                                             name="discontinued_computer" value="${formComputer.discontinued}"/><span
                                     class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
+                            <form:errors path="discontinued" cssClass="text-danger" element="div"/>
                         </div>
 
                         <div class="form-group">
@@ -95,6 +99,7 @@
                                 </c:forEach>
                             </form:select>
                         </div>
+                        <form:errors path="companyId" cssClass="text-danger"/>
                     </fieldset>
                     <div class="actions pull-right">
                         <input type="hidden" id="id_computer" name="id_computer" value="${formComputer.id}"/>

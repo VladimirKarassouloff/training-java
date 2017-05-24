@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,9 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
-/**
- * Created by vkarassouloff on 20/04/17.
- */
 @Controller
 @RequestMapping("/computer")
 public class ComputerController {
@@ -33,12 +29,6 @@ public class ComputerController {
     private static final String ATTR_FORM = "formComputer";
     private static final String ATTR_COMPANIES = "companies";
     private static final String ATTR_ERROR = "error";
-
-    private static final String FORM_ID = "id_computer";
-    private static final String FORM_NAME = "name_computer";
-    private static final String FORM_COMPANY_ID = "company_id_computer";
-    private static final String FORM_DATE_INTRODUCED = "introduced_computer";
-    private static final String FORM_DATE_DISCONTINUED = "discontinued_computer";
 
     private IComputerService computerServiceImpl;
 
@@ -56,7 +46,6 @@ public class ComputerController {
         this.companyService = companyService;
     }
 
-
     /**
      * Inject validator for computer.
      *
@@ -66,7 +55,6 @@ public class ComputerController {
     protected void initBinder(WebDataBinder binder) {
         binder.addValidators(computerValidator);
     }
-
 
     @RequestMapping(method = RequestMethod.GET)
     public String doGet(ModelMap model, @RequestParam(value = "id", required = false) Integer idComputer) {
@@ -87,16 +75,9 @@ public class ComputerController {
         return PAGE_FORM;
     }
 
-
     @RequestMapping(method = RequestMethod.POST)
     public String doPost(@ModelAttribute(ATTR_FORM) @Valid ComputerDTO form, BindingResult result, ModelMap model) {
-        StringBuilder sb = new StringBuilder();
-        for (ObjectError er : result.getAllErrors()) {
-            if (er.getCodes().length >= 2) {
-                sb.append(er.getCodes()[1]);
-            }
-        }
-        String error = sb.toString();
+        String error = null;
 
         // Insert or Update if there are no id for the computer
         if (!result.hasErrors()) {
@@ -116,8 +97,8 @@ public class ComputerController {
         model.addAttribute(ATTR_COMPANIES, companyService.getCompanies());
         model.addAttribute(ATTR_ERROR, error);
         model.addAttribute(ATTR_FORM, form);
-        return PAGE_FORM;
 
+        return PAGE_FORM;
     }
 
 }

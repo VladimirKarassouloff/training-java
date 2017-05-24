@@ -24,19 +24,19 @@ public class ComputerDTOValidator implements Validator {
         ComputerDTO dto = (ComputerDTO) o;
 
         if (dto == null) {
-            errors.reject("Null object. ");
+            errors.reject("form.null", "Null object. ");
             return;
         }
 
         if (dto.getName() == null || "".equals(dto.getName())) {
-            errors.reject("The name is required. ");
+            errors.rejectValue("name", "form.name.required", "The name is required. ");
         }
 
         Date intro = null;
         if (dto.getIntroduced() != null && !"".equals(dto.getIntroduced())) {
             intro = MapperDate.dateFromString(dto.getIntroduced());
             if (intro == null) {
-                errors.reject("Introduced date is not parseable. ");
+                errors.rejectValue("introduced", "form.date.notparseable", "Introduced date is not parseable. ");
             }
         }
 
@@ -44,20 +44,20 @@ public class ComputerDTOValidator implements Validator {
         if (dto.getDiscontinued() != null && !"".equals(dto.getDiscontinued())) {
             disc = MapperDate.dateFromString(dto.getDiscontinued());
             if (disc == null) {
-                errors.reject("Discontinued date is not parseable. ");
+                errors.rejectValue("discontinued", "form.date.notparseable", "Discontinued date is not parseable. ");
             }
         }
 
         if (intro != null && intro.before(MOST_ANCIENT_DATE)) {
-            errors.reject("Intro date should be after 1970. ");
+            errors.rejectValue("introduced", "form.date.before1970", "Intro date should be after 1970. ");
         }
 
         if (disc != null && disc.before(MOST_ANCIENT_DATE)) {
-            errors.reject("Discontinued date should be after 1970. ");
+            errors.rejectValue("discontinued", "form.date.before1970", "Discontinued date should be after 1970. ");
         }
 
         if (intro != null && disc != null && intro.after(disc)) {
-            errors.reject("Intro date should be before discontinued date. ");
+            errors.reject("form.dateintrobeforedisc", "Intro date should be before discontinued date. ");
         }
 
     }

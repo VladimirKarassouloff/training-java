@@ -17,10 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Servlet implementation class Index.
- */
-
 @Controller
 @RequestMapping(value = {"", "/index"})
 public class IndexController {
@@ -29,7 +25,6 @@ public class IndexController {
     public static final String INDEX = "dashboard";
 
     private static final String DEFAULT_LENGTH = "20";
-
 
     private IComputerService services;
 
@@ -47,7 +42,6 @@ public class IndexController {
                         @RequestParam(value = "asc", required = false) Boolean asc,
                         @RequestParam(value = "colOrder", required = false) Integer colOrder) {
 
-
         // Filter for counting and selecting
         FilterSelectComputer.Builder builder = new FilterSelectComputer.Builder();
 
@@ -63,22 +57,18 @@ public class IndexController {
         }
 
         // Get the datas for the page
-        try {
-            ComputerPage cp = services.getPage(builder.withPage(pageDisplay)
-                    .withLengthPage(lengthPageDisplay)
-                    .build());
+        ComputerPage cp = services.getPage(builder.withPage(pageDisplay)
+                .withLengthPage(lengthPageDisplay)
+                .build());
 
-            // Set all attributes
-            model.addAttribute("computers", cp.getResults());
-            model.addAttribute("totalCount", cp.getTotalCount());
-            model.addAttribute("currentPage", cp.getDisplayedPage());
-            model.addAttribute("lengthPage", lengthPageDisplay);
-            model.addAttribute("search", (search == null ? "" : search));
-            return INDEX;
-        } catch (RuntimeException e) {
-            return UtilsServletError.ERROR_500;
-        }
+        // Set all attributes
+        model.addAttribute("computers", cp.getResults());
+        model.addAttribute("totalCount", cp.getTotalCount());
+        model.addAttribute("currentPage", cp.getDisplayedPage());
+        model.addAttribute("lengthPage", lengthPageDisplay);
+        model.addAttribute("search", (search == null ? "" : search));
 
+        return INDEX;
     }
 
 
