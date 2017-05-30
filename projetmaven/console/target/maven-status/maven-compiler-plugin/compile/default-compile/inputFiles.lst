@@ -1,0 +1,11 @@
+/home/vkarassouloff/training-java/projetmaven/console/src/main/java/cdb/applicationcli/pages/Page.java
+/home/vkarassouloff/training-java/projetmaven/console/src/main/java/cdb/applicationcli/pages/MainPage.java
+/home/vkarassouloff/training-java/projetmaven/console/src/main/java/cdb/applicationcli/pages/ListCompaniesPage.java
+/home/vkarassouloff/training-java/projetmaven/console/src/main/java/cdb/applicationcli/CliMain.java
+/home/vkarassouloff/training-java/projetmaven/console/src/main/java/cdb/applicationcli/pages/ListCompaniesPageForm.java
+/home/vkarassouloff/training-java/projetmaven/console/src/main/java/cdb/applicationcli/pages/ListComputerPage.java
+/home/vkarassouloff/training-java/projetmaven/console/src/main/java/cdb/applicationcli/pages/DetailCompany.java
+/home/vkarassouloff/training-java/projetmaven/console/src/main/java/cdb/applicationcli/pages/DetailComputer.java
+/home/vkarassouloff/training-java/projetmaven/console/src/main/java/cdb/applicationcli/pages/Pageable.java
+/home/vkarassouloff/training-java/projetmaven/console/src/main/java/cdb/applicationcli/Application.java
+/home/vkarassouloff/training-java/projetmaven/console/src/main/java/cdb/applicationcli/FormulaireCli.java

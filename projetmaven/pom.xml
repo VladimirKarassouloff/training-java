@@ -4,9 +4,24 @@
     <groupId>projet-maven</groupId>
     <artifactId>projet-maven</artifactId>
     <version>0.6.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <modules>
+        <module>console</module>
+        <module>webapp</module>
+        <module>binding</module>
+        <module>core</module>
+        <module>persistence</module>
+        <module>service</module>
+    </modules>
+    <packaging>pom</packaging>
     <name>projet-mvn</name>
     <description>computer-database</description>
+
+    <repositories>
+        <repository>
+            <id>version99</id>
+            <url>http://version99.qos.ch/</url>
+        </repository>
+    </repositories>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -84,188 +99,190 @@
     </profiles>
 
 
-    <dependencies>
+    <dependencyManagement>
+
+        <dependencies>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${version.hibernate-core}</version>
+            </dependency>
+
+            <!-- Hibernate Validator -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${version.hibernate-validator}</version>
+            </dependency>
 
 
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${version.hibernate-core}</version>
-        </dependency>
+            <!-- -->
+            <!-- DB Connection -->
+            <!-- -->
 
-        <!-- Hibernate Validator -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>${version.hibernate-validator}</version>
-        </dependency>
-
-
-        <!-- -->
-        <!-- DB Connection -->
-        <!-- -->
-
-        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${version.mysql}</version>
-            <scope>runtime</scope>
-        </dependency>
+            <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${version.mysql}</version>
+                <scope>runtime</scope>
+            </dependency>
 
 
-        <!-- -->
-        <!-- Logging -->
-        <!-- -->
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>99-empty</version>
-        </dependency>
+            <!-- -->
+            <!-- Logging -->
+            <!-- -->
+            <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>99-empty</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>${version.jcloverslf4j}</version>
-        </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${version.jcloverslf4j}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${version.slf4j}</version>
-            <scope>compile</scope>
-        </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${version.slf4j}</version>
+                <scope>compile</scope>
+            </dependency>
 
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${version.logback}</version>
-            <scope>runtime</scope>
-        </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${version.logback}</version>
+                <scope>runtime</scope>
+            </dependency>
 
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${version.logback}</version>
-        </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${version.logback}</version>
+            </dependency>
 
-        <!-- -->
-        <!-- j2ee -->
-        <!-- -->
-
-
-        <!-- Spring framework -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${version.spring}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${version.spring}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${version.spring}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${version.spring}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${version.spring-test}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>${version.spring}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
-            <version>${version.spring-data-jpa}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/commons-dbcp/commons-dbcp -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-dbcp2</artifactId>
-            <version>${version.dbcp}</version>
-        </dependency>
+            <!-- -->
+            <!-- j2ee -->
+            <!-- -->
 
 
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>${version.jstl}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${version.servlet-api}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>jsp-api</artifactId>
-            <version>${version.jspapi}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>taglibs</groupId>
-            <artifactId>standard</artifactId>
-            <version>${version.taglibs}</version>
-            <scope>provided</scope>
-        </dependency>
+            <!-- Spring framework -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${version.spring}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${version.spring}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${version.spring}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>${version.spring}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${version.spring-test}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${version.spring}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-jpa</artifactId>
+                <version>${version.spring-data-jpa}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/commons-dbcp/commons-dbcp -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-dbcp2</artifactId>
+                <version>${version.dbcp}</version>
+            </dependency>
 
 
-        <!-- -->
-        <!-- Tests -->
-        <!-- -->
-
-        <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>${version.selenium}</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>${version.mockito}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${version.junit}</version>
-            <scope>test</scope>
-        </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>jstl</artifactId>
+                <version>${version.jstl}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${version.servlet-api}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet.jsp</groupId>
+                <artifactId>jsp-api</artifactId>
+                <version>${version.jspapi}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>taglibs</groupId>
+                <artifactId>standard</artifactId>
+                <version>${version.taglibs}</version>
+                <scope>provided</scope>
+            </dependency>
 
 
-    </dependencies>
+            <!-- -->
+            <!-- Tests -->
+            <!-- -->
+
+            <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-java</artifactId>
+                <version>${version.selenium}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${version.mockito}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/junit/junit -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit}</version>
+                <scope>test</scope>
+            </dependency>
+
+
+        </dependencies>
+    </dependencyManagement>
 
     <build>
 
@@ -287,7 +304,7 @@
                 </excludes>
             </resource>
             <resource>
-                <directory>src/main/webapp</directory>
+                <directory>webapp/src/webapp</directory>
                 <excludes>
                     <exclude>**/*.java</exclude>
                 </excludes>
@@ -301,79 +318,92 @@
         </testResources>
 
 
-        <plugins>
+        <pluginManagement>
+            <plugins>
 
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.5.1</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
 
-            <!-- Build war -->
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.0.0</version>
-                <configuration>
-                    <warSourceDirectory>${project.basedir}/src/main/webapp</warSourceDirectory>
-                    <outputDirectory>${project.build.directory}/war</outputDirectory>
-                </configuration>
-            </plugin>
+                <!-- Build war -->
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
 
-            <!-- Checkstyle -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <configLocation>${project.basedir}/src/test/resources/checkstyle/checkstyle.xml</configLocation>
-                    <suppressionsLocation>${project.basedir}/src/test/resources/checkstyle/suppressions.xml
-                    </suppressionsLocation>
-                    <consoleOutput>true</consoleOutput>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+                <!-- Checkstyle -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <configuration>
+                        <configLocation>${project.basedir}/src/test/resources/checkstyle/checkstyle.xml</configLocation>
+                        <suppressionsLocation>${project.basedir}/src/test/resources/checkstyle/suppressions.xml
+                        </suppressionsLocation>
+                        <consoleOutput>true</consoleOutput>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
 
-            <!-- War deployment -->
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <url>${deployment-url}/manager/text</url>
-                    <server>TomcatServer</server>
-                    <path>/${deployment-path}</path>
-                    <username>root</username>
-                    <password>root</password>
-                    <warFile>${project.build.directory}/war/${war-name}.war</warFile>
-                    <contextReloadable>true</contextReloadable>
-                    <update>true</update>
-                </configuration>
-            </plugin>
+                <!-- War deployment -->
+                <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
+                    <version>2.2</version>
+                </plugin>
 
-            <!-- Exclude selenium test because it needs the app to be deployed-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.17</version>
-                <configuration>
-                    <skipTests>${shouldSkipTests}</skipTests>
-                    <excludes>
-                        <exclude>**/selenium/*.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
+                <!-- Exclude selenium test because it needs the app to be deployed-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.17</version>
+                </plugin>
 
-        </plugins>
+                <plugin>
+                    <artifactId>maven-remote-resources-plugin</artifactId>
+                    <version>1.5</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>bundle</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <includes>
+                            <include>*/**</include>
+                        </includes>
+                    </configuration>
+                </plugin>
+
+                <!-- Share tests resources -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.6</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>test-jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
     </build>
 
 </project>
