@@ -22,9 +22,16 @@
     <div class="container">
         <a class="navbar-brand" href="index"> Application -
             Computer Database </a>
+        <div class="pull-right">
+            <a class="navbar-brand log-me-out" href="#"><spring:message code="logout"/></a>
+        </div>
     </div>
 </header>
 <section id="main">
+
+    <form id="logoutForm" action="${pageContext.request.contextPath}/logout" method="post">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    </form>
 
     <div class="container">
         <h1 id="homeTitle">${totalCount} <spring:message code="computers.found"/></h1>

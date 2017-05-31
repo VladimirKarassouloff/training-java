@@ -2,4 +2,5 @@
 /home/vkarassouloff/training-java/projetmaven/webapp/src/main/java/cdb/controller/IndexController.java
 /home/vkarassouloff/training-java/projetmaven/webapp/src/main/java/cdb/bean/BeanParamUtils.java
 /home/vkarassouloff/training-java/projetmaven/webapp/src/main/java/cdb/controller/ComputerController.java
+/home/vkarassouloff/training-java/projetmaven/webapp/src/main/java/cdb/controller/LoginController.java
 /home/vkarassouloff/training-java/projetmaven/webapp/src/main/java/cdb/utils/UtilsServletError.java
