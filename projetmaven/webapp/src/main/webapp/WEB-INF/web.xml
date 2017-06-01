@@ -8,7 +8,9 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            classpath:/WEB-INF/spring/*.xml
+            /WEB-INF/spring/applicationContext.xml
+            /WEB-INF/spring/dispatcher.xml
+            /WEB-INF/spring/security.xml
         </param-value>
     </context-param>
 

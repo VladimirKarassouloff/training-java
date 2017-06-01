@@ -4,14 +4,11 @@ import cdb.model.Computer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 /**
  * Created by vkarassouloff on 26/04/17.
  */
 public interface IComputerDAO extends JpaRepository<Computer, Long> {
-
-
 
 
     /**
@@ -33,7 +30,7 @@ public interface IComputerDAO extends JpaRepository<Computer, Long> {
      * Get Computer matching filter.
      *
      * @param pageRequest offset/limit
-     * @param name constraint
+     * @param name        constraint
      * @param companyName constraint
      * @return computers with DB
      */
@@ -46,7 +43,6 @@ public interface IComputerDAO extends JpaRepository<Computer, Long> {
      * @return computers with DB
      */
     Page<Computer> getComputersBy(Pageable pageRequest);
-
 
 
 }

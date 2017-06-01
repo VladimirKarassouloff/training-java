@@ -1,6 +1,5 @@
 package cdb.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -11,24 +10,20 @@ import javax.persistence.Table;
 import java.util.Date;
 
 @Entity
-@Table(schema = "computer-database-db", name = "computer")
+@Table(name = "computer", schema = "computer-database-db")
 public class Computer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Company company;
 
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "introduced")
     private Date introduced;
 
-    @Column(name = "discontinued")
     private Date discontinued;
 
     /**

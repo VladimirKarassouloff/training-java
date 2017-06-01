@@ -85,9 +85,7 @@ public class CompanyServiceImpl implements ICompanyService {
         }
 
         try {
-            Company obj = companyDao.getOne(id);
-            Hibernate.initialize(obj);
-            return obj;
+            return companyDao.findOne(id);
         } catch (RuntimeException e) {
             LOGGER.info("CompanyServiceImpl : error while getting company with id " + id);
             throw new RuntimeException("CompanyServiceImpl : error while getting company with id " + id);

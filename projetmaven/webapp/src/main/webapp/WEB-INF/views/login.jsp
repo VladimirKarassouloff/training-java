@@ -50,10 +50,6 @@
         </div>
     </div>
 
-    <c:if test="${not empty isLoggingOut}">
-        <script>
-        </script>
-    </c:if>
 </section>
 
 <script src="js/jquery.min.js"></script>

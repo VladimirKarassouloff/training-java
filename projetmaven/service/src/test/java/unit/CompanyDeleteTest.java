@@ -74,25 +74,15 @@ public class CompanyDeleteTest {
 
         companyService.delete(newCompany.getId());
 
-        try {
-            companyService.getCompany(newCompany.getId());
+        if (companyService.getCompany(newCompany.getId()) != null) {
             fail("Should have failed");
-        } catch (Exception e) {
-            System.out.println("Success deleteByIdIn company");
         }
+        if (computerService.getComputer(newComputer1.getId()) != null) {
 
-        try {
-            computerService.getComputer(newComputer1.getId());
             fail("Should have failed");
-        } catch (Exception e) {
-            System.out.println("Success deleteByIdIn newComputer1");
         }
-
-        try {
-            computerService.getComputer(newComputer2.getId());
+        if (computerService.getComputer(newComputer2.getId()) != null) {
             fail("Should have failed");
-        } catch (Exception e) {
-            System.out.println("Success deleteByIdIn newComputer2");
         }
 
     }

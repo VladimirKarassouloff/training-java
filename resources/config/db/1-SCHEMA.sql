@@ -22,3 +22,26 @@ drop schema if exists `computer-database-db`;
 
   alter table computer add constraint fk_computer_company_1 foreign key (company_id) references company (id) on delete restrict on update restrict;
   create index ix_computer_company_1 on computer (company_id);
+
+
+
+create table users (
+	id							  bigint not null auto_increment,
+    password                      varchar(50),
+    username                      varchar(50),
+    enabled					      boolean,
+    constraint pk_users primary key (username)
+    );
+
+create table role (
+	id bigint not null auto_increment,
+    name varchar(50),
+    constraint pk_role primary key (id)
+
+);
+
+create table users_role(
+	id_user bigint,
+    id_role bigint,
+    constraint pk_users_role primary key (id_user, id_role)
+);

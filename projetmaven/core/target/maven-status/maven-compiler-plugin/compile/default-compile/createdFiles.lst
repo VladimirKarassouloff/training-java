@@ -1,5 +1,7 @@
-cdb/dto/ComputerDTO$Builder.class
 cdb/model/Computer$Builder.class
-cdb/dto/ComputerDTO.class
+cdb/model/User.class
 cdb/model/Company.class
 cdb/model/Computer.class
+cdb/dto/ComputerDTO$Builder.class
+cdb/dto/ComputerDTO.class
+cdb/model/Role.class

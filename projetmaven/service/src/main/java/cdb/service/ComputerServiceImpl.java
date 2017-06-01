@@ -66,9 +66,7 @@ public class ComputerServiceImpl implements IComputerService {
     @Transactional(readOnly = true)
     public Computer getComputer(long id) {
         try {
-            Computer obj = computerDao.getOne(id);
-            Hibernate.initialize(obj);
-            return obj;
+            return computerDao.findOne(id);
         } catch (IllegalArgumentException e) {
             LOGGER.info("ComputerService : Impossible to get computer with id " + id + " => " + e.getMessage());
             throw new RuntimeException("ComputerService : Impossible to get computer with id " + id + " => " + e.getMessage());

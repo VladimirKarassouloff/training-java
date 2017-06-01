@@ -35,7 +35,6 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
-
     <!-- Create default configuration for Hibernate -->
     <bean id="hibernateJpaVendorAdapter"
           class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>

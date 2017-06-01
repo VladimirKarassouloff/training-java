@@ -1,6 +1,5 @@
 /home/vkarassouloff/training-java/projetmaven/service/src/main/java/cdb/service/IComputerService.java
 /home/vkarassouloff/training-java/projetmaven/service/src/main/java/cdb/exception/InvalidComputerException.java
-/home/vkarassouloff/training-java/projetmaven/service/src/main/java/cdb/validator/ComputerDTOValidator.java
 /home/vkarassouloff/training-java/projetmaven/service/src/main/java/cdb/service/CompanyServiceImpl.java
 /home/vkarassouloff/training-java/projetmaven/service/src/main/java/cdb/utils/UtilsValidation.java
 /home/vkarassouloff/training-java/projetmaven/service/src/main/java/cdb/validator/CompanyValidator.java

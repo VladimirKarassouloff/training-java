@@ -1,5 +1,18 @@
-set @@sql_mode='no_engine_substitution';
-use computer-database-db;
+
+insert into user (id, username, password, enabled) values (1, 'admin', 'admin', true);
+insert into user (id, username, password, enabled) values (2, 'root', 'root', true);
+insert into user (id, username, password, enabled) values (3, 'user', 'user', true);
+
+insert into role (id, name) values (1,'ROLE_ADMIN');
+insert into role (id, name) values (2,'ROLE_USER');
+
+insert into role_user (roles_id, users_id) values (1, 1);
+insert into role_user (roles_id, users_id) values (1, 2);
+
+insert into role_user (roles_id, users_id) values (2, 1);
+insert into role_user (roles_id, users_id) values (2, 2);
+insert into role_user (roles_id, users_id) values (2, 3);
+
 insert into company (id,name) values (  1,'Apple Inc.');
 insert into company (id,name) values (  2,'Thinking Machines');
 insert into company (id,name) values (  3,'RCA');
