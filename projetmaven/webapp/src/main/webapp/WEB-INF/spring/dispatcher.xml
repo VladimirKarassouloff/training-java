@@ -12,6 +12,7 @@
 
     <context:component-scan base-package="cdb.controller"/>
     <context:component-scan base-package="cdb.validator"/>
+    <context:component-scan base-package="cdb.ws"/>
     <mvc:default-servlet-handler />
     <mvc:annotation-driven validator="computerDTOValidator"/>
 

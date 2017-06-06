@@ -1,5 +1,7 @@
 package cdb.applicationcli;
 
+import org.springframework.web.context.support.XmlWebApplicationContext;
+
 public class CliMain {
 
     /**

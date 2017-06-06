@@ -2,8 +2,10 @@ package cdb.applicationcli.pages;
 
 import cdb.applicationcli.Application;
 import cdb.applicationcli.FormulaireCli;
+import cdb.dto.ComputerDTO;
 import cdb.exception.FormException;
 import cdb.model.Computer;
+import cdb.model.RestResponsePage;
 import cdb.service.IComputerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -11,14 +13,11 @@ import org.springframework.data.domain.PageRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ListComputerPage extends Pageable<Computer> {
-
-    @Autowired
-    public IComputerService computerService;
+public class ListComputerPage extends Pageable<ComputerDTO> {
 
 
     private boolean isCreatingComputer = false;
-    private Computer computerCreation = null;
+    private ComputerDTO computerCreation = null;
 
     /**
      * Constructor.
@@ -57,11 +56,11 @@ public class ListComputerPage extends Pageable<Computer> {
         System.out.println("Entrez le numero l'id de l'ordinateur a supprimer");
         try {
             long idDelete = Long.parseLong(input.nextLine());
-            Computer comp = computerService.getComputer(idDelete);
+            ComputerDTO comp = app.getClient().getComputer(idDelete);
             if (comp == null) {
                 throw new RuntimeException("Id invalide");
             }
-            computerService.deleteComputer(comp.getId());
+            app.getClient().deleteComputer(comp.getId());
             countItemTotal--;
             if (!checkPageIsCorrect()) {
                 orderFetchNewDataForPage();
@@ -98,25 +97,22 @@ public class ListComputerPage extends Pageable<Computer> {
 
     @Override
     protected void orderFetchNewDataForPage() {
-        this.list = computerService.getComputers(new PageRequest(currentPage, numberItemPage)).getContent();
-    }
-
-    @Override
-    protected long orderFetchDataCountPageable() {
-        return computerService.getCountComputer();
+        RestResponsePage<ComputerDTO> page = app.getClient().getComputers(new PageRequest(currentPage, numberItemPage));
+        this.list = page.getContent();
+        this.countItemTotal = page.getTotalElements();
     }
 
     @Override
     public void selected(int id) {
 
         // On regarde si on a deja le computer dans la liste, et si non, on va le chercher en base des computer
-        List<Computer> filterId = list.stream().filter(e -> e.getId() == id).collect(Collectors.toList());
+        List<ComputerDTO> filterId = list.stream().filter(e -> e.getId() == id).collect(Collectors.toList());
         if (filterId.size() > 0) {
             this.app.pushPage(new DetailComputer(app, filterId.get(0)));
         } else {
-            Computer idComputer = computerService.getComputer(id);
+            ComputerDTO idComputer = app.getClient().getComputer(id);
             if (idComputer != null) {
-                this.app.pushPage(new DetailComputer(app, computerService.getComputer(id)));
+                this.app.pushPage(new DetailComputer(app,  app.getClient().getComputer(id)));
             } else {
                 System.out.println("Cet ordinateur n'existe pas");
             }
@@ -129,7 +125,7 @@ public class ListComputerPage extends Pageable<Computer> {
         if (isCreatingComputer) {
 
             try {
-                computerService.addComputer(this.computerCreation);
+                app.getClient().addComputer(this.computerCreation);
                 isCreatingComputer = false;
                 this.countItemTotal++;
                 this.orderFetchNewDataForPage();

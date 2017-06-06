@@ -8,7 +8,6 @@ import cdb.mapper.MapperComputer;
 import cdb.model.Computer;
 import cdb.persistence.IComputerDAO;
 import cdb.validator.ComputerValidator;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +30,18 @@ public class ComputerServiceImpl implements IComputerService {
 
     private IComputerDAO computerDao;
 
+    private MapperComputer mapperComputer;
+
     /**
      * Default constructor.
      *
-     * @param computerDao data access object for computers
+     * @param computerDao    data access object for computers
+     * @param mapperComputer mapper
      */
     @Autowired
-    public ComputerServiceImpl(IComputerDAO computerDao) {
+    public ComputerServiceImpl(IComputerDAO computerDao, MapperComputer mapperComputer) {
         this.computerDao = computerDao;
+        this.mapperComputer = mapperComputer;
     }
 
 
@@ -75,7 +78,7 @@ public class ComputerServiceImpl implements IComputerService {
 
 
     @Override
-    public void addComputer(Computer computer) throws FormException {
+    public Computer addComputer(Computer computer) throws FormException {
         try {
             ComputerValidator.checkValidity(computer);
         } catch (InvalidComputerException e) {
@@ -84,7 +87,7 @@ public class ComputerServiceImpl implements IComputerService {
         }
 
         try {
-            computerDao.saveAndFlush(computer);
+            return computerDao.saveAndFlush(computer);
         } catch (IllegalArgumentException e) {
             LOGGER.info("ComputerService : Error while inserting computer : (" + computer + ") => " + e.getMessage());
             throw new RuntimeException("ComputerService : Error while inserting computer : (" + computer + ") => " + e.getMessage());
@@ -92,7 +95,7 @@ public class ComputerServiceImpl implements IComputerService {
     }
 
     @Override
-    public void updateComputer(Computer computer) throws FormException {
+    public Computer updateComputer(Computer computer) throws FormException {
         try {
             ComputerValidator.checkValidity(computer);
         } catch (InvalidComputerException e) {
@@ -101,7 +104,7 @@ public class ComputerServiceImpl implements IComputerService {
         }
 
         try {
-            computerDao.saveAndFlush(computer);
+            return computerDao.saveAndFlush(computer);
         } catch (IllegalArgumentException e) {
             LOGGER.info("ComputerService : Impossible to update computer [" + computer + "] => " + e.getMessage());
             throw new RuntimeException("ComputerService : Impossible to update computer [" + computer + "] => " + e.getMessage());
@@ -123,10 +126,10 @@ public class ComputerServiceImpl implements IComputerService {
 
 
     @Override
-    public void formUpdateComputer(ComputerDTO form) throws FormException {
+    public Computer formUpdateComputer(ComputerDTO form) throws FormException {
         Computer computer = null;
         try {
-            computer = MapperComputer.mapDTOToObject(form);
+            computer = mapperComputer.mapDTOToObject(form);
         } catch (MapperException e) {
             LOGGER.info("ComputerService : Mapping error  [" + form + "] " + e.getMessage());
             throw new RuntimeException("ComputerService : Mapping error  [" + form + "] " + e.getMessage());
@@ -138,14 +141,14 @@ public class ComputerServiceImpl implements IComputerService {
             throw new FormException("ComputerService : An error occured : " + e.getMessage());
         }
 
-        updateComputer(computer);
+        return updateComputer(computer);
     }
 
     @Override
-    public void formAddComputer(ComputerDTO form) throws FormException {
+    public Computer formAddComputer(ComputerDTO form) throws FormException {
         Computer computer = null;
         try {
-            computer = MapperComputer.mapDTOToObject(form);
+            computer = mapperComputer.mapDTOToObject(form);
         } catch (MapperException e) {
             LOGGER.info("ComputerService : Cannot map computer to DTO " + e.getMessage());
             throw new FormException("ComputerService : Cannot map computer to DTO " + e.getMessage());
@@ -156,7 +159,7 @@ public class ComputerServiceImpl implements IComputerService {
         } catch (InvalidComputerException e) {
             throw new FormException(e.getMessage());
         }
-        addComputer(computer);
+        return addComputer(computer);
     }
 
     @Override

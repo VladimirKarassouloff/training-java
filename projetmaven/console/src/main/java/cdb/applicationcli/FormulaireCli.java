@@ -1,26 +1,16 @@
 package cdb.applicationcli;
 
+import cdb.dto.ComputerDTO;
 import cdb.exception.FormException;
 import cdb.mapper.MapperDate;
-import cdb.model.Company;
 import cdb.model.Computer;
-import cdb.service.ICompanyService;
-import cdb.service.IComputerService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.Scanner;
 
 public class FormulaireCli {
 
-
     public static Scanner input = new Scanner(System.in);
-
-    @Autowired
-    public static IComputerService computerService;
-
-    @Autowired
-    public static ICompanyService companyService;
 
     /**
      * Ask user to give a date formatted like yyyy-MM-dd.
@@ -127,7 +117,7 @@ public class FormulaireCli {
      *
      * @return computer
      */
-    public static Computer precreateComputer() {
+    public static ComputerDTO precreateComputer() {
         // Vars
         String nameInput;
         Integer lineChoosen;
@@ -144,67 +134,10 @@ public class FormulaireCli {
         System.out.println("Entrez la date de fin de commercialisation");
         end = FormulaireCli.reclaimDateOrNullInput();
 
-
-        return new Computer(null, nameInput, start, end);
+        return new ComputerDTO(nameInput, null, nameInput, MapperDate.formatDate(start), MapperDate.formatDate(end), null);
     }
 
-    /**
-     * Basic form to update the introduced date of a computer.
-     *
-     * @param computer to update
-     */
-    public static void updateComputerIntroduced(Computer computer) {
-        System.out.println("Entrez la nouvelle date");
-        Date newDate = FormulaireCli.reclaimDateOrNullInput();
-        computer.setIntroduced(newDate);
-        try {
-            computerService.updateComputer(computer);
-        } catch (FormException e) {
-            System.out.println("Error while updating computer");
-        }
-    }
 
-    /**
-     * Basic form to update the discontinued date of a computer.
-     *
-     * @param computer to update
-     */
-    public static void updateComputerDiscontinuedDate(Computer computer) {
-        System.out.println("Entrez la nouvelle date");
-        Date newDate = FormulaireCli.reclaimDateOrNullInput();
-        computer.setDiscontinued(newDate);
-        try {
-            computerService.updateComputer(computer);
-        } catch (FormException e) {
-            System.out.println("Error while updating computer : " + e.getMessage());
-        }
-    }
-
-    /**
-     * Basic form to update the name of a computer.
-     *
-     * @param computer to update
-     */
-    public static void updateComputerName(Computer computer) {
-        System.out.println("Entrez le nouveau nom");
-        computer.setName(FormulaireCli.input.nextLine());
-        try {
-            computerService.updateComputer(computer);
-        } catch (FormException e) {
-            System.out.println("Error while updating computer");
-        }
-    }
-
-    /**
-     * Basic form to update the introduced date of a company.
-     *
-     * @param company to update
-     */
-    public static void updateCompanyName(Company company) {
-        System.out.println("Entrez le nouveau nom");
-        company.setName(FormulaireCli.input.nextLine());
-        companyService.updateCompany(company);
-    }
 
 
 }

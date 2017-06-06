@@ -13,7 +13,9 @@
         <intercept-url pattern="/js/**" access="permitAll()"/>
         <intercept-url pattern="/login" access="isAnonymous()"/>
         <intercept-url pattern="/logout" access="isAuthenticated()"/>
-        <intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
+        <intercept-url pattern="/**" access="permitAll()"/>
+        <!--<intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>-->
+
 
         <form-login login-page="/login"
                     default-target-url="/index"
@@ -21,7 +23,7 @@
                     password-parameter="j_password"
         />
         <logout logout-success-url="/login?logout"/>
-
+        <csrf disabled="true"/>
     </http>
 
     <security:authentication-manager>

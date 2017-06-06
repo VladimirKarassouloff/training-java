@@ -1,6 +1,8 @@
 package cdb.applicationcli.pages;
 
 import cdb.applicationcli.Application;
+import cdb.dto.CompanyDTO;
+import cdb.dto.ComputerDTO;
 import cdb.model.Company;
 import cdb.model.Computer;
 import cdb.service.CompanyServiceImpl;
@@ -11,11 +13,7 @@ import java.util.stream.Collectors;
 
 public class ListCompaniesPageForm extends ListCompaniesPage {
 
-    @Autowired
-    public CompanyServiceImpl companyService;
-
-
-    private Computer form;
+    private ComputerDTO form;
 
     /**
      * Constructor.
@@ -23,7 +21,7 @@ public class ListCompaniesPageForm extends ListCompaniesPage {
      * @param app  belonging to
      * @param comp being updating
      */
-    public ListCompaniesPageForm(Application app, Computer comp) {
+    public ListCompaniesPageForm(Application app, ComputerDTO comp) {
         super(app);
         this.form = comp;
     }
@@ -38,19 +36,21 @@ public class ListCompaniesPageForm extends ListCompaniesPage {
 
     @Override
     public void selected(int id) {
-        List<Company> filterId = list.stream().filter(e -> e.getId() == id).collect(Collectors.toList());
+        List<CompanyDTO> filterId = list.stream().filter(e -> e.getId() == id).collect(Collectors.toList());
 
         if (filterId.size() > 0) {
-
-            form.setCompany(filterId.get(0));
+            CompanyDTO companyDto = filterId.get(0);
+            form.setCompanyId(companyDto.getId());
+            form.setCompanyName(companyDto.getName());
             this.app.popPage();
 
         } else {
 
-            Company tmp = companyService.getCompany(id);
+            CompanyDTO tmp = app.getClient().getCompanyWithId(id);
 
             if (tmp != null) {
-                form.setCompany(tmp);
+                form.setCompanyId(tmp.getId());
+                form.setCompanyName(tmp.getName());
                 this.app.popPage();
             } else {
                 System.out.println("Entreprise introuvable");

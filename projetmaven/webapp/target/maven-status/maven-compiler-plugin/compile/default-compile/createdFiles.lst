@@ -1,6 +1,0 @@
-cdb/validator/ComputerDTOValidator.class
-cdb/bean/BeanParamUtils.class
-cdb/utils/UtilsServletError.class
-cdb/controller/IndexController.class
-cdb/controller/ComputerController.class
-cdb/controller/LoginController.class

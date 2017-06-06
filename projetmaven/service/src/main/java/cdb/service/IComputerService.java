@@ -58,7 +58,7 @@ public interface IComputerService {
      * @param computer added
      * @throws FormException if computer is not valid
      */
-    void addComputer(Computer computer) throws FormException;
+    Computer addComputer(Computer computer) throws FormException;
 
     /**
      * Update computer from DB.
@@ -66,7 +66,7 @@ public interface IComputerService {
      * @param computer updated
      * @throws FormException if computer is not valid
      */
-    void updateComputer(Computer computer) throws FormException;
+    Computer updateComputer(Computer computer) throws FormException;
 
     /**
      * Delete computer of the DB having the id equals of the computer id param.
@@ -82,7 +82,7 @@ public interface IComputerService {
      * @param form from user sent back from jsp
      * @throws FormException error during validation
      */
-    void formUpdateComputer(ComputerDTO form) throws FormException;
+    Computer formUpdateComputer(ComputerDTO form) throws FormException;
 
     /**
      * Try inserting new computer.
@@ -90,7 +90,7 @@ public interface IComputerService {
      * @param form from user sent back from jsp
      * @throws FormException error during validation
      */
-    void formAddComputer(ComputerDTO form) throws FormException;
+    Computer formAddComputer(ComputerDTO form) throws FormException;
 
 
     /**

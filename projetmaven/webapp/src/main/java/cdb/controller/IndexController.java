@@ -32,11 +32,17 @@ public class IndexController {
 
     private IComputerService services;
 
+    private MapperComputer mapperComputer;
+
     @Autowired
     public void setServices(IComputerService services) {
         this.services = services;
     }
 
+    @Autowired
+    public void setMapperComputer(MapperComputer mapperComputer) {
+        this.mapperComputer = mapperComputer;
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public String index(ModelMap model,
@@ -50,7 +56,7 @@ public class IndexController {
 
         // Get the datas for the page
         Page<ComputerDTO> cp = services.getPage(new PageRequest(pageDisplay, lengthPageDisplay,
-                (asc ? Sort.Direction.ASC : Sort.Direction.DESC), Computer.colToProperty(colOrder)), search).map(MapperComputer::toDTO);
+                (asc ? Sort.Direction.ASC : Sort.Direction.DESC), Computer.colToProperty(colOrder)), search).map(mapperComputer::toDTO);
 
         // Set all attributes
         model.addAttribute("asc", asc);

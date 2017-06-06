@@ -14,10 +14,9 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class MapperComputer  {
+public class MapperComputer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MapperComputer.class);
-
 
     /**
      * Build computer from computerdto.
@@ -26,7 +25,10 @@ public class MapperComputer  {
      * @return computer
      * @throws MapperException if id point on non valid objects
      */
-    public static Computer mapDTOToObject(ComputerDTO computerDTO) throws MapperException {
+    public Computer mapDTOToObject(ComputerDTO computerDTO) throws MapperException {
+        if (computerDTO == null) {
+            return null;
+        }
 
         Date dateDiscontinued = null, dateIntroduced = null;
         if (!computerDTO.getIntroduced().isEmpty() && (dateIntroduced = MapperDate.dateFromString(computerDTO.getIntroduced())) == null) {
@@ -51,7 +53,7 @@ public class MapperComputer  {
      * @param computer that you want to map
      * @return computerDto
      */
-    public static ComputerDTO toDTO(Computer computer) {
+    public ComputerDTO toDTO(Computer computer) {
         if (computer == null) {
             return null;
         }
@@ -72,10 +74,10 @@ public class MapperComputer  {
      * @param computers that you want to convert to DTOs
      * @return list of computer
      */
-    public static List<ComputerDTO> toDTOs(List<Computer> computers) {
+    public List<ComputerDTO> toDTOs(List<Computer> computers) {
         List<ComputerDTO> mapped = new ArrayList<>();
         for (Computer comp : computers) {
-            mapped.add(MapperComputer.toDTO(comp));
+            mapped.add(toDTO(comp));
         }
         return mapped;
 

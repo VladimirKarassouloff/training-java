@@ -34,6 +34,8 @@ public class ComputerController {
 
     private ICompanyService companyService;
 
+    private MapperComputer mapperComputer;
+
     private ComputerDTOValidator computerValidator;
 
     @Autowired
@@ -44,6 +46,11 @@ public class ComputerController {
     @Autowired
     public void setICompanyService(ICompanyService companyService) {
         this.companyService = companyService;
+    }
+
+    @Autowired
+    public void setMapperComputer(MapperComputer mapperComputer) {
+        this.mapperComputer = mapperComputer;
     }
 
     /**
@@ -65,7 +72,7 @@ public class ComputerController {
         if (idComputer == null) { // Trying to create a new computer
             form = new ComputerDTO();
         } else { // Trying to edit computer
-            form = MapperComputer.toDTO(computerService.getComputer(idComputer));
+            form = mapperComputer.toDTO(computerService.getComputer(idComputer));
         }
 
         model.addAttribute(ATTR_COMPANIES, companyService.getCompanies());

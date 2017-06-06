@@ -1,7 +1,9 @@
 package cdb.applicationcli.pages;
 
 import cdb.applicationcli.Application;
+import cdb.dto.CompanyDTO;
 import cdb.model.Company;
+import cdb.model.RestResponsePage;
 import cdb.service.CompanyServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -9,11 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ListCompaniesPage extends Pageable<Company> {
+public class ListCompaniesPage extends Pageable<CompanyDTO> {
 
-
-    @Autowired
-    public CompanyServiceImpl companyService;
 
 
     /**
@@ -40,28 +39,25 @@ public class ListCompaniesPage extends Pageable<Company> {
     }
 
     @Override
-    protected long orderFetchDataCountPageable() {
-        return companyService.getCountCompany();
-    }
-
-    @Override
     public void otherCommands(String command) {
 
     }
 
     @Override
     protected void orderFetchNewDataForPage() {
-        this.list = companyService.getPagedCompany(new PageRequest(currentPage, numberItemPage)).getContent();
+        RestResponsePage<CompanyDTO> page = app.getClient().getCompanies(new PageRequest(currentPage, numberItemPage));
+        this.countItemTotal = page.getTotalElements();
+        this.list = page.getContent();
     }
 
     @Override
     public void selected(int id) {
         // On regarde si on a deja le computer dans la liste, et si non, on va le chercher en base des companies
-        List<Company> filterId = list.stream().filter(e -> e.getId() == id).collect(Collectors.toList());
+        List<CompanyDTO> filterId = list.stream().filter(e -> e.getId() == id).collect(Collectors.toList());
         if (filterId.size() > 0) {
             this.app.pushPage(new DetailCompany(app, filterId.get(0)));
         } else {
-            Company tmp = companyService.getCompany(id);
+            CompanyDTO tmp = app.getClient().getCompanyWithId(id);
             if (tmp != null) {
                 this.app.pushPage(new DetailCompany(app, tmp));
             }

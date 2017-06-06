@@ -21,7 +21,6 @@ public abstract class Pageable<T> extends Page {
         super(app);
         this.currentPage = 0;
         this.numberItemPage = numberItemPage;
-        this.countItemTotal = orderFetchDataCountPageable();
         orderFetchNewDataForPage();
     }
 
@@ -66,15 +65,8 @@ public abstract class Pageable<T> extends Page {
         }
     }
 
-
     /**
-     * Should get the row count from the database.
-     * @return nombre de lignes
-     */
-    protected abstract long orderFetchDataCountPageable();
-
-    /**
-     * Should get new data from database depending of the currentpage.
+     * Should get new data and count from database depending of the currentpage.
      */
     protected abstract void orderFetchNewDataForPage();
 
